@@ -1,0 +1,23 @@
+spring:
+  # datasource 数据源配置内容
+  datasource:
+    url: jdbc:mysql://localhost:3306/Test
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 10291004
+
+# mybatis 配置内容
+mybatis:
+  mapper-locations: classpath:mapper/*.xml # 配置 Mapper XML 地址
+  type-aliases-package: com.jwsystem.entity # 配置数据库实体包路径
+
+server:
+  port: 8080
+
+# jwt配置内容
+group5:
+  jwt:
+    #    配置jwt
+    header: token
+    expire: 604800 #7天，秒单位
+    secret: wo5zhende5bu5xiang5xie5houduanle  #jwt密钥
