@@ -1,5 +1,6 @@
 package com.jwsystem.interceptor;
 
+import com.jwsystem.common.Result;
 import com.jwsystem.util.JwtUtils;
 import com.mysql.jdbc.StringUtils;
 import io.jsonwebtoken.Claims;
@@ -9,6 +10,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static com.jwsystem.controller.UserController.EXPIRED;
 
 //登陆状态拦截器
 public class loginInterceptor implements HandlerInterceptor {
@@ -35,6 +38,12 @@ public class loginInterceptor implements HandlerInterceptor {
         if(claims == null){
             System.out.println("token验证失败");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+
+        if(jwtUtils.isTokenExpired(claims)){
+            //token过期
+            response.setStatus(EXPIRED);
             return false;
         }
 

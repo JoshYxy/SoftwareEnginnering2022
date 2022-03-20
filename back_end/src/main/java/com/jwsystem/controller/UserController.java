@@ -34,11 +34,11 @@ public class UserController {
     @Resource
     UserDao userDao;
 
-    int NO_USER = 418;  //用户不存在
-    int WRONG_PSWD = 419;   //密码错误
-    int CONFLICT_ID = 420;  //身份证号冲突
-    int CONFLICT_NUMBER = 421;  //学工号冲突
-    int EXPIRED = 422;  //token过期
+    public static int NO_USER = 418;  //用户不存在
+    public static int WRONG_PSWD = 419;   //密码错误
+    public static int CONFLICT_ID = 420;  //身份证号冲突
+    public static int CONFLICT_NUMBER = 421;  //学工号冲突
+    public static int EXPIRED = 422;  //token过期
 
     /*
         API也要一一对应！分别是   /login  /register   /reset  /verify
@@ -120,7 +120,7 @@ public class UserController {
 
         if(userDao.selectByNumber(tempUser.getNumber()) != null){
             response.setStatus(CONFLICT_NUMBER);
-            return Result.fail("该学号已注册！");
+            return Result.fail("该学工号已注册！");
         }
 
         userDao.insertUser(tempUser);
