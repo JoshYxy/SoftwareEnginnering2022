@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -47,7 +48,7 @@ public class UserController {
      */
 
     //登陆请求
-    @PostMapping("/login")
+    @PostMapping("/user")
     public Result login (@RequestBody User tempUser){
 
         Long number = tempUser.getNumber();
@@ -80,7 +81,7 @@ public class UserController {
     }
 
     //注册请求
-    @PostMapping("/register")
+    @PostMapping("/user/new")
     public Result register(@RequestBody User tempUser){
 
         //判断登陆是否有效，以及是否是管理员
@@ -127,7 +128,7 @@ public class UserController {
         return Result.succ("注册成功！ ",tempUser);
     }
 
-    @PostMapping("/reset")
+    @PostMapping("/user/password")
     public Result reset(@RequestBody User tempUser) {
         //用token判断是哪个用户，并修改密码
         String token = request.getHeader("token");
