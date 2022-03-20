@@ -16,8 +16,6 @@
 </template>
 
 <script>
-/* eslint-disable */
-import axios from 'axios'
 export default {
   name: 'UserInfo',
   data() {
@@ -35,7 +33,6 @@ export default {
       }
   },
   created() {
-      const _this = this
       // axios.get('http://localhost:8081/info/findAll')
       //      .then(function(resp){
       //          _this.userData = resp.data

@@ -6,8 +6,6 @@ import UserInfo from '../components/UserInfo.vue'
 import WelcomePage from '../components/WelcomePage.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 
-// eslint-disable-next-line
-import axios from 'axios'
 const routes = [
   {
     path: '/',
