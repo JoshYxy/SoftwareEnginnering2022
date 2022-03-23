@@ -2,15 +2,26 @@
   <div class="admin" style="margin:0px auto">
     <h1>信息录入</h1>
     
-    <el-form id = "admin_container" ref="userData" :model="userData" :rules="rules" autocomplete="on"  text-align: center>
-      <el-form-item prop="role" display: inline-block >
-        <!-- label="Activity zone"  -->
+    <el-form id="admin_container" ref="userData" :model="userData" :rules="rules" autocomplete="on"  text-align: center>
+      <el-form-item prop="role">
         <el-select v-model="userData.role" placeholder="角色">
           <el-option label="学生" value="student"></el-option>
           <el-option label="教师" value="teacher"></el-option>
         </el-select>
       </el-form-item>
 
+      <el-form-item class="college" prop="college">
+        <el-select v-model="userData.college" value-key="name" placeholder="学院">
+          <el-option :key="colleges.id" :value="colleges" :label="colleges.name" v-for="colleges in collegeData" ></el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item class="major" prop="major" >
+        <el-select v-model="userData.major" placeholder="专业">
+          <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in userData.college.major" ></el-option>
+        </el-select>
+      </el-form-item>
+      
       <el-form-item prop="name">
         <el-input
           type="text"
@@ -74,47 +85,7 @@
 
 <script>
 import axios from 'axios'
-//格式检查
-var validName = (rule, value, callback) => {
-    const reg = /^[A-Za-z\u4E00-\u9FA5]+$/
-    if (reg.test(value)) {
-        callback()
-      } else {
-        return callback(new Error('姓名必须为汉字或英语'))
-      }
-}
-var validPhone = (rule, value, callback) => {
-  if (value.length != 11 && value.length != 0) {
-    callback(new Error('电话号码必须为11位'))
-  } else{
-      const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
-      if (reg.test(value) || value.length == 0) {
-          callback()
-        } else {
-          return callback(new Error('手机号码必须为1开头的符合规则的11位数字'))
-        }
-    }
-}
-var validPassport = (rule, value, callback) => {
-  if (value.length != 18) {
-    callback(new Error('身份证必须为18位'))
-  } else{
-      const reg =  /(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-      if (reg.test(value)) {
-          callback()
-        } else {
-          return callback(new Error('身份证号不符合规则'))
-        }
-    }
-}
-var validEmail = (rule, value, callback) => {
-  const reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/
-  if (reg.test(value) || value.length == 0) {
-      callback()
-    } else {
-      return callback(new Error('邮箱地址不符合规则'))
-    }
-}
+import {validName,validPhone,validPassport,validEmail} from './jsComponents/CheckRules'//格式检查
 
 export default {
 
@@ -122,16 +93,45 @@ export default {
 
   data(){
     return {
+      collegeData: [
+        { 
+          id: 1,
+          name: '计算机科学技术学院', 
+          major: [
+              {id: 1, name: '大数据'},
+              {id: 2, name: '信息安全'}
+          ]
+        },
+        { 
+          id: 2,
+          name: '生命科学学院', 
+          major: [
+              {id: 1, name: '生物'},
+              {id: 2, name: '123'}
+          ]
+        },
+        { 
+          id: 3,
+          name: '软件工程学院', 
+          major: [
+              {id: 1, name: '软件工程'},
+          ]
+        },
+      ],
+      majorData: [
+      ],
       userData: {
         number: null,
-        role:'student',
-        name:'',
-        id:'',
-        phone:'',
-        email:'',
-        stu_id:null,
-        teach_id:null,
-        password:'123456'
+        role: 'student',
+        name: '',
+        id: '',
+        phone: '',
+        email: '',
+        stu_id: null,
+        teach_id: null,
+        password: '123456',
+        major: '',
+        college: {},
       },
       rules: {
         role: [{required: true, message: '请选择身份', trigger: 'change'}],
@@ -152,6 +152,15 @@ export default {
       }
     }
   },
+  watch:{
+    "userData.college": {
+      handler(){
+        console.log(this.userData.college)
+        this.userData.major='';  
+      },
+      deep: true  
+    }
+  },
   methods:{
     submit(){
       this.$refs['userData'].validate(valid => {
@@ -160,12 +169,6 @@ export default {
             this.userData.number = this.userData.stu_id
           if(this.userData.role == 'teacher')
             this.userData.number = this.userData.teach_id
-          // this.info.passport = this.userData.passport
-          // this.info.role = this.userData.role
-          // this.info.phone = this.userData.phone
-          // this.info.email = this.userData.email
-          // this.info.name = this.userData.name
-          // alert("提交成功")
           console.log(this.userData)
           // axios.post('http://localhost:8081/register', null, {params:this.userData})
           axios.post('http://localhost:8081/user/new', this.userData)
@@ -186,7 +189,6 @@ export default {
               alert('身份证已存在');
               this.userData.id = ''
             }
-            
             console.dir(error);
           })
         }
@@ -222,15 +224,9 @@ export default {
 h3 {
   margin: 40px 0 0;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+.college {
+  float: left;
+  margin-right: 10px;
 }
 </style>

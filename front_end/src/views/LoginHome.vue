@@ -14,7 +14,7 @@
           </el-menu-item>
           <el-menu-item index="/home/admin">
             <!-- <el-icon><icon-menu /></el-icon> -->
-            <span>Admin</span>
+            <span>个人信息录入</span>
           </el-menu-item>
           <el-menu-item index="/home/info">
             <!-- <el-icon><icon-menu /></el-icon> -->
@@ -25,6 +25,7 @@
 
       <el-main>
         <router-view />
+        
       </el-main>
     </el-container>
   </div>
@@ -32,9 +33,5 @@
 
 
 <style scoped>
-.el-col {
-display: block;
-position: relative;
-background-color: #324157;
-}
+
 </style>
