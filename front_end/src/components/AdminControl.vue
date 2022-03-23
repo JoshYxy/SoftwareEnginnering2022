@@ -213,13 +213,13 @@ export default {
   left: 0;
   right: 0;
 }
-#container {
+/* #container {
   border-radius: 15px;
   margin: 0px auto;
   width: 500px;
   padding: 35px 35px;
   background: #fff;
-}
+} */
 
 h3 {
   margin: 40px 0 0;

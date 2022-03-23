@@ -33,5 +33,14 @@
 
 
 <style scoped>
-
+.el-main {
+  padding: 0;
+}
+.el-aside {
+  width: 240px;
+  color: var(--el-text-color-primary);
+  background: #fff !important;
+  border-right: solid 1px #e6e6e6;
+  box-sizing: border-box;
+}
 </style>

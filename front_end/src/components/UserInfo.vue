@@ -4,33 +4,58 @@
 
     <h2>施工中。。。。。。</h2>
     <img alt="Vue logo" src="../assets/logo.png">
-    <el-table :data="userData" style="width: 100%">
-      <el-table-column prop="id" label="Id" width="180" />
-      <el-table-column prop="name" label="Name" width="180" />
-      <el-table-column prop="role" label="Role" width="180" />
+    <!-- table-layout为fixed时出错 -->
+    <el-table class="table" :data="userData" table-layout="auto">
+      <el-table-column prop="id" label="Id" width="120" />
+      <el-table-column prop="name" label="Name" width="120" />
+      <el-table-column prop="role" label="Role" width="120" />
       <el-table-column prop="phone" label="Phone" width="180" />
       <el-table-column prop="email" label="Email" width="180" />
       <el-table-column prop="passport" label="Passport" width="180" />
+      <el-table-column fixed="right" label="Operations" width="180">
+      <!-- <template #default="scope"> -->
+        <userinfo-maintenance></userinfo-maintenance>
+      <!-- </template> -->
+    </el-table-column>
     </el-table>
+
+    
   </div>
 </template>
 
 <script>
+import UserinfoMaintenance from './UserinfoMaintenance.vue'
 export default {
   name: 'UserInfo',
+  components: {
+    UserinfoMaintenance
+  },
   data() {
       return{
         userData: [
             {
-            id: undefined,
-            name: undefined,
-            role: undefined,
-            phone: undefined,
-            email: undefined,
-            passport: undefined,
+            id: '1',
+            name: 'undefined',
+            role: 'student',
+            phone: '13332221111',
+            email: '123@qq.com',
+            passport: '31122232222221',
+            },
+            {
+            id: '1',
+            name: 'un1ed',
+            role: 'teacher',
+            phone: '13332221111',
+            email: '123@qq.com',
+            passport: '31122232222221',
             }
         ],
       }
+  },
+  methods: {
+    deleteRow(index){
+      this.userData.value.splice(index, 1)
+    }
   },
   created() {
       // axios.get('http://localhost:8081/info/findAll')
@@ -42,13 +67,5 @@ export default {
 }
 </script>
 <style scoped>
-/* 试图居中，会遮盖导航栏 */
-.info{
-  position: absolute;
-  left: 50%;
 
-  width: 1100px;
-
-  margin-left: -550px;
-}
 </style>

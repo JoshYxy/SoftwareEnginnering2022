@@ -116,7 +116,6 @@ h3 {
   width: 350px;
   padding: 35px 35px 15px 35px;
   background-color: transparent;
-  /* background: #fff; */
   border: 1px solid transparent;
   box-shadow: 0 0 25px transparent;
 }

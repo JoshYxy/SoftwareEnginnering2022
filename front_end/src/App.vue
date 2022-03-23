@@ -5,7 +5,8 @@
     <router-link to="/home/welcome">Home</router-link> |
     <!-- <router-link to="/admin">Admin</router-link> | -->
     <!-- <router-link to="/info">Info</router-link> | -->
-    <router-link to="/password">Password</router-link> 
+    <router-link to="/password">Password</router-link> | 
+    <router-link to="/infochange">info</router-link> 
     <!-- <el-button id='logout' v-show="this.$store.state.Authorization !== ''" type="info" @click="logout">退出</el-button>
     <el-button type="info" @click="refresh">test</el-button> -->
   </nav>
@@ -51,5 +52,8 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+.el-table__header col[name="gutter"] {
+  display: table-cell !important;
 }
 </style>
