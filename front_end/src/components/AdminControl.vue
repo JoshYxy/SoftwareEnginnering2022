@@ -134,6 +134,8 @@ export default {
         college: {},
       },
       rules: {
+        college: [{required: true, message: '请选择学院', trigger: 'change'}],
+        major: [{required: true, message: '请选择专业', trigger: 'change'}],
         role: [{required: true, message: '请选择身份', trigger: 'change'}],
         stu_id: [{required: true, message: '学号不能为空', trigger: 'blur'},
                  {pattern: /^\d{6,6}$/, message: '学号为6位数字', trigger: 'blur'},
