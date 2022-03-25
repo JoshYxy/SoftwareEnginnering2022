@@ -20,6 +20,10 @@
             <!-- <el-icon><icon-menu /></el-icon> -->
             <span>Info</span>
           </el-menu-item>
+          <el-menu-item index="/home/privateinfo">
+            
+            <span>个人信息</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 

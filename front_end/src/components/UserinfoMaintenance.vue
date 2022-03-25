@@ -113,8 +113,8 @@ export default {
   watch:{
     "user.college.name": {
       handler(){
-        console.log(123)
-        console.log(this.user)
+        // console.log(123)
+        // console.log(this.user)
         this.user.major_='';  
       },  
     }
@@ -128,6 +128,7 @@ export default {
       submit(){
       this.$refs['user'].validate(valid => {
         if(valid){
+          //axios
             this.dialogFormVisible = false
             this.$emit('changeInfo', this.user);
         //   console.log(this.user)

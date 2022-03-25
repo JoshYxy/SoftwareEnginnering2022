@@ -5,7 +5,8 @@ import AdminControl from '../components/AdminControl.vue'
 import UserInfo from '../components/UserInfo.vue'
 import WelcomePage from '../components/WelcomePage.vue'
 import ResetPassword from '../views/ResetPassword.vue'
-import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
+// import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
+import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 const routes = [
   {
     path: '/',
@@ -17,12 +18,7 @@ const routes = [
     component: HomeView,
     meta: { role: ['admin','student','teacher'] },
   },
-  {
-    path: '/infochange',
-    name: 'infochange',
-    component: UserinfoMaintenance,
-    meta: { role: ['admin'] },
-  },
+
   {
     path: '/home',
     name: 'home',
@@ -49,6 +45,18 @@ const routes = [
         path: 'welcome',
         name: 'welcome',
         component: WelcomePage,
+        meta: { role: ['admin','student','teacher'] }
+      },
+      // {
+      //   path: 'infochange',
+      //   name: 'infochange',
+      //   component: UserinfoMaintenance,
+      //   meta: { role: ['admin'] },
+      // },
+      {
+        path: 'privateinfo',
+        name: 'privateinfo',
+        component: PrivateinfoMaintnce,
         meta: { role: ['admin','student','teacher'] }
       }
     ],
