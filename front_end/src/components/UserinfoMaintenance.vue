@@ -6,21 +6,28 @@
 
     <el-dialog v-model="dialogFormVisible" title="信息修改" :append-to-body="true" >
       
-        <el-form id="admin_modify" ref="user" :model="user" :rules="rules" autocomplete="on"  text-align: center>
-          
-            <el-form-item prop="college">
+        <el-form 
+          id="admin_modify" 
+          ref="user" 
+          :model="user" 
+          :rules="rules" 
+          autocomplete="on"  
+          text-align:center 
+          hide-required-asterisk=true
+          >
+            <el-form-item prop="college" label="学院">
                 <el-select v-model="user.college" value-key="name" placeholder="学院">
                 <el-option :key="colleges.id" :value="colleges" :label="colleges.name" v-for="colleges in collegeData" ></el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item prop="major_" >
+            <el-form-item prop="major_" label="专业">
                 <el-select v-model="user.major_" placeholder="专业">
                 <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in user.college.major" ></el-option>
                 </el-select>
             </el-form-item>
             
-            <el-form-item prop="name">
+            <el-form-item prop="name" label="姓名">
                 <el-input
                 type="text"
                 name="name"
@@ -29,7 +36,7 @@
                 />
             </el-form-item> 
 
-            <el-form-item prop="id">
+            <el-form-item prop="id" label="身份证">
                 <el-input
                 name="id"
                 v-model="user.id"
@@ -38,7 +45,7 @@
                 />
             </el-form-item>
 
-            <el-form-item prop="phone">
+            <el-form-item prop="phone" label="手机号">
                 <el-input
                 type="text"
                 name="phone"
@@ -47,7 +54,7 @@
                 />
             </el-form-item> 
 
-            <el-form-item prop="email">
+            <el-form-item prop="email" label="邮箱">
                 <el-input
                 type="text"
                 name="email"
@@ -55,11 +62,19 @@
                 placeholder="邮箱"
                 />
             </el-form-item>
+            <el-form-item prop="password" label="密码">
+                <el-input
+                type="text"
+                name="password"
+                v-model="user.password"
+                placeholder="密码"
+                />
+            </el-form-item>
         </el-form>
         <template #footer>
         <span class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="submit">Confirm</el-button>
+            <el-button @click="cancel">取消</el-button>
+            <el-button type="primary" @click="submit">确认</el-button>
         </span>
         </template>
     </el-dialog>
@@ -107,6 +122,8 @@ export default {
                     {validator: validPhone, trigger: 'blur'}],
             email: [{required: false, trigger: 'blur'},
                     {validator: validEmail, trigger: 'blur'}],
+            password: [{required: true, message: '密码不能为空', trigger: 'blur'},
+                       {min: 6, max: 32, message: '长度为6-32个字符', trigger: ['blur', 'change']}]
         },
     }
   },
@@ -123,7 +140,12 @@ export default {
       startChange(){
         this.dialogFormVisible = true
         //从数据库获取user信息
-        this.user.major_=this.major_b
+        //或许不用，父组件信息更新，子组件自动更新
+        this.user.major_=this.major_b//开始时major会因为college的更新被清除，简单解决方案
+      },
+      cancel(){
+        this.dialogFormVisible = false
+        this.user=JSON.parse(JSON.stringify(this.userInfo))
       },
       submit(){
       this.$refs['user'].validate(valid => {

@@ -6,12 +6,13 @@
     ref="user"
     >
     <el-form-item 
-        label="电话" 
         @mouseover="buttonOn=true"
         @mouseout="buttonOn=false" 
         prop="info" 
         >
-        <div class="data-container">
+        <template #label>{{label}}</template>
+        <div class="editabel-form-container"> 
+            <!-- {{this.label}} -->
             <span class="span-container" v-show="!edit">{{edited_info}}</span>
             <el-input v-show="edit" v-model="user.info"  />
         </div>
@@ -24,6 +25,7 @@
         <el-button v-show="edit" type="text" style="float:right" @click="cancel">
             取消
         </el-button>
+       
     </el-form-item>
     </el-form>
 </template>
@@ -33,7 +35,7 @@
 import {Edit} from '@element-plus/icons-vue'
 export default {
     name: 'EditableFormitem',
-    props: ["data", "rule"],
+    props: ["data", "rule", "label"],
     components:{
         Edit,
     },
@@ -68,7 +70,10 @@ export default {
 </script>
 
 <style scoped>
-.data-container{
+/* .form-item-label{
+    
+} */
+.editabel-form-container{
   min-width:200px;
 }
 </style>
