@@ -17,7 +17,13 @@
       <el-table-column prop="password" label="Password" width="150" />
       <el-table-column fixed="right" label="Operations" width="180">
       <template #default="scope">
-        <userinfo-maintenance @changeInfo="updateUser(scope.$index,$event)" :userInfo="scope.row" :collegeData="this.collegeData" :major_b="this.userData[scope.$index].major_"></userinfo-maintenance>
+        <userinfo-maintenance 
+          @changeInfo="updateUser(scope.$index,$event)" 
+          :userInfo="scope.row" 
+          :collegeData="this.collegeData" 
+          :major_b="this.userData[scope.$index].major_" />
+        <!-- </userinfo-maintenance> -->
+        <!-- <el-switch @change="test" on-value="1" off-value="0" v-model="scope.row.role"> -->
         <!-- 向组件传入用户id -->
       </template>
     </el-table-column>

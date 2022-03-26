@@ -24,6 +24,10 @@
             
             <span>个人信息</span>
           </el-menu-item>
+          <el-menu-item index="/home/collegeinfo">
+            
+            <span>学院专业信息维护</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 

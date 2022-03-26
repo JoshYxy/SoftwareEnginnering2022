@@ -5,6 +5,7 @@ import AdminControl from '../components/AdminControl.vue'
 import UserInfo from '../components/UserInfo.vue'
 import WelcomePage from '../components/WelcomePage.vue'
 import ResetPassword from '../views/ResetPassword.vue'
+import MajorMaintenance from '../components/MajorMaintenance.vue'
 // import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
 import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 const routes = [
@@ -46,6 +47,12 @@ const routes = [
         name: 'welcome',
         component: WelcomePage,
         meta: { role: ['admin','student','teacher'] }
+      },
+      {
+        path: 'collegeinfo',
+        name: 'collegeinfo',
+        component: MajorMaintenance,
+        meta: { role: ['admin']},
       },
       // {
       //   path: 'infochange',
