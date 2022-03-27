@@ -103,7 +103,7 @@ export default {
           ]
         },
         { 
-          id: 2,
+          id: 1,
           name: '生命科学学院', 
           major: [
               {id: 1, name: '生物'},
@@ -111,7 +111,7 @@ export default {
           ]
         },
         { 
-          id: 3,
+          id: 1,
           name: '软件工程学院', 
           major: [
               {id: 1, name: '软件工程'},
