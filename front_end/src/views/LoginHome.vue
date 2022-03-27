@@ -28,6 +28,10 @@
             
             <span>学院专业信息维护</span>
           </el-menu-item>
+          <el-menu-item index="/home/course">
+            
+            <span>课程管理</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 

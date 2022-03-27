@@ -8,6 +8,7 @@ import ResetPassword from '../views/ResetPassword.vue'
 import MajorMaintenance from '../components/MajorMaintenance.vue'
 // import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
 import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
+import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 const routes = [
   {
     path: '/',
@@ -65,6 +66,12 @@ const routes = [
         name: 'privateinfo',
         component: PrivateinfoMaintnce,
         meta: { role: ['admin','student','teacher'] }
+      },
+      {
+        path: 'course',
+        name: 'course',
+        component: CourseMaintenance,
+        meta: { role: ['admin']},
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')

@@ -93,7 +93,7 @@ export default {
       const index = children.findIndex((d) => d.id === data.id)
       children.splice(index, 1)
       this.collegeData = [...this.collegeData]
-      },
+    },
     openRemove(node, data) {
       ElMessageBox.confirm(
         '是否删除 ' + data.name + (data.major?"":"专业"),
