@@ -18,7 +18,7 @@
           </el-menu-item>
           <el-menu-item index="/home/info">
             <!-- <el-icon><icon-menu /></el-icon> -->
-            <span>Info</span>
+            <span>用户管理</span>
           </el-menu-item>
           <el-menu-item index="/home/privateinfo">
             

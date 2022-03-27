@@ -41,7 +41,8 @@ export default {
 }
 
 nav {
-  padding: 20px;
+  background-color: #31455841;
+  padding: 20px; 
 }
 
 nav a {

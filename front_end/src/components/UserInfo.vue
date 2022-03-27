@@ -15,6 +15,14 @@
       <el-table-column prop="college.name" label="College" width="180" />
       <el-table-column prop="major_" label="Major" width="150" />
       <el-table-column prop="password" label="Password" width="150" />
+      <el-table-column fixed="right" label="Status" width="180">
+      <template #default="scope" >
+        <el-radio v-if="scope.row.role=='student'" v-model="scope.row.status" label="在读" >在读</el-radio>
+        <el-radio v-if="scope.row.role=='student'" v-model="scope.row.status" label="毕业" >毕业</el-radio>
+        <el-radio v-if="scope.row.role=='teacher'" v-model="scope.row.status" label="在岗" >在岗</el-radio>
+        <el-radio v-if="scope.row.role=='teacher'" v-model="scope.row.status" label="离职" >离职</el-radio>
+      </template>
+      </el-table-column>
       <el-table-column fixed="right" label="Operations" width="180">
       <template #default="scope">
         <userinfo-maintenance 
@@ -75,7 +83,7 @@ export default {
             phone: '13332221111',
             email: '123@qq.com',
             id: '311222322222111111',
-            
+            status: '在读',
             college:  { 
               id: 1,
               name: '计算机科学技术学院', 
@@ -94,6 +102,7 @@ export default {
               phone: '13332221111',
               email: '123@qq.com',
               id: '31122232222221',
+              status: '在岗',
               major_: '信息安全',
               college:  { 
                 id: 1,
@@ -107,6 +116,11 @@ export default {
               }
         ],
       }
+  },
+  watch: {
+    userData: {
+      //axios
+    }
   },
   methods: {
     updateUser(index, e){
