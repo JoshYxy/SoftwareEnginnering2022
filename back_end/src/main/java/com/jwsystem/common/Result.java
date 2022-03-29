@@ -27,7 +27,7 @@ public class Result implements Serializable {
     }
 
     public static Result fail(String msg){
-        return succ(msg,null);
+        return fail(msg,null);
     }
 
     public static Result fail(String msg, Object data){

@@ -1,4 +1,5 @@
 package com.jwsystem.config;
+import com.jwsystem.interceptor.adminInterceptor;
 import com.jwsystem.interceptor.loginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +18,19 @@ public class SpringbootConfig implements WebMvcConfigurer {
         return new loginInterceptor();
     }
 
+    @Bean
+    public adminInterceptor getAdminInterceptor(){
+        return new adminInterceptor();
+    }
+
     //将自己的拦截器注册到拦截器链中，并说明拦截路径规则
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getLoginInterceptor())//注册登陆拦截器
-                .addPathPatterns("*")//需要拦截的路径（*表示全部路径）
-                .excludePathPatterns("/login");//需要放行的路径
+                .addPathPatterns("/**")//需要拦截的路径（*表示全部路径）
+                .excludePathPatterns("/user");//需要放行的路径
+        registry.addInterceptor(getAdminInterceptor())
+                .addPathPatterns("/edu/*","/admin/*");
     }
 
 
