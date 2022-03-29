@@ -9,6 +9,7 @@ import MajorMaintenance from '../components/MajorMaintenance.vue'
 // import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
 import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 import CourseMaintenance from '../components/course/CourseMaintenance.vue'
+import EduMaintenance from '../components/course/EduMaintenance.vue'
 const routes = [
   {
     path: '/',
@@ -71,6 +72,12 @@ const routes = [
         path: 'course',
         name: 'course',
         component: CourseMaintenance,
+        meta: { role: ['admin']},
+      },
+      {
+        path: 'edu',
+        name: 'edu',
+        component: EduMaintenance,
         meta: { role: ['admin']},
       }
     ],

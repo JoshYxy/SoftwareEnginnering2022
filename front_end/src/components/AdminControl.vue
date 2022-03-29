@@ -1,7 +1,21 @@
 <template>
   <div class="admin" style="margin:0px auto">
     <h1>信息录入</h1>
-    
+    <el-upload
+      class="upload-demo"
+      action=""
+      accept=".csv"
+      :limit="1"
+      :before-upload="onBeforeUpload"
+      :data="uploadData"
+    >
+      <el-button type="primary">选择文件上传</el-button>
+      <template #tip>
+        <div class="el-upload__tip">
+          单个csv文件
+        </div>
+      </template>
+    </el-upload>
     <el-form id="admin_container" ref="userData" :model="userData" :rules="rules" autocomplete="on"  text-align: center>
       <el-form-item prop="role">
         <el-select v-model="userData.role" placeholder="角色">
@@ -93,6 +107,9 @@ export default {
 
   data(){
     return {
+      uploadData: {
+        // file:'1'
+      },
       collegeData: [
         { 
           id: 1,
@@ -199,6 +216,16 @@ export default {
           return false
         }
       })
+    },
+    onBeforeUpload(file)
+    {
+      const isCSV = file.type === 'application/vnd.ms-excel'
+
+      if (!isCSV) {
+        this.$message.error('上传文件只能是.csv格式!');
+      }
+    
+      return isCSV;
     }
   }
 }

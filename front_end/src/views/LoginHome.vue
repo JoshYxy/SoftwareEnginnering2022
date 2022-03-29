@@ -32,6 +32,10 @@
             
             <span>课程管理</span>
           </el-menu-item>
+          <el-menu-item index="/home/edu">
+            
+            <span>教务管理</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 
