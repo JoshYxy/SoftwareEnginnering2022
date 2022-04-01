@@ -36,41 +36,27 @@ public class EduServiceImp implements EduService {
 
     @Override
     public Boolean insertCollege(College college) {
-        if(collegeDao.findCollegeByName(college.getName()) == null) {
-            return collegeDao.insertCollege(college.getName()) != 0;
-        }else return false;
+        return collegeDao.insertCollege(college.getName()) != 0;
     }
 
     @Override
     public Boolean insertMajor(Major major) {
-        if(majorDao.findMajorByName(major.getName()) == null) {
-            return majorDao.insertMajor(major.getName(), major.getCollegeName()) != 0;
-        }else return false;
+        return majorDao.insertMajor(major.getName(),major.getCollegeName()) != 0;
     }
 
     @Override
-    public Boolean findCollegeById(College college) {
-        return collegeDao.findCollegeById(college.getCollegeId()) != null;
+    public Boolean findCollege(College college) {
+        return collegeDao.findCollegeById(college.getCollegeId()) != 0;
     }
 
     @Override
-    public Boolean findCollegeByName(College college) {
-        return collegeDao.findCollegeByName(college.getName()) != null;
-    }
-
-    @Override
-    public Boolean findMajorById(Major major) {
-        return majorDao.findMajorById(major.getMajorId()) != null;
-    }
-
-    @Override
-    public Boolean findMajorByName(Major major) {
-        return majorDao.findMajorByName(major.getName()) != null;
+    public Boolean findMajor(Major major) {
+        return majorDao.findMajorById(major.getMajorId()) != 0;
     }
 
     @Override
     public Boolean updateCollege(College college) {
-        return collegeDao.updateCollegeNameById(college.getCollegeId(), college.getName()) != null;
+        return collegeDao.updateCollegeNameById(college.getCollegeId()) != 0;
     }
 
     @Override

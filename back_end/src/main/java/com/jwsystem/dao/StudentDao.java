@@ -9,11 +9,11 @@ import java.util.List;
 @Mapper
 public interface StudentDao {
     //新增学生
-    Integer insertUser(User user);     //这边是传入Student还是传入User? 前端给的是什么形式？
+    int insertUser(User user);     //这边是传入Student还是传入User? 前端给的是什么形式？
     //修改学生信息
-    Integer updateStuInfo(User user);
+    int updateStuInfo(User user);
     //修改学生密码
-    Integer updatePwdByNumber(String password,String number);
+    int updatePwdByNumber(String password,String number);
     //查看所有学生信息
     List<User> getAllStu();
     //根据身份证号查找
@@ -23,5 +23,5 @@ public interface StudentDao {
     //学生查看个人信息
     Student getStuInfo(String number);
     //删除学生
-    Integer deleteStuByNumber(String number);
+    int deleteStuByNumber(String number);
 }

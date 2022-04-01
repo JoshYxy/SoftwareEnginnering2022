@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.MajorDao">
     <!-- 新增专业 -->
-    <insert id="insertMajor" parameterType="string">
+    <insert id="insertMajor">
         INSERT INTO major ( name, college_name )
         VALUES (#{name},#{college_name})
     </insert>
@@ -12,14 +12,9 @@
         FROM MAJOR WHERE college_name = #{college_name}
     </select>
     <!--根据id查询某专业是否存在 -->
-    <select id="findMajorById" resultType="com.jwsystem.entity.Major">
-        SELECT major_id, name, college_name
-        FROM MAJOR WHERE major_id = #{major_id}
-    </select>
-    <!-- 根据name查询某专业是否存在 -->
-    <select id="findMajorByName" parameterType="string" resultType="com.jwsystem.entity.Major">
+    <select id="findMajorById" resultType="java.lang.Integer">
         SELECT name
-        FROM MAJOR WHERE name = #{name}
+        FROM MAJOR WHERE major_id = #{major_id}
     </select>
     <!-- 根据id修改某专业名 -->
     <select id="updateMajorNameById" resultType="java.lang.Integer">
