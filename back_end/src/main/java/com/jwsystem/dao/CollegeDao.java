@@ -1,6 +1,7 @@
 package com.jwsystem.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface CollegeDao {
     // 查询所有学院信息
     List<String> findAllCollegeInfos();
     //根据id查询某学院是否存在
-    int findCollegeById(Integer collegeId);
+    int findCollegeById(@Param("collegeId") Integer collegeId);
     //根据id修改某学院名
     int updateCollegeNameById(Integer collegeId);
     // 删除学院

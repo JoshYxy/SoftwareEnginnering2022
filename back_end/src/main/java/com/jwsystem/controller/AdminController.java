@@ -414,4 +414,5 @@ public class AdminController extends MainController{
 
 /*
     1，管理员增加新的学院、专业都不能重复
+    2，删除已有学院的方法有错，应该根据学院名来删除？不确定前端能不能给我们传id。而且报错 Mapper method 'com.jwsystem.dao.CollegeDao.findCollegeById attempted to return null from a method with a primitive return type (int)
  */
