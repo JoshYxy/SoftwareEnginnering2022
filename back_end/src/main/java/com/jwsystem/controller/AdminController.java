@@ -6,6 +6,7 @@ import com.jwsystem.entity.User;
 import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
+import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.JwtUtils;
 import com.opencsv.exceptions.CsvException;
@@ -36,15 +37,33 @@ public class AdminController extends MainController{
     private CSVUtils csvUtils;
 
     @Autowired
-    EduServiceImp eduServiceImp;
+    private EduServiceImp eduServiceImp;
 
     @Autowired
-    TeaServiceImp teaServiceImp;
+    private TeaServiceImp teaServiceImp;
 
     @Autowired
-    StuServiceImp stuServiceImp;
+    private StuServiceImp stuServiceImp;
 
-    //管理员查看全部用户信息
+//    @Autowired
+//    private CourseService courseService;
+//
+//    @Autowired
+//    private CourseRequestService courseRequestService;
+//
+//    @Autowired
+//    private AdminService adminService;
+
+
+
+
+    /*
+            用户信息管理部分
+     */
+
+
+
+        //管理员查看全部用户信息
     @GetMapping("/users")
     public Result getAll(){
         List<User> users = teaServiceImp.getAllUserInfos();
@@ -55,9 +74,8 @@ public class AdminController extends MainController{
 
     //管理员批量导入用户信息
     @PostMapping("/users")
-    public Result insertByCSV(@RequestParam("file") MultipartFile multipartFile) throws IOException, CsvException {
+    public Result insertByCSV(@RequestParam("file") MultipartFile multipartFile) {
         //接收CSV文件
-
         System.out.println("[文件类型] - " + multipartFile.getContentType());
         System.out.println("[文件名称] - " + multipartFile.getOriginalFilename());
         System.out.println("[文件大小] - " + multipartFile.getSize());
@@ -75,8 +93,8 @@ public class AdminController extends MainController{
 
         //循环完成批量插入
         for (User temp : users) {
-          //  System.out.println(temp.getCollege());
             register(temp);
+
         }
         return Result.succ("批量导入信息成功");
     }
@@ -156,4 +174,245 @@ public class AdminController extends MainController{
         }
         return Result.succ("修改成功");
     }
+
+
+
+
+    /*
+            学院专业信息维护部分
+     */
+
+
+
+
+    //管理员查看全部的学院和专业信息
+    @GetMapping("/edu")
+    public Result showInfo(){
+        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
+        /*
+        取出全部学院和专业信息，然后放在result的data里返回
+        List<College>
+        每个college对象里有一个List<Major>
+         */
+        return Result.succ("查询成功",collegeList);
+    }
+
+    //管理员增加新的学院
+    @PostMapping("/edu/college/new")
+    public Result addCollege(@RequestBody College college){
+        eduServiceImp.insertCollege(college);
+        return Result.succ("增加成功");
+    }
+
+    //管理员增加新的专业
+    @PostMapping("/edu/major/new")
+    public Result addMajor(@RequestBody Major major){
+        eduServiceImp.insertMajor(major);
+        return Result.succ("增加成功");
+    }
+
+    //管理员删除已有学院
+    @DeleteMapping("/edu/college")
+    public Result deleteCollege(@RequestBody College college){
+        //先查询是否存在该学院
+        boolean exist = eduServiceImp.findCollege(college);
+        //存在，进行删除，并且删除对应的所有专业
+        if(exist){
+            eduServiceImp.deleteCollege(college); //记得要删除对应的所有专业
+        }
+        else{
+            response.setStatus(NO_COLLEGE);
+            return Result.fail("删除失败");
+        }
+        return Result.succ("删除成功");
+    }
+
+    //管理员删除已有专业
+    @DeleteMapping("/edu/major")
+    public Result deleteMajor(@RequestBody Major major){
+        //先查询是否存在该专业
+        boolean exist = eduServiceImp.findMajor(major);
+        //存在，进行删除，并且删除对应的所有专业
+        if(exist){
+            eduServiceImp.deleteMajor(major);
+        }
+        else{
+            response.setStatus(NO_MAJOR);
+            return Result.fail("删除失败");
+        }
+        return Result.succ("删除成功");
+    }
+
+    //管理员修改已有学院
+    @PostMapping("/edu/college")
+    public Result changeCollege(@RequestBody College college){
+        //先查询是否存在该学院
+        boolean exist = eduServiceImp.findCollege(college);
+        //存在，进行修改
+        if(exist){
+            eduServiceImp.updateCollege(college);
+        }
+        else{
+            response.setStatus(NO_COLLEGE);
+            return Result.fail("修改失败");
+        }
+        return Result.succ("修改成功");
+    }
+
+    //管理员修改已有专业
+    @PostMapping("/edu/major")
+    public Result changeMajor(@RequestBody Major major){
+        //先查询是否存在该专业
+        boolean exist = eduServiceImp.findMajor(major);
+        //存在，进行修改
+        if(exist){
+            eduServiceImp.updateMajor(major);
+        }
+        else{
+            response.setStatus(NO_MAJOR);
+            return Result.fail("修改失败");
+        }
+        return Result.succ("修改成功");
+    }
+
+
+
+    /*
+                课程信息管理部分
+     */
+
+
+
+//    //新增课程
+//    @PostMapping("/course/new")
+//    public Result addCourse(@RequestBody Course course){
+//
+//        courseService.insertCourse(course);
+//        //是否要加入一个检查课程是否完全相同的机制？
+//        //需要为新增的课程生成主键
+//
+//        return Result.succ("新增课程成功");
+//    }
+//
+//    //管理员获得全部的课程申请
+//    @GetMapping("/courseRequest")
+//    public Result getAllRequest(){
+//        List<CourseRequest> courseRequests = courseRequestService.getAll();
+//        return Result.succ("获取课程申请成功",courseRequests);
+//    }
+//
+//    @PostMapping("/courseRequest")
+//    public Result examine(@RequestBody CourseRequest courseRequest){
+//        if(courseRequest.isPassed()==true){
+//            //审核通过，根据请求类型，取出对应的course进行操作
+//            Course course = courseRequest.getCourse();
+//            String type = courseRequest.getType();
+//            if(type.equals("add")){
+//                //需要为新增的课程生成主键
+//                courseService.insertCourse(course);
+//            }
+//            else if(type.equals("change")){
+//                courseService.updateById(course.getCourseId(),course);
+//            }
+//            else if(type.equals("delete")){
+//                courseService.deleteById(course.getCourseId(),course);
+//            }
+//            else{
+//                response.setStatus(WRONG_DATA);
+//                return Result.fail("无效的申请类型",courseRequest);
+//            }
+//        }
+//
+//        //审核不通过，对课程不用做任何操作，直接进入到更新请求状态的步骤
+//        //对该请求在数据库内进行更新，明确其是否通过审核
+//        courseRequestService.updateById(courseRequest.getRequestId());
+//        return Result.succ("审批成功");
+//    }
+//
+//    //获得现有课程信息
+//    @GetMapping("/course")
+//    public Result getAllCourse(){
+//        List<Course> courses = courseService.getAll();
+//        return Result.succ("获取课程信息成功",courses);
+//    }
+//
+//    //修改已有课程信息
+//    @PostMapping("/course")
+//    public Result changeCourse(@RequestBody Course course){
+//        Course find = courseService.getById(course.getCourseId());
+//        if(find == null){
+//           response.setStatus(NO_COURSE);
+//           return Result.fail("对应课程不存在",course);
+//        }
+//        courseService.updateById(course.getCourseId(),course);
+//        return Result.succ("修改课程信息成功");
+//    }
+//
+//    //删除课程
+//    @DeleteMapping("/course")
+//    public Result deleteCourse(@RequestBody Course course){
+//        Course find = courseService.getById(course.getCourseId());
+//        if(find == null){
+//            response.setStatus(NO_COURSE);
+//            return Result.fail("对应课程不存在",course);
+//        }
+//        courseService.deleteById(course.getCourseId(),course);
+//        return Result.succ("删除课程成功");
+//    }
+//
+//    //批量导入课程
+//    @PostMapping("/course/csv")
+//    public Result addByCsv(@RequestParam("file") MultipartFile multipartFile){
+//        //接收CSV文件
+//        System.out.println("[文件类型] - " + multipartFile.getContentType());
+//        System.out.println("[文件名称] - " + multipartFile.getOriginalFilename());
+//        System.out.println("[文件大小] - " + multipartFile.getSize());
+//        //保存
+//        if (!multipartFile.getContentType().equals("text/csv")) {
+//            //文件类型不匹配，接收文件错误
+//            response.setStatus(WRONG_FILE);
+//            return Result.fail("文件格式错误");
+//        }
+//
+//        System.out.println("接收文件成功");
+//
+//        //从CSV文件批量获取User对象
+//        List<Course> courses = CSVUtils.getCourseByCsv(multipartFile);
+//
+//        //循环完成批量插入
+//        for (Course temp : courses) {
+//            addCourse(temp);
+//        }
+//        return Result.succ("批量导入课程成功");
+//    }
+//
+//
+//
+//
+//    /*
+//        教务信息管理部分
+//     */
+//
+//
+//    //教务安排的维护(没想好怎么写)
+//    @PostMapping("/edu/arrangement")
+//    public Result eduArrange(){
+//
+//        return null;
+//    }
+//
+//    //选课权限开关
+//    @PostMapping("/edu/curriculaVariable")
+//    public Result currVariable(boolean choice){
+//        adminService.setCurr(choice);
+//        return Result.succ("修改选课权限成功");
+//    }
+//
+//
+//
 }
+
+/*
+    1，管理员增加新的学院、专业都不能重复
+    2，删除已有学院的方法有错，应该根据学院名来删除？不确定前端能不能给我们传id。而且报错 Mapper method 'com.jwsystem.dao.CollegeDao.findCollegeById attempted to return null from a method with a primitive return type (int)
+ */
