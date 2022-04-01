@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.CollegeDao">
     <!-- 新增学院 -->
-    <insert id="insertCollege" >
+    <insert id="insertCollege" parameterType="string">
         INSERT INTO COLLEGE ( name )
         VALUES(
                   #{name}
@@ -14,12 +14,17 @@
         FROM COLLEGE
     </select>
     <!--根据id查询某学院是否存在 -->
-    <select id="findCollegeById" resultType="java.lang.Integer">
-        SELECT name
+    <select id="findCollegeById" resultType="com.jwsystem.entity.College">
+        SELECT *
         FROM COLLEGE WHERE college_id = #{college_id}
     </select>
+    <!--根据name查询某学院是否存在 -->
+    <select id="findCollegeByName" parameterType="string" resultType="com.jwsystem.entity.College">
+        SELECT *
+        FROM COLLEGE WHERE name = #{name}
+    </select>
     <!-- 根据id修改某学院名 -->
-    <select id="updateCollegeNameById" resultType="java.lang.Integer">
+    <select id="updateCollegeNameById" resultType="com.jwsystem.entity.College">
         UPDATE COLLEGE SET name = #{name} where college_id = #{college_id}
     </select>
     <!-- 删除学院 -->
