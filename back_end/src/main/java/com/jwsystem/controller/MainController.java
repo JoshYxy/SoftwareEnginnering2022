@@ -26,6 +26,7 @@ public class MainController {
 //    public static String FILE_PATH = "/Users/andyluo/Desktop/";  //上传文件保存路径
     public static int WRONG_FILE = 425; //上传文件格式错误
     public static int WRONG_DATA = 426; //上传数据格式错误
+    public static int NO_COURSE = 427;  //课程不存在
 
     protected String getNumByToken(){
         String token = request.getHeader("token");
