@@ -197,21 +197,29 @@ public class AdminController extends MainController{
         return Result.succ("查询成功",collegeList);
     }
 
-    //管理员增加新的学院
+    //管理员增加新的学院 有问题
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody College college){
-        eduServiceImp.insertCollege(college);
-        return Result.succ("增加成功");
+        if(eduServiceImp.insertCollege(college)){
+            return Result.succ("增加成功");
+        }else {
+            response.setStatus(COLLEGE_CONFLICT);
+            return Result.fail("增加失败");
+        }
     }
 
-    //管理员增加新的专业
+    //管理员增加新的专业 同上 同名判断
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody Major major){
-        eduServiceImp.insertMajor(major);
-        return Result.succ("增加成功");
+        if(eduServiceImp.insertMajor(major)) {
+            return Result.succ("增加成功");
+        }else{
+            response.setStatus(MAJOR_CONFLICT);
+            return Result.fail("增加失败");
+        }
     }
 
-    //管理员删除已有学院
+    //管理员删除已有学院 不存在的判断
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
@@ -246,8 +254,8 @@ public class AdminController extends MainController{
     //管理员修改已有学院
     @PostMapping("/edu/college")
     public Result changeCollege(@RequestBody College college){
-        //先查询是否存在该学院
-        boolean exist = eduServiceImp.findCollege(college);
+        //先查询是否存在该学院id
+        boolean exist = eduServiceImp.findCollegeById(college);
         //存在，进行修改
         if(exist){
             eduServiceImp.updateCollege(college);
@@ -263,7 +271,7 @@ public class AdminController extends MainController{
     @PostMapping("/edu/major")
     public Result changeMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajor(major);
+        boolean exist = eduServiceImp.findMajorById(major);
         //存在，进行修改
         if(exist){
             eduServiceImp.updateMajor(major);

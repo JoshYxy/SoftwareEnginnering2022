@@ -15,8 +15,14 @@ public interface EduService {
     Boolean insertMajor(Major major);
     //查询某学院
     Boolean findCollege(College college);
+
+    Boolean findCollegeById(College college);
+
     //查询某专业
     Boolean findMajor(Major major);
+
+    Boolean findMajorById(Major major);
+
     //修改学院信息
     Boolean updateCollege(College college);
     //修改专业信息

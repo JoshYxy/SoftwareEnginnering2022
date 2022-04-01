@@ -2,6 +2,7 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.entity.User;
+import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
@@ -32,8 +33,8 @@ public class UserController extends MainController{
     @Autowired
     StuServiceImp stuServiceImp;
 
-//    @Autowired
-//    private AdminService adminService;
+    @Autowired
+    private AdminServiceImp adminServiceImp;
 
     @Autowired
     TeaServiceImp teaServiceImp;
@@ -60,8 +61,8 @@ public class UserController extends MainController{
             user = stuServiceImp.getUserByNumber(number);
         }
         else{
-//            user = adminService.getByNumber(number);
-            user = teaServiceImp.getUserByNumber(number);
+            user = adminServiceImp.getUserByNumber(number);
+//            user = teaServiceImp.getUserByNumber(number);
         }
 
         if(user==null){
