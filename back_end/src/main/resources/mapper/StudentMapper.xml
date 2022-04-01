@@ -3,7 +3,7 @@
 <mapper namespace="com.jwsystem.dao.StudentDao">
     <!-- 新增学生 -->
     <insert id="insertUser" parameterType="com.jwsystem.entity.User">
-        insert into student (
+        insert into student
             (role,
              number,
              id,
