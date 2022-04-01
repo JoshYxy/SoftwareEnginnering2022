@@ -4,12 +4,14 @@ import com.jwsystem.dao.StudentDao;
 import com.jwsystem.entity.Student;
 import com.jwsystem.entity.User;
 import com.jwsystem.service.StuService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class StuServiceImp implements StuService {
+    @Autowired
     StudentDao studentDao;
 
     @Override

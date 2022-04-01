@@ -27,10 +27,11 @@ public class SpringbootConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getLoginInterceptor())//注册登陆拦截器
-               // .addPathPatterns("/**")//需要拦截的路径（*表示全部路径）
-                .excludePathPatterns("/user");//需要放行的路径
-        registry.addInterceptor(getAdminInterceptor());
-                //.addPathPatterns("*"/*"/edu/*","/admin/*"*/);
+//                .addPathPatterns("/**")//需要拦截的路径（*表示全部路径）
+                .excludePathPatterns("/**");//需要放行的路径
+        registry.addInterceptor(getAdminInterceptor())
+//                .addPathPatterns("/edu/*","/admin/*");
+                .excludePathPatterns("/**");//需要放行的路径
     }
 
 

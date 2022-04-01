@@ -4,12 +4,14 @@ import com.jwsystem.dao.TeacherDao;
 import com.jwsystem.entity.Teacher;
 import com.jwsystem.entity.User;
 import com.jwsystem.service.TeaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TeaServiceImp implements TeaService {
+    @Autowired
     TeacherDao teacherDao;
 
     @Override

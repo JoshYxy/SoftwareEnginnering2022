@@ -6,13 +6,16 @@ import com.jwsystem.entity.College;
 import com.jwsystem.entity.CollegeVO;
 import com.jwsystem.entity.Major;
 import com.jwsystem.service.EduService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class EduServiceImp implements EduService {
+    @Autowired
     CollegeDao collegeDao;
+    @Autowired
     MajorDao majorDao;
     @Override
     public List<CollegeVO> getEduInfo() {
