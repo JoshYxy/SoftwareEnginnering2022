@@ -1,5 +1,6 @@
 package com.jwsystem.util;
 
+import com.jwsystem.entity.Course;
 import com.jwsystem.entity.User;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -51,6 +52,37 @@ public class CSVUtils {
             e.printStackTrace();
         }
         return users;
+    }
+
+    public static List<Course> getCourseByCsv(MultipartFile file) {
+        ArrayList<Course> courses = new ArrayList<>();
+
+        InputStreamReader in = null;
+        try {
+            in = new InputStreamReader(file.getInputStream(), "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(in);
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] split = line.split(",");
+                Course course = new Course();
+                course.setCourseId(Integer.parseInt(splitResult(split[0])));
+                course.setCourseName(splitResult(split[1]));
+                course.setCourseNum(splitResult(split[2]));
+                course.setCollegeId(splitResult(split[3]));
+                course.setCollegeName(splitResult(split[4]));
+                course.setClassHours(Integer.parseInt(splitResult(split[5])));
+                course.setCredits(Integer.parseInt(splitResult(split[6])));
+                course.setTeacherNum(splitResult(split[7]));
+                course.setTeacherName(splitResult(split[8]));
+                course.setCourseInfo(splitResult(split[8]));
+                course.setTime(splitResult(split[8]));
+                course.setClassroom(splitResult(split[8]));
+                course.setCapacity(Integer.parseInt(splitResult(split[8])));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return courses;
     }
 
     /**

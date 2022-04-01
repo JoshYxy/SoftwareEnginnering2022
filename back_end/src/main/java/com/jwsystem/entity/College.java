@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class College {
-    private int collegeId;
+    private Integer collegeId;
     private String collegeName;
     private List<Major> majors;
 }

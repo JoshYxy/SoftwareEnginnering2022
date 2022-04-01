@@ -39,12 +39,22 @@ public class UserController extends MainController{
     private CSVUtils csvUtils;
 
     @Autowired
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private AdminService adminService;
 
     @Resource
     UserDao userDao;
 
     public static int TEACHER_NUM_LENGTH = 8;
+    public static int STUDENT_NUM_LENGTH = 6;
 
     //登陆请求
     @PostMapping("")
@@ -55,12 +65,16 @@ public class UserController extends MainController{
 
         //用Dao，以number为键去数据库查询有没有对应的用户
         User user;
-        if(number.length()<TEACHER_NUM_LENGTH){
-            //学生
-            user = stuDao.getByNumber(number);
-        } else {
+        if(number.length() == TEACHER_NUM_LENGTH){
             //老师
-            user = teacherDao.getByNumber(number);
+            user = teacherService.getByNumber(number);
+        }
+        else if(number.length() == STUDENT_NUM_LENGTH){
+            //学生
+            user = studentService.getByNumber(number);
+        }
+        else{
+            user = adminService.getByNumber(number);
         }
 
         if(user==null){
@@ -90,7 +104,20 @@ public class UserController extends MainController{
     @PostMapping("/password")
     public Result reset(@RequestBody User tempUser) {
         String number = getNumByToken();
-        userService.updateUserPwdByNumber(number,tempUser.getPassword());
+
+        if(number.length() == TEACHER_NUM_LENGTH){
+            //老师
+            teacherService.updateTeacherPwdByNumber(number,tempUser.getPassword());
+        }
+        else if(number.length() == STUDENT_NUM_LENGTH){
+            //学生
+            studentService.updateStudentPwdByNumber(number,tempUser.getPassword());
+        }
+        else{
+            response.setStatus(WRONG_DATA);
+            return Result.fail("用户学工号长度非法");
+        }
+
         return Result.succ("密码修改成功");
     }
 
@@ -100,7 +127,7 @@ public class UserController extends MainController{
         String number = getNumByToken();
         //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
         User user;
-        if(number.length()<TEACHER_NUM_LENGTH){
+        if(number.length() == STUDENT_NUM_LENGTH){
             //学生
                  user = stuDao.getByNumber(number);
         } else {
