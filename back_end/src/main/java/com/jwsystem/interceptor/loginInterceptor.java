@@ -1,6 +1,8 @@
 package com.jwsystem.interceptor;
 
 import com.jwsystem.entity.User;
+import com.jwsystem.service.impl.StuServiceImp;
+import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
 import com.mysql.jdbc.StringUtils;
 import io.jsonwebtoken.Claims;
@@ -23,10 +25,10 @@ public class loginInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-    StuDao stuDao;
+    StuServiceImp stuServiceImp;
 
     @Autowired
-    TeacherDao teacherDao;
+    TeaServiceImp teaServiceImp;
 
     //在执行被拦截器拦截的路径前执行，返回true则放行
     @Override
@@ -58,10 +60,10 @@ public class loginInterceptor implements HandlerInterceptor {
         User user;
         if(number.length()<TEACHER_NUM_LENGTH){
             //学生
-            user = stuDao.getByNumber(number);
+            user = stuServiceImp.getUserByNumber(number);
         } else {
             //老师
-            user = teacherDao.getByNumber(number);
+            user = teaServiceImp.getUserByNumber(number);
         }
 
         if(user.getStatus().equals(GRADUATED) || user.getStatus().equals(QUIT)){

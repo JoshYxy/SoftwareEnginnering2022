@@ -1,16 +1,17 @@
 spring:
   # datasource 数据源配置内容
   datasource:
-    url: jdbc:mysql://localhost:3306/Test?useSSL=false
+    url: jdbc:mysql://localhost:3306/lab3?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 10291004
+    password: 123456
 
 # mybatis 配置内容
 mybatis:
   mapper-locations: classpath:mapper/*.xml # 配置 Mapper XML 地址
   type-aliases-package: com.jwsystem.entity # 配置数据库实体包路径
-
+  configuration:
+    map-underscore-to-camel-case: true # 解决数据库和实体类命名不统一的问题
 server:
   port: 8080
 
@@ -21,3 +22,5 @@ group5:
     header: token
     expire: 604800 #7天，秒单位
     secret: wo5zhende5bu5xiang5xie5houduanle  #jwt密钥
+
+

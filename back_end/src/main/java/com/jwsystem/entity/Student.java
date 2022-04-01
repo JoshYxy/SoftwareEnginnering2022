@@ -1,7 +1,7 @@
 package com.jwsystem.entity;
 
 public class Student extends User{
-    private String role = "student";//角色 教师 学生 管理员
+    private String role;//角色 教师 学生 管理员
     private String number;
     private String id;
     private String name;
@@ -9,7 +9,8 @@ public class Student extends User{
     private String phone;
     private String email;
     private String status;
-    private College college;
+    private String major;
+    private String college;
     /*
             用户角色:role
             学号/工号:number

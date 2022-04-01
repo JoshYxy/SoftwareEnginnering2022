@@ -1,26 +1,17 @@
 package com.jwsystem.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.jwsystem.common.Result;
-import com.jwsystem.dao.UserDao;
-import com.jwsystem.entity.College;
 import com.jwsystem.entity.User;
-import com.jwsystem.service.impl.UserServiceImpl;
+import com.jwsystem.service.impl.StuServiceImp;
+import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
 import com.mysql.jdbc.StringUtils;
-import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import com.opencsv.*;
 import com.jwsystem.util.CSVUtils;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -39,10 +30,10 @@ public class UserController extends MainController{
     private CSVUtils csvUtils;
 
     @Autowired
-    UserServiceImpl userService;
+    StuServiceImp stuServiceImp;
 
-    @Resource
-    UserDao userDao;
+    @Autowired
+    TeaServiceImp teaServiceImp;
 
     public static int TEACHER_NUM_LENGTH = 8;
 
@@ -57,10 +48,10 @@ public class UserController extends MainController{
         User user;
         if(number.length()<TEACHER_NUM_LENGTH){
             //学生
-            user = stuDao.getByNumber(number);
+            user = stuServiceImp.getUserByNumber(number);
         } else {
             //老师
-            user = teacherDao.getByNumber(number);
+            user = teaServiceImp.getUserByNumber(number);
         }
 
         if(user==null){
@@ -90,7 +81,13 @@ public class UserController extends MainController{
     @PostMapping("/password")
     public Result reset(@RequestBody User tempUser) {
         String number = getNumByToken();
-        userService.updateUserPwdByNumber(number,tempUser.getPassword());
+        if(number.length()<TEACHER_NUM_LENGTH){
+            //学生
+            stuServiceImp.updatePwdByNumber(tempUser.getPassword(),number);
+        } else {
+            //老师
+            teaServiceImp.updatePwdByNumber(tempUser.getPassword(),number);
+        }
         return Result.succ("密码修改成功");
     }
 
@@ -102,12 +99,11 @@ public class UserController extends MainController{
         User user;
         if(number.length()<TEACHER_NUM_LENGTH){
             //学生
-                 user = stuDao.getByNumber(number);
+                 user = stuServiceImp.getUserByNumber(number);
         } else {
             //老师
-                user = teacherDao.getByNumber(number);
+                user = teaServiceImp.getUserByNumber(number);
         }
-
         if(user == null){
             response.setStatus(NO_USER);
             return Result.fail("用户不存在！");
@@ -123,10 +119,10 @@ public class UserController extends MainController{
         //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
         if(tempUser.getRole().equals("student")){
             //学生
-                stuService.updateInfoByNumber(number);
+            stuServiceImp.updateStuInfo(tempUser);
         } else {
             //老师
-                teacherService.updateInfoByNumber(number);
+            teaServiceImp.updateTeaInfo(tempUser);
         }
         return Result.succ(null);
     }

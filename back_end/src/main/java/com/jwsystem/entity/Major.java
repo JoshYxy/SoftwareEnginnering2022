@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Major {
-    private int majorId;
-    private String majorName;
-    private int collegeId;
+    private Integer majorId;
+    private String Name;
+    private String collegeName;
 }

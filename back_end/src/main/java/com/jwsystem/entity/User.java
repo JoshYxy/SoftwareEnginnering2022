@@ -32,8 +32,11 @@ public class User {
     protected String email;
     @CsvBindByName(column = "status")
     protected String status;
+    @CsvBindByName(column = "major")
+    protected String major;
     @CsvBindByName(column = "college")
-    protected College college;
+    protected String college;
+
     /*
             用户角色:role
             学号/工号:number

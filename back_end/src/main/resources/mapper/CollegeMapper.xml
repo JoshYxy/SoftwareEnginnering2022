@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.CollegeDao">
+    <!-- 新增学院 -->
+    <insert id="insertCollege" >
+        INSERT INTO COLLEGE ( name )
+        VALUES(
+                  #{name}
+              )
+    </insert>
+    <!-- 查询所有学院信息 -->
+    <select id="findAllCollegeInfos" resultType="java.lang.String">
+        SELECT name
+        FROM COLLEGE
+    </select>
+    <!--根据id查询某学院是否存在 -->
+    <select id="findCollegeById" resultType="java.lang.Integer">
+        SELECT name
+        FROM COLLEGE WHERE college_id = #{college_id}
+    </select>
+    <!-- 根据id修改某学院名 -->
+    <select id="updateCollegeNameById" resultType="java.lang.Integer">
+        UPDATE COLLEGE SET name = #{name} where college_id = #{college_id}
+    </select>
+    <!-- 删除学院 -->
+    <delete id="deleteCollege">
+        DELETE FROM COLLEGE WHERE name = #{name}
+    </delete>
+</mapper>

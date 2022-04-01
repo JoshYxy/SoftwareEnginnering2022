@@ -2,7 +2,9 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.entity.College;
+import com.jwsystem.entity.CollegeVO;
 import com.jwsystem.entity.Major;
+import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,32 +26,32 @@ public class EduController extends MainController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    EduServiceImp eduServiceImp;
+
     //管理员查看全部的学院和专业信息
     @GetMapping("")
     public Result showInfo(){
-
-        List<College> collegeList = eduService.getAll();
-
+        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
         /*
         取出全部学院和专业信息，然后放在result的data里返回
         List<College>
         每个college对象里有一个List<Major>
          */
-
         return Result.succ("查询成功",collegeList);
     }
 
     //管理员增加新的学院
     @PostMapping("/college/new")
     public Result addCollege(@RequestBody College college){
-        eduDao.insertCollege(college);
+        eduServiceImp.insertCollege(college);
         return Result.succ("增加成功");
     }
 
     //管理员增加新的专业
     @PostMapping("/major/new")
-    public Result addMajor(@RequestBody Major major){
-        eduDao.insertMajor(major);
+    public Result addMajor(@RequestBody Major major){       //这里major里包含专业名和学院名两个String
+        eduServiceImp.insertMajor(major);
         return Result.succ("增加成功");
     }
 
@@ -57,10 +59,10 @@ public class EduController extends MainController {
     @DeleteMapping("/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
-        boolean exist = eduDao.findCollege(college);
+        boolean exist = eduServiceImp.findCollege(college);
         //存在，进行删除，并且删除对应的所有专业
         if(exist){
-            eduService.deleteCollege(college); //记得要删除对应的所有专业
+            eduServiceImp.deleteCollege(college); //记得要删除对应的所有专业 ✔
         }
         else{
             response.setStatus(NO_COLLEGE);
@@ -73,10 +75,10 @@ public class EduController extends MainController {
     @DeleteMapping("/major")
     public Result deleteMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduDao.findMajor(major);
+        boolean exist = eduServiceImp.findMajor(major);
         //存在，进行删除，并且删除对应的所有专业
         if(exist){
-            eduDao.deleteMajor(major);
+            eduServiceImp.deleteMajor(major);
         }
         else{
             response.setStatus(NO_MAJOR);
@@ -89,10 +91,10 @@ public class EduController extends MainController {
     @PostMapping("/college")
     public Result changeCollege(@RequestBody College college){
         //先查询是否存在该学院
-        boolean exist = eduDao.findCollege(college);
+        boolean exist = eduServiceImp.findCollege(college);
         //存在，进行修改
         if(exist){
-            eduService.changeCollege(college);
+            eduServiceImp.updateCollege(college);
         }
         else{
             response.setStatus(NO_COLLEGE);
@@ -105,10 +107,10 @@ public class EduController extends MainController {
     @PostMapping("/major")
     public Result changeMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduDao.findMajor(major);
+        boolean exist = eduServiceImp.findMajor(major);
         //存在，进行修改
         if(exist){
-            eduService.changeMajor(major);
+            eduServiceImp.updateMajor(major);
         }
         else{
             response.setStatus(NO_MAJOR);

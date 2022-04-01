@@ -1,8 +1,11 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.College;
+import com.jwsystem.entity.CollegeVO;
 import com.jwsystem.entity.User;
+import com.jwsystem.service.impl.EduServiceImp;
+import com.jwsystem.service.impl.StuServiceImp;
+import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.JwtUtils;
 import com.opencsv.exceptions.CsvException;
@@ -32,11 +35,20 @@ public class AdminController extends MainController{
     @Autowired
     private CSVUtils csvUtils;
 
-        //管理员查看全部用户信息
+    @Autowired
+    EduServiceImp eduServiceImp;
+
+    @Autowired
+    TeaServiceImp teaServiceImp;
+
+    @Autowired
+    StuServiceImp stuServiceImp;
+
+    //管理员查看全部用户信息
     @GetMapping("/users")
     public Result getAll(){
-        List<User> users = teacherService.getAll();
-        List<User> students = studentService.getAll();
+        List<User> users = teaServiceImp.getAllUserInfos();
+        List<User> students = stuServiceImp.getAllUserInfos();
         users.addAll(students);
         return Result.succ("查询成功",users);
     }
@@ -68,10 +80,10 @@ public class AdminController extends MainController{
         return Result.succ("批量导入信息成功");
     }
 
-        //管理员取得学院和专业信息
+    //管理员取得学院和专业信息
     @GetMapping("/new")
     public Result getRegInfo(){
-        List<College> collegeList = eduService.getAll();
+        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
 
         /*
         取出全部学院和专业信息，然后放在result的data里返回
@@ -89,30 +101,30 @@ public class AdminController extends MainController{
         System.out.println("进入了register...");
         if(tempUser.getRole().equals("student")){
             //学生
-            if(stuDao.selectById(tempUser.getId()) != null){
+            if(stuServiceImp.selectStuById(tempUser.getId()) != null){
                 response.setStatus(CONFLICT_ID);
                 return Result.fail("该身份证号已注册！");
             }
 
-            if(stuDao.selectByNumber(tempUser.getNumber()) != null){
+            if(stuServiceImp.getUserByNumber(tempUser.getNumber()) != null){
                 response.setStatus(CONFLICT_NUMBER);
                 return Result.fail("该学号已注册！");
             }
 
-            stuService.insertByNumber(tempUser.getNumber());//增加相应的学院和专业信息的方法
+            stuServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
         } else if(tempUser.getRole().equals("teacher")){
             //老师
-            if(teacherDao.selectById(tempUser.getId()) != null){
+            if(teaServiceImp.selectTeaById(tempUser.getId()) != null){
                 response.setStatus(CONFLICT_ID);
                 return Result.fail("该身份证号已注册！");
             }
 
-            if(teacherDao.selectByNumber(tempUser.getNumber()) != null){
+            if(teaServiceImp.getUserByNumber(tempUser.getNumber()) != null){
                 response.setStatus(CONFLICT_NUMBER);
                 return Result.fail("该工号已注册！");
             }
 
-            teacherService.insertByNumber(tempUser.getNumber());//增加相应的学院和专业信息的方法
+            teaServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
         }
         else{
             response.setStatus(WRONG_DATA);
@@ -132,10 +144,10 @@ public class AdminController extends MainController{
         }
         if(tempUser.getRole().equals("student")){
             //学生
-            stuService.changeInfo(tempUser);
+            stuServiceImp.updateStuInfo(tempUser);
         } else if(tempUser.getRole().equals("teacher")){
             //老师
-            teacherService.changeInfo(tempUser);
+            teaServiceImp.updateTeaInfo(tempUser);
         }
         else{
             response.setStatus(WRONG_DATA);
