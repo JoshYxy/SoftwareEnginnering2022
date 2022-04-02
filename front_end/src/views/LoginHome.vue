@@ -8,16 +8,16 @@
           :router="true"
           class="el-menu"
         >
-          <el-menu-item index="/home/welcome">
-            <!-- <el-icon><icon-menu /></el-icon> -->
+          <el-menu-item v-for="route in vueRoute" :key="route.name" :index="`/home/${route.path}`">
+            <span>{{route.meta.nav_name}} </span>
+          </el-menu-item>
+          <!-- <el-menu-item index="/home/welcome">
             <span >Welcome</span>
           </el-menu-item>
           <el-menu-item index="/home/admin">
-            <!-- <el-icon><icon-menu /></el-icon> -->
             <span>个人信息录入</span>
           </el-menu-item>
           <el-menu-item index="/home/info">
-            <!-- <el-icon><icon-menu /></el-icon> -->
             <span>用户管理</span>
           </el-menu-item>
           <el-menu-item index="/home/privateinfo">
@@ -35,7 +35,7 @@
           <el-menu-item index="/home/edu">
             
             <span>教务管理</span>
-          </el-menu-item>
+          </el-menu-item> -->
         </el-menu>
       </el-aside>
 
@@ -46,7 +46,26 @@
     </el-container>
   </div>
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+        vueRoute: []
+    }
+  },
+  created() {
+    for(let i of this.$router.options.routes[2].children) {//home组件在router的第二个
+      console.log(i)
+      if(i.meta.role.indexOf(localStorage.getItem('role')) > -1) {
+        this.vueRoute.push(i)
+      }
+      
+    }
+    // console.log(this.$router.options)
+    
+  }
+}
+</script>
 
 <style scoped>
 .el-main {

@@ -21,7 +21,7 @@ const routes = [
     component: HomeView,
     meta: { role: ['admin','student','teacher'] },
   },
-
+  //需确保home在路由数组的第三个，用于挂载导航栏
   {
     path: '/home',
     name: 'home',
@@ -36,25 +36,26 @@ const routes = [
         path: 'admin',
         name: 'admin',
         component: AdminControl,
-        meta: { role: ['admin'] },
+        meta: { role: ['admin'], nav_name: '个人信息录入' },
       },
       {
         path: 'info',
         name: 'info',
         component: UserInfo,
-        meta: { role: ['admin'] },
+        meta: { role: ['admin'], nav_name: '用户信息管理' },
       },
       {
         path: 'welcome',
         name: 'welcome',
+        
         component: WelcomePage,
-        meta: { role: ['admin','student','teacher'] }
+        meta: { role: ['admin','student','teacher'], nav_name: '首页'}
       },
       {
         path: 'collegeinfo',
         name: 'collegeinfo',
         component: MajorMaintenance,
-        meta: { role: ['admin']},
+        meta: { role: ['admin'], nav_name: '学院专业管理'},
       },
       // {
       //   path: 'infochange',
@@ -66,19 +67,19 @@ const routes = [
         path: 'privateinfo',
         name: 'privateinfo',
         component: PrivateinfoMaintnce,
-        meta: { role: ['admin','student','teacher'] }
+        meta: { role: ['admin','student','teacher'], nav_name: '个人信息' }
       },
       {
         path: 'course',
         name: 'course',
         component: CourseMaintenance,
-        meta: { role: ['admin']},
+        meta: { role: ['admin'], nav_name: '课程管理'},
       },
       {
         path: 'edu',
         name: 'edu',
         component: EduMaintenance,
-        meta: { role: ['admin']},
+        meta: { role: ['admin'], nav_name: '教务管理'},
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')

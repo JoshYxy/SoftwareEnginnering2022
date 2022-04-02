@@ -9,7 +9,13 @@
       :before-upload="onBeforeUpload"
       :data="uploadData"
     >
-      <el-button type="primary">选择文件上传</el-button>
+      <el-button type="primary">
+        <el-icon style="vertical-align: middle;">
+          <upload />
+        </el-icon>
+        <span style="vertical-align: middle;"> 上传文件 </span>
+      </el-button>
+<!--      <el-button type="primary">选择文件上传</el-button>-->
       <template #tip>
         <div class="el-upload__tip">
           单个csv文件
@@ -91,19 +97,32 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button style="display:block;margin:0 auto" type="primary" @click="submit">
+          <el-icon style="vertical-align: middle;">
+            <check />
+          </el-icon>
+          <span style="vertical-align: middle;"> 提交 </span>
+        </el-button>
+
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import {Check,Upload} from "@element-plus/icons";
 import axios from 'axios'
-import {validName,validPhone,validPassport,validEmail} from './jsComponents/CheckRules'//格式检查
+
+import {validName,validPhone,validPassport,validEmail} from './jsComponents/CheckRules'
+//格式检查
 
 export default {
 
   name: 'AdminControl',
+  components:{
+    Check,
+    Upload
+  },
 
   data(){
     return {
