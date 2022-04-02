@@ -14,6 +14,8 @@ import com.jwsystem.util.CSVUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.jwsystem.entity.User.*;
+
 @RestController
 @RequestMapping("/user")
 public class UserController extends MainController{
@@ -55,14 +57,21 @@ public class UserController extends MainController{
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
             user = teaServiceImp.getUserByNumber(number);
+            if( !user.getStatus().equals(WORKING) ) {
+                response.setStatus(WRONG_DATA);
+                return Result.fail("已离职教师无权登陆");
+            }
         }
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
             user = stuServiceImp.getUserByNumber(number);
+            if( !user.getStatus().equals(STUDYING)) {
+                response.setStatus(WRONG_DATA);
+                return Result.fail("已毕业学生无权登陆");
+            }
         }
         else{
             user = adminServiceImp.getUserByNumber(number);
-//            user = teaServiceImp.getUserByNumber(number);
         }
 
         if(user==null){
@@ -131,18 +140,32 @@ public class UserController extends MainController{
 
 
     //用户修改个人信息
+    //前端一定要返回完整的User对象，不然就寄了
     @PostMapping("/info")
     public Result changeInfo(@RequestBody User tempUser){
         String number = getNumByToken();
         //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
         if(tempUser.getRole().equals("student")){
             //学生
-            stuServiceImp.updateStuInfo(tempUser);
-        } else {
-            //老师
-            teaServiceImp.updateTeaInfo(tempUser);
+            boolean res = stuServiceImp.updateStuInfo(tempUser);
+            if(res == false){
+                response.setStatus(WRONG_RES);
+                return Result.fail("修改信息失败，service层操作没有正确执行");
+            }
         }
-        return Result.succ(null);
+        else if(tempUser.getRole().equals("teacher")){
+            //老师
+            boolean res = teaServiceImp.updateTeaInfo(tempUser);
+            if (res == false){
+                response.setStatus(WRONG_RES);
+                return Result.fail("修改信息失败，service层操作没有正确执行");
+            }
+        }
+        else {
+            response.setStatus(WRONG_DATA);
+            return Result.fail("无效的用户role",tempUser);
+        }
+        return Result.succ("用户信息修改成功！");
     }
 
 

@@ -29,6 +29,8 @@ public class MainController {
     public static int NO_COURSE = 427;  //课程不存在
     public static int COLLEGE_CONFLICT = 428;      //学院已存在
     public static int MAJOR_CONFLICT = 429;      //专业已存在
+    public static int WRONG_RES = 430;      //结果错误
+
 
     protected String getNumByToken(){
         String token = request.getHeader("token");
