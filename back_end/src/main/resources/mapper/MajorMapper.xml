@@ -7,18 +7,24 @@
         VALUES (#{name},#{college_name})
     </insert>
     <!-- 根据学院name查询该学院下的所有专业 -->
-    <select id="findMajorByCollegeName" resultType="java.lang.String">
-        SELECT name
+    <select id="findMajorByCollegeName" resultType="map">
+        SELECT major_id,name
         FROM MAJOR WHERE college_name = #{college_name}
     </select>
     <!--根据id查询某专业是否存在 -->
-    <select id="findMajorById" resultType="java.lang.Integer">
-        SELECT name
+    <select id="findMajorById" resultType="com.jwsystem.entity.Major">
+        SELECT *
         FROM MAJOR WHERE major_id = #{major_id}
     </select>
+    <!--根据name查询某专业是否存在 -->
+    <select id="findMajorByName" resultType="com.jwsystem.entity.Major">
+        SELECT *
+        FROM MAJOR WHERE name = #{name}
+    </select>
     <!-- 根据id修改某专业名 -->
-    <select id="updateMajorNameById" resultType="java.lang.Integer">
-        UPDATE MAJOR SET name = #{name} where major_id = #{major_id}
+    <select id="updateMajorNameById" resultType="com.jwsystem.entity.Major">
+        UPDATE MAJOR SET name = #{name} , college_name = #{college_name}
+        where major_id = #{major_id}
     </select>
     <!-- 删除专业 -->
     <delete id="deleteMajor">

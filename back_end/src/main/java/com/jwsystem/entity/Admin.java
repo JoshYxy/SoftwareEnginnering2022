@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Admin extends User{
     private String role; //= "admin"    角色 教师 学生 管理员
-    private String number;
+    private String number; //1 默认值 能够以管理员身份登陆
     private String password;
     private boolean curriculaVariable; // = false  //是否为选课时段
 }

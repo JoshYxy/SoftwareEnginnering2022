@@ -10,6 +10,7 @@ import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.JwtUtils;
 import com.opencsv.exceptions.CsvException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,8 +107,8 @@ public class AdminController extends MainController{
 
         /*
         取出全部学院和专业信息，然后放在result的data里返回
-        List<College>
-        每个college对象里有一个List<Major>
+        List<CollegeVO>
+        每个college对象里有一个map<Major>
          */
 
         return Result.succ("查询成功",collegeList);
@@ -130,6 +131,11 @@ public class AdminController extends MainController{
                 return Result.fail("该学号已注册！");
             }
 
+            if(!stuServiceImp.legalNumber(tempUser.getNumber())){
+                //response.setStatusWrongNumber(WRONG_NUMBER);
+                return Result.fail("学号需为6位整数！");
+            }
+
             stuServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
         } else if(tempUser.getRole().equals("teacher")){
             //老师
@@ -141,6 +147,11 @@ public class AdminController extends MainController{
             if(teaServiceImp.getUserByNumber(tempUser.getNumber()) != null){
                 response.setStatus(CONFLICT_NUMBER);
                 return Result.fail("该工号已注册！");
+            }
+
+            if(!teaServiceImp.legalNumber(tempUser.getNumber())){
+                //response.setStatusWrongNumber(WRONG_NUMBER);
+                return Result.fail("工号需为8位整数！");
             }
 
             teaServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
@@ -160,6 +171,7 @@ public class AdminController extends MainController{
         if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
             response.setStatus(WRONG_DATA);
             return Result.fail("状态设置不符合规定");
+            //需要分别对状态选项做出限制吗？
         }
         if(tempUser.getRole().equals("student")){
             //学生
@@ -197,21 +209,29 @@ public class AdminController extends MainController{
         return Result.succ("查询成功",collegeList);
     }
 
-    //管理员增加新的学院
+    //管理员增加新的学院 有问题
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody College college){
-        eduServiceImp.insertCollege(college);
-        return Result.succ("增加成功");
+        if(eduServiceImp.insertCollege(college)){
+            return Result.succ("增加成功");
+        }else {
+            response.setStatus(COLLEGE_CONFLICT);
+            return Result.fail("增加失败");
+        }
     }
 
-    //管理员增加新的专业
+    //管理员增加新的专业 同上 同名判断
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody Major major){
-        eduServiceImp.insertMajor(major);
-        return Result.succ("增加成功");
+        if(eduServiceImp.insertMajor(major)) {
+            return Result.succ("增加成功");
+        }else{
+            response.setStatus(MAJOR_CONFLICT);
+            return Result.fail("增加失败");
+        }
     }
 
-    //管理员删除已有学院
+    //管理员删除已有学院 不存在的判断
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
@@ -246,8 +266,8 @@ public class AdminController extends MainController{
     //管理员修改已有学院
     @PostMapping("/edu/college")
     public Result changeCollege(@RequestBody College college){
-        //先查询是否存在该学院
-        boolean exist = eduServiceImp.findCollege(college);
+        //先查询是否存在该学院id
+        boolean exist = eduServiceImp.findCollegeById(college);
         //存在，进行修改
         if(exist){
             eduServiceImp.updateCollege(college);
@@ -263,7 +283,7 @@ public class AdminController extends MainController{
     @PostMapping("/edu/major")
     public Result changeMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajor(major);
+        boolean exist = eduServiceImp.findMajorById(major);
         //存在，进行修改
         if(exist){
             eduServiceImp.updateMajor(major);

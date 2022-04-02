@@ -3,7 +3,7 @@
 <mapper namespace="com.jwsystem.dao.TeacherDao">
     <!-- 新增老师 -->
     <insert id="insertUser" parameterType="com.jwsystem.entity.User">
-        insert into teacher (
+        insert into teacher
             (role,
              number,
              id,
@@ -15,7 +15,7 @@
              major,
              college)
         values
-            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{college})
+            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{major},#{college})
     </insert>
 
     <!--修改教师信息-->

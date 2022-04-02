@@ -4,10 +4,13 @@ import com.jwsystem.dao.StudentDao;
 import com.jwsystem.entity.Student;
 import com.jwsystem.entity.User;
 import com.jwsystem.service.StuService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.jwsystem.controller.UserController.STUDENT_NUM_LENGTH;
 
 @Service
 public class StuServiceImp implements StuService {
@@ -46,5 +49,8 @@ public class StuServiceImp implements StuService {
         return studentDao.deleteStuByNumber(number) != 0;
     }
 
+    public Boolean legalNumber(String number){
+        return number.length() == STUDENT_NUM_LENGTH && StringUtils.isNumeric(number);
+    }
 
 }

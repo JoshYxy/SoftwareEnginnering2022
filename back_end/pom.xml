@@ -66,6 +66,11 @@
             <artifactId>opencsv</artifactId>
             <version>5.5.2</version>
         </dependency>
+        <!-- 判断字符串是否为数字引入的外部工具类 StringUtiles -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
 
     </dependencies>

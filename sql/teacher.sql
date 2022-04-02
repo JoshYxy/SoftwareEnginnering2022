@@ -1,3 +1,0 @@
-INSERT INTO `teacher`(`role`, `number`, `id`, `name`, `password`, `phone`, `email`, `status`, `major`, `college`) VALUES ('teacher', '20000001', '410622197912093492', '朱东东', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', '计算机科学与技术', '计算机科学技术学院');
-INSERT INTO `teacher`(`role`, `number`, `id`, `name`, `password`, `phone`, `email`, `status`, `major`, `college`) VALUES ('teacher', '20000002', '354683199008097640', '彭小新', '123456', '18958772236', 'pxx@163.com', 'working', '计算机科学与技术', '计算机科学技术学院');
-INSERT INTO `teacher`(`role`, `number`, `id`, `name`, `password`, `phone`, `email`, `status`, `major`, `college`) VALUES ('teacher', '20000003', '276408200207252211', '马丁', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', '计算机科学与技术', '计算机科学技术学院');
