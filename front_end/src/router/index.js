@@ -33,6 +33,13 @@ const routes = [
     meta: { role: ['admin','student','teacher'] },
     children: [
       {
+        path: 'welcome',
+        name: 'welcome',
+        
+        component: WelcomePage,
+        meta: { role: ['admin','student','teacher'], nav_name: '首页'}
+      },
+      {
         path: 'admin',
         name: 'admin',
         component: AdminControl,
@@ -43,13 +50,6 @@ const routes = [
         name: 'info',
         component: UserInfo,
         meta: { role: ['admin'], nav_name: '用户信息管理' },
-      },
-      {
-        path: 'welcome',
-        name: 'welcome',
-        
-        component: WelcomePage,
-        meta: { role: ['admin','student','teacher'], nav_name: '首页'}
       },
       {
         path: 'collegeinfo',

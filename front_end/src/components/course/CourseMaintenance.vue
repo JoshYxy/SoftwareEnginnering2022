@@ -3,18 +3,20 @@
     <div><el-button @click="test">
         测试
     </el-button></div>
-
+    <div class="room-container">
+        <el-cascader :props="roomProps" :options="classroom" v-model="selectRoom" />
+    </div>
     <div class="time-container">
         <div class="left-part">
-            <div class="test" v-for="day in data" :key="day.id">{{day.name}}</div>
+            <div class="test" v-for="day in timeData" :key="day.id">{{day.name}}</div>
         </div>
         <div class="right-part">
             <span class="class-time" v-for="period in periods" :key="period">{{period}}</span> 
-            <el-checkbox-group v-for="day in data" :key="day.name" v-model="selectTime[day.id]" border >
+            <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="selectTime[day.id]" border >
                 
-                <el-checkbox-button v-for="time in day.times" :key="time" :label="time" >{{
-                    time
-                }}</el-checkbox-button>
+                <el-checkbox-button v-for="time in day.times" :key="time" :label="time" >
+                    {{time}}
+                </el-checkbox-button>
                 <!-- <span class="day"> {{day.name}} </span> -->
             </el-checkbox-group>
         </div>
@@ -37,7 +39,31 @@ export default {
                 '9:00-',
                 '10:00-11:00',
             ],
-            data:[
+            selectRoom: '',
+            roomProps: {
+                children: 'room',
+                label: 'name',
+                value: 'name'
+            },
+            classroom: [
+                {
+                    name: '第三教学楼',
+                    aka: 'H3',
+                    room: [
+                        {name:'301'},
+                        {name:'402'}
+                    ]
+                },
+                {
+                    name: '光华楼西辅楼',
+                    aka: 'HGX',
+                    room: [
+                        {name:'201'},
+                        {name:'502'}
+                    ]
+                },
+            ],
+            timeData:[
                 {
                     id:0,
                     name:'周一',
@@ -90,7 +116,8 @@ export default {
     },
     methods: {
         test() {
-            console.log(this.selectTime)
+            // console.log(this.selectTime)
+            console.log(this.selectRoom)
         }
     }
 }
