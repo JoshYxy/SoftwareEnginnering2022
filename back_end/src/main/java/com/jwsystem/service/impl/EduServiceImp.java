@@ -26,7 +26,7 @@ public class EduServiceImp implements EduService {
         for(Map.Entry<Integer, String> entry : colleges.entrySet()){
             //根据collegename得到majorlist
             Map<Integer,String> majors = new HashMap<>();
-            majors.get(majorDao.findMajorByCollegeName(entry.getValue()));
+            majors = majorDao.findMajorByCollegeName(entry.getValue());
             //将这两者放入一个collegevo对象 加入list容器
             CollegeVO collegeVO = new CollegeVO(entry.getKey(),entry.getValue(),majors);
             collegeVOs.add(collegeVO);

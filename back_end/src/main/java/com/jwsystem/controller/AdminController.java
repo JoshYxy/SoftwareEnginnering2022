@@ -10,6 +10,7 @@ import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.JwtUtils;
 import com.opencsv.exceptions.CsvException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,8 +107,8 @@ public class AdminController extends MainController{
 
         /*
         取出全部学院和专业信息，然后放在result的data里返回
-        List<College>
-        每个college对象里有一个List<Major>
+        List<CollegeVO>
+        每个college对象里有一个map<Major>
          */
 
         return Result.succ("查询成功",collegeList);
@@ -130,6 +131,11 @@ public class AdminController extends MainController{
                 return Result.fail("该学号已注册！");
             }
 
+            if(!stuServiceImp.legalNumber(tempUser.getNumber())){
+                //response.setStatusWrongNumber(WRONG_NUMBER);
+                return Result.fail("学号需为6位整数！");
+            }
+
             stuServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
         } else if(tempUser.getRole().equals("teacher")){
             //老师
@@ -141,6 +147,11 @@ public class AdminController extends MainController{
             if(teaServiceImp.getUserByNumber(tempUser.getNumber()) != null){
                 response.setStatus(CONFLICT_NUMBER);
                 return Result.fail("该工号已注册！");
+            }
+
+            if(!teaServiceImp.legalNumber(tempUser.getNumber())){
+                //response.setStatusWrongNumber(WRONG_NUMBER);
+                return Result.fail("工号需为8位整数！");
             }
 
             teaServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
@@ -160,6 +171,7 @@ public class AdminController extends MainController{
         if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
             response.setStatus(WRONG_DATA);
             return Result.fail("状态设置不符合规定");
+            //需要分别对状态选项做出限制吗？
         }
         if(tempUser.getRole().equals("student")){
             //学生

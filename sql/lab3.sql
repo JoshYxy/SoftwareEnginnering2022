@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/04/2022 01:43:05
+ Date: 02/04/2022 09:06:44
 */
 
 SET NAMES utf8mb4;
@@ -144,6 +144,7 @@ INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞
 INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', '123456', '13111702898', '220003@fudan.edu.cn', 'studying', '软件工程', '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', '软件工程', '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220005', '421798200207253765', '旺仔', '123456', '', '', 'studying', NULL, '计算机科学技术学院');
+INSERT INTO `student` VALUES ('student', '220006', '21129820011003456X', '测试', '123456', '', '', 'studying', '软件工程', '计算机科学技术学院');
 
 -- ----------------------------
 -- Table structure for teacher
@@ -151,7 +152,7 @@ INSERT INTO `student` VALUES ('student', '220005', '421798200207253765', '旺仔
 DROP TABLE IF EXISTS `teacher`;
 CREATE TABLE `teacher`  (
   `role` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'teacher',
-  `number` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '工号',
+  `number` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '工号',
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '身份证号',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '姓名',
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '123456',
@@ -174,5 +175,6 @@ INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '朱�
 INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '彭小新', '123456', '18958772236', 'pxx@163.com', 'working', '计算机科学与技术', '计算机科学技术学院');
 INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '马丁', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', '计算机科学与技术', '计算机科学技术学院');
 INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '朱东', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', '计算机科学与技术', '计算机科学技术学院');
+INSERT INTO `teacher` VALUES ('teacher', '20000006', '211298200110034567', '三胖', '123456', '', '', 'working', '软件工程', '计算机科学技术学院');
 
 SET FOREIGN_KEY_CHECKS = 1;
