@@ -13,7 +13,7 @@
           :rules="rules" 
           autocomplete="on"  
           text-align:center 
-          hide-required-asterisk=true
+          :hide-required-asterisk=true
           >
             <el-form-item prop="college" label="学院">
                 <el-select v-model="user.college" value-key="name" placeholder="学院">
@@ -107,7 +107,7 @@ export default {
           teach_id: null,
           password: '',
           major_: '',
-          college: {},
+          college: '',
         },
 
         rules: {
@@ -146,13 +146,23 @@ export default {
       cancel(){
         this.dialogFormVisible = false
         this.user=JSON.parse(JSON.stringify(this.userInfo))
+        for(let i in this.collegeData) {
+          if(this.collegeData[i].name === this.user.college)
+            this.user.college = this.collegeData[i]
+        }
       },
       submit(){
       this.$refs['user'].validate(valid => {
         if(valid){
           //axios
             this.dialogFormVisible = false
+            this.user.college = this.user.college.name
             this.$emit('changeInfo', this.user);
+            //axios
+            for(let i in this.collegeData) {
+              if(this.collegeData[i].name === this.user.college)
+                this.user.college = this.collegeData[i]
+            }
         //   console.log(this.user)
         //   // axios.post('http://localhost:8081/register', null, {params:this.user})
         //   axios.post('http://localhost:8081/user/new', this.user)
@@ -186,7 +196,11 @@ export default {
   },
   created: function(){
     this.user=JSON.parse(JSON.stringify(this.userInfo))
-    
+    for(let i in this.collegeData) {
+      if(this.collegeData[i].name === this.user.college)
+        this.user.college = this.collegeData[i]
+    }
+    console.log(this.user)
   }
 }
 

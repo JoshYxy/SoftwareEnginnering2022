@@ -54,14 +54,12 @@ export default {
     }
   },
   created() {
-    for(let i of this.$router.options.routes[2].children) {//home组件在router的第二个
-      console.log(i)
+    for(let i of this.$router.options.routes[2].children) {//home组件在router的第二个z
       if(i.meta.role.indexOf(localStorage.getItem('role')) > -1) {
         this.vueRoute.push(i)
       }
       
     }
-    // console.log(this.$router.options)
     
   }
 }

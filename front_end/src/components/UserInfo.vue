@@ -12,7 +12,7 @@
       <el-table-column prop="phone" label="Phone" width="180" />
       <el-table-column prop="email" label="Email" width="180" />
       <el-table-column prop="id" label="Id" width="180" />
-      <el-table-column prop="college.name" label="College" width="180" />
+      <el-table-column prop="college" label="College" width="180" />
       <el-table-column prop="major_" label="Major" width="150" />
       <el-table-column prop="password" label="Password" width="150" />
       <el-table-column fixed="right" label="Status" width="180">
@@ -84,36 +84,22 @@ export default {
             email: '123@qq.com',
             id: '311222322222111111',
             status: '在读',
-            college:  { 
-              id: 1,
-              name: '计算机科学技术学院', 
-              major: [
-                  {id: 1, name: '大数据'},
-                  {id: 2, name: '信息安全'}
-                ]
-              },
-              major_: '大数据',
-              password: '123455'
-              },
-              {
-              number: 2,
-              name: 'un1ed',
-              role: 'teacher',
-              phone: '13332221111',
-              email: '123@qq.com',
-              id: '31122232222221',
-              status: '在岗',
-              major_: '信息安全',
-              college:  { 
-                id: 1,
-                name: '计算机科学技术学院', 
-                major: [
-                    {id: 1, name: '大数据'},
-                    {id: 2, name: '信息安全'}
-                ]
-              },
-              password: '123455'
-              }
+            college: '计算机科学技术学院', 
+            major_: '大数据',
+            password: '123455'
+            },
+            {
+            number: 2,
+            name: 'un1ed',
+            role: 'teacher',
+            phone: '13332221111',
+            email: '123@qq.com',
+            id: '31122232222221',
+            status: '在岗',
+            major_: '信息安全',
+            college: '计算机科学技术学院', 
+            password: '123455'
+            }
         ],
       }
   },
@@ -136,7 +122,7 @@ export default {
   },
   created() {
       //获取用户信息和学院信息
-      // axios.get('http://localhost:8081/info/findAll')
+      // axios.get('http://localhost:8081/user/info')
       //      .then(function(resp){
       //          _this.userData = resp.data
       //          console.log(resp)

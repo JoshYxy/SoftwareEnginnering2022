@@ -99,8 +99,8 @@ export default {
             onDeleteAll: false,//是否有card进入删除状态
             onDelete: [false],//特定card是否进入删除教室状态
             checkGroup: [],
-            startTime:['08:00'],
-            endTime:['08:40'],
+            startTime:['08:00','10:00'],
+            endTime:['08:40','11:00'],
             newRoom:'',//存放input输入的教室号
             newClassroom: {
                 name: '',

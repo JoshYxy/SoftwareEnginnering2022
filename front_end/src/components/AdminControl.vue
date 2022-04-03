@@ -3,7 +3,7 @@
     <h1>信息录入</h1>
     <el-upload
       class="upload-demo"
-      action=""
+      :action="Upload"
       accept=".csv"
       :limit="1"
       :before-upload="onBeforeUpload"
@@ -236,8 +236,7 @@ export default {
         }
       })
     },
-    onBeforeUpload(file)
-    {
+    onBeforeUpload(file) {
       const isCSV = file.type === 'application/vnd.ms-excel'
 
       if (!isCSV) {
@@ -245,6 +244,11 @@ export default {
       }
     
       return isCSV;
+    },
+    Upload(file) {
+      let param = new FormData(); 
+      param.append('file',file)
+      axios.post("http://localhost:8081/admin/users",param)
     }
   }
 }

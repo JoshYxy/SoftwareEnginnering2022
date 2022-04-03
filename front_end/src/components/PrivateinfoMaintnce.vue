@@ -15,7 +15,7 @@
       <span class="info-container">{{userData.id}}</span>
     </el-form-item>
     <el-form-item label="学院：" class="form-label" >
-      <span class="info-container">{{userData.college.name}}</span>
+      <span class="info-container">{{userData.college}}</span>
     </el-form-item>
     <el-form-item label="专业：" class="form-label" >
       <span class="info-container">{{userData.major}}</span>
@@ -113,14 +113,7 @@ export default {
         teach_id: null,
         password: '123456',
         major: '软件工程班',
-        college: {              
-              id: 1,
-              name: '计算机科学技术学院', 
-              major: [
-                  {id: 1, name: '大数据'},
-                  {id: 2, name: '信息安全'}
-                ]
-        },
+        college: '计算机科学技术学院'
       },
       rules: {
         password:  [{required: true, message: '请输入新密码', trigger: 'blur'},

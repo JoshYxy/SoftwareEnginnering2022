@@ -14,7 +14,7 @@
         <span class="custom-tree-node">
           <span>{{ data.name }}</span>
           <span>
-            <a v-if="data.major" @click="append(data)"> 新增专业 </a>
+            <a v-if="data.majors" @click="append(data)"> 新增专业 </a>
      
             <a @click="openAlter(data)"> 修改 </a>
             <a @click="openRemove(node, data)"> 删除 </a>
@@ -27,22 +27,22 @@
 
 <script>
 import { ElMessage, ElMessageBox } from 'element-plus'
-// import axios from 'axios'
+import axios from 'axios'
 export default {
   name: 'MajorMaintenance',
   data() {
     return { 
-      id: 100,
+      id: 0,
       visible: false,
       defaultProps: {
-        children: 'major',
+        children: 'majors',
         label: 'name',
       },
       collegeData: [
         { 
           id: 1,
           name: '计算机科学技术学院', 
-          major: [
+          majors: [
               {id: 1, name: '大数据'},
               {id: 2, name: '信息安全'}
           ]
@@ -50,7 +50,7 @@ export default {
         { 
           id: 2,
           name: '生命科学学院', 
-          major: [
+          majors: [
               {id: 1, name: '生物'},
               {id: 2, name: '123'}
           ]
@@ -58,7 +58,7 @@ export default {
         { 
           id: 3,
           name: '软件工程学院', 
-          major: [
+          majors: [
               {id: 1, name: '软件工程'},
           ]
         },
@@ -67,16 +67,17 @@ export default {
   },
   methods: {
     appendCollege() {
-      const data = {id: this.id++, name: '新的学院', major:[]}
+      const data = {id: this.id++, name: '新的学院'+this.id, majors:[]}
       this.collegeData.push(data)
+      
       this.openAlter(data)
     },
     append(data) {
-      const newChild = { id: this.id++, name: '新的专业'}
-      if (!data.major) {
-        data.major = []
+      const newChild = { id: this.id++, name: '新的专业'+this.id}
+      if (!data.majors) {
+        data.majors = []
       }
-      data.major.push(newChild)
+      data.majors.push(newChild)
       this.openAlter(newChild)
       this.collegeData = [...this.collegeData]//更新数据，刷新页面
     },
@@ -89,14 +90,14 @@ export default {
       //TODO:axios
       const parent = node.parent
       console.log(parent)
-      const children = parent.data.major || parent.data
+      const children = parent.data.majors || parent.data
       const index = children.findIndex((d) => d.id === data.id)
       children.splice(index, 1)
       this.collegeData = [...this.collegeData]
     },
     openRemove(node, data) {
       ElMessageBox.confirm(
-        '是否删除 ' + data.name + (data.major?"":"专业"),
+        '是否删除 ' + data.name + (data.majors?"":"专业"),
         'Warning',
         {
           confirmButtonText: '确认',
@@ -119,16 +120,13 @@ export default {
         })
     },
     openAlter(data) {
-      const alertMessage='请输入新的'+(data.major?'学院':'专业')+'名称'
+      const alertMessage='请输入新的'+(data.majors?'学院':'专业')+'名称'
       ElMessageBox.prompt(alertMessage, '修改', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
-        // inputPattern:
-        //   /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-        // inputErrorMessage: 'Invalid Email',
       })
         .then(({ value }) => {
-          this.alter(data, value),
+          this.alter(data, value)
           ElMessage({  
             type: 'success',
             message: `修改成功`,
@@ -142,6 +140,22 @@ export default {
         })
     }
    
+  },
+  created() {
+    axios.get("http://localhost:8081/admin/edu")
+      .then(res => {
+        this.collegeData = res
+        for(let i in this.collegeData) {//替换变量名,对应后端数据
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+          
+        }
+      }).catch(error => {
+            
+        console.dir(error);
+      });
   }
 }
 
