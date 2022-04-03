@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Major {
-    private Integer majorId;
-    private String name;
-    private String collegeName;
+@NoArgsConstructor
+public class Section {
+    private Integer id;
+    private String startTime;
+    private String endTime;
 }

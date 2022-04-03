@@ -27,6 +27,8 @@ public class CSVUtils {
      * @param file
      * @return
      */
+
+    //对list的处理user.setlist;
     public static List<User> getUserByCsv(MultipartFile file) {
         ArrayList<User> users = new ArrayList<>();
 

@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 public class College {
     private Integer collegeId;
-    private String Name;
+    private String name;
     //private List<MajorVO> majors;
 }

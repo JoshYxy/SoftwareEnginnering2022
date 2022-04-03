@@ -93,6 +93,7 @@ public class AdminController extends MainController{
         List<User> users = CSVUtils.getUserByCsv(multipartFile);
 
         //循环完成批量插入
+        //加入如果中途插入失败了，跳过错过的该条，并且加入对批量插入信息的处理，比如不存在的学院怎么办？是新增，还是不插入此条信息？返回错误总数
         for (User temp : users) {
             Result res = register(temp);
             System.out.println(res.getMsg());
@@ -100,19 +101,19 @@ public class AdminController extends MainController{
         return Result.succ("批量导入信息成功");
     }
 
-    //管理员取得学院和专业信息
-    @GetMapping("/new")
-    public Result getRegInfo(){
-        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
-
-        /*
-        取出全部学院和专业信息，然后放在result的data里返回
-        List<CollegeVO>
-        每个college对象里有一个map<Major>
-         */
-
-        return Result.succ("查询成功",collegeList);
-    }
+//    //管理员取得学院和专业信息
+//    @GetMapping("/new")
+//    public Result getRegInfo(){
+//        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
+//
+//        /*
+//        取出全部学院和专业信息，然后放在result的data里返回
+//        List<CollegeVO>
+//        每个college对象里有一个map<Major>
+//         */
+//
+//        return Result.succ("查询成功",collegeList);
+//    }
 
     //管理员单条录入信息
     @PostMapping("/new")
@@ -164,6 +165,7 @@ public class AdminController extends MainController{
     }
 
     //管理员修改用户信息（包括状态）
+    //加入身份证重复的判断
     @PostMapping("/user/info")
     public Result changeUserInfo(@RequestBody User tempUser){
         //管理员可以修改用户除学工号以外的所有信息
@@ -264,12 +266,19 @@ public class AdminController extends MainController{
     }
 
     //管理员修改已有学院
+    //前端必须传id
+    //加入了重名判断
     @PostMapping("/edu/college")
     public Result changeCollege(@RequestBody College college){
         //先查询是否存在该学院id
         boolean exist = eduServiceImp.findCollegeById(college);
         //存在，进行修改
         if(exist){
+            boolean sameName = eduServiceImp.findCollegeByName(college);
+            if(sameName){
+                response.setStatus(COLLEGE_CONFLICT);
+                return Result.fail("已有同名学院，修改失败！");
+            }
             eduServiceImp.updateCollege(college);
         }
         else{
@@ -280,12 +289,19 @@ public class AdminController extends MainController{
     }
 
     //管理员修改已有专业
+    //前端必须传id
+    //加入了重名判断
     @PostMapping("/edu/major")
     public Result changeMajor(@RequestBody Major major){
         //先查询是否存在该专业
         boolean exist = eduServiceImp.findMajorById(major);
         //存在，进行修改
         if(exist){
+            boolean sameName = eduServiceImp.findMajorByName(major);
+            if(sameName){
+                response.setStatus(MAJOR_CONFLICT);
+                return Result.fail("已有同名专业，修改失败！");
+            }
             eduServiceImp.updateMajor(major);
         }
         else{
