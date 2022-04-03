@@ -175,10 +175,10 @@ public class AdminController extends MainController{
         }
         if(tempUser.getRole().equals("student")){
             //学生
-            stuServiceImp.updateStuInfo(tempUser);
+            stuServiceImp.updateStuInfoByAdmin(tempUser);
         } else if(tempUser.getRole().equals("teacher")){
             //老师
-            teaServiceImp.updateTeaInfo(tempUser);
+            teaServiceImp.updateTeaInfoByAdmin(tempUser);
         }
         else{
             response.setStatus(WRONG_DATA);
@@ -235,7 +235,7 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
-        boolean exist = eduServiceImp.findCollege(college);
+        boolean exist = eduServiceImp.findCollegeByName(college);
         //存在，进行删除，并且删除对应的所有专业
         if(exist){
             eduServiceImp.deleteCollege(college); //记得要删除对应的所有专业
@@ -251,7 +251,7 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/major")
     public Result deleteMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajor(major);
+        boolean exist = eduServiceImp.findMajorByName(major);
         //存在，进行删除，并且删除对应的所有专业
         if(exist){
             eduServiceImp.deleteMajor(major);

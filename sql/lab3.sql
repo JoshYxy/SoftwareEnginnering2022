@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/04/2022 09:06:44
+ Date: 03/04/2022 15:36:03
 */
 
 SET NAMES utf8mb4;
@@ -141,7 +141,7 @@ CREATE TABLE `student`  (
 -- ----------------------------
 INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', '软件工程', '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', '计算机科学与技术', '计算机科学技术学院');
-INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', '123456', '13111702898', '220003@fudan.edu.cn', 'studying', '软件工程', '计算机科学技术学院');
+INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', NULL, 'studying', '软件工程', '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', '软件工程', '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220005', '421798200207253765', '旺仔', '123456', '', '', 'studying', NULL, '计算机科学技术学院');
 INSERT INTO `student` VALUES ('student', '220006', '21129820011003456X', '测试', '123456', '', '', 'studying', '软件工程', '计算机科学技术学院');

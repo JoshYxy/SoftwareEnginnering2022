@@ -14,21 +14,21 @@ public interface EduService {
     //管理员增加新的专业
     Boolean insertMajor(Major major);
     //查询某学院
-    Boolean findCollege(College college);
-
     Boolean findCollegeById(College college);
 
-    //查询某专业
-    Boolean findMajor(Major major);
+    Boolean findCollegeByName(College college);
 
+    //查询某专业
     Boolean findMajorById(Major major);
 
+    Boolean findMajorByName(Major major);
+
     //修改学院信息
-    Boolean updateCollege(College college);
+    void updateCollege(College college);
     //修改专业信息
-    Boolean updateMajor(Major major);
+    void updateMajor(Major major);
     //删除某学院
-    Boolean deleteCollege(College college);
+    void deleteCollege(College college);
     //删除某专业
-    Boolean deleteMajor(Major major);
+    void deleteMajor(Major major);
 }

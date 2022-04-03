@@ -147,7 +147,7 @@ public class UserController extends MainController{
         //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
         if(tempUser.getRole().equals("student")){
             //学生
-            boolean res = stuServiceImp.updateStuInfo(tempUser);
+            boolean res = stuServiceImp.updateStuInfoByUser(tempUser);
             if(res == false){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");
@@ -155,7 +155,7 @@ public class UserController extends MainController{
         }
         else if(tempUser.getRole().equals("teacher")){
             //老师
-            boolean res = teaServiceImp.updateTeaInfo(tempUser);
+            boolean res = teaServiceImp.updateTeaInfoByUser(tempUser);
             if (res == false){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");

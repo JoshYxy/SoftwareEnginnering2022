@@ -18,11 +18,20 @@
             (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{major},#{college})
     </insert>
 
-    <!--修改学生信息-->
-    <update id="updateStuInfo" parameterType="com.jwsystem.entity.User">
+    <!-- 学生修改手机号、邮箱、登陆密码 -->
+    <update id="updateStuInfoByUser" parameterType="com.jwsystem.entity.User">
+        UPDATE student
+        SET password = #{password},
+            phone = #{phone},
+            email = #{email}
+        WHERE
+            number = #{number}
+    </update>
+
+    <!-- 管理员修改除学工号以外的信息 -->
+    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.entity.User">
         UPDATE student
         SET role = #{role},
-            number = #{number},
             id = #{id},
             name = #{name},
             password = #{password},

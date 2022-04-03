@@ -18,7 +18,9 @@ public class StuServiceImp implements StuService {
     StudentDao studentDao;
 
     @Override
-    public Boolean insertUser(User user) { return studentDao.insertUser(user) !=0; }
+    public void insertUser(User user) {
+        studentDao.insertUser(user);
+    }
 
     @Override
     public User getUserByNumber(String number) {
@@ -36,12 +38,17 @@ public class StuServiceImp implements StuService {
     }
 
     @Override
-    public Boolean updatePwdByNumber(String password,String number) {
-        return studentDao.updatePwdByNumber(password,number) != 0;
+    public void updatePwdByNumber(String password, String number) {
+        studentDao.updatePwdByNumber(password, number);
     }
     @Override
-    public Boolean updateStuInfo(User user){
-        return studentDao.updateStuInfo(user) != 0;
+    public Boolean updateStuInfoByUser(User user){
+        return studentDao.updateStuInfoByUser(user) != 0;
+    }
+
+    @Override
+    public void updateStuInfoByAdmin(User user) {
+        studentDao.updateStuInfoByAdmin(user);
     }
 
     @Override

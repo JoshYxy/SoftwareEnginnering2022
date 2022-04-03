@@ -1,6 +1,7 @@
 package com.jwsystem.dao;
 
 import com.jwsystem.entity.College;
+import com.jwsystem.entity.CollegeVO;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,8 +14,10 @@ public interface CollegeDao {
     // 新增学院
     int insertCollege(String name);
     // 查询所有学院信息
-    @MapKey("college_id")
-    Map<Integer,String> findAllCollegeInfos();
+//    @MapKey("college_id")
+//    Map<Integer,String> findAllCollegeInfos();
+    //查询学院和对应专业
+    List<CollegeVO> findCollegeAndMajor();
     //根据id查询某学院是否存在
     College findCollegeById(Integer collegeId);
     //根据name查询某学院是否存在

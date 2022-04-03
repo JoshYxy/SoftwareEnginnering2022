@@ -10,9 +10,10 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CollegeVO extends College{
+public class CollegeVO /*extends College*/{
     //把id加上
     Integer collegeVOId;
     String collegeVOName;
-    Map<Integer,String> majors;
+    //Map<Integer,String> majors;
+    List<MajorVO> majors;
 }

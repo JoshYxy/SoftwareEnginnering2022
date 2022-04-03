@@ -15,23 +15,13 @@ import java.util.*;
 public class EduServiceImp implements EduService {
     @Autowired
     CollegeDao collegeDao;
+
     @Autowired
     MajorDao majorDao;
+
     @Override
     public List<CollegeVO> getEduInfo() {
-        //根据college获得colleges map
-        Map<Integer,String> colleges = collegeDao.findAllCollegeInfos();
-        //建立List<CollegeVO>容器
-        List<CollegeVO> collegeVOs = new ArrayList<CollegeVO>();
-        for(Map.Entry<Integer, String> entry : colleges.entrySet()){
-            //根据collegename得到majorlist
-            Map<Integer,String> majors = new HashMap<>();
-            majors = majorDao.findMajorByCollegeName(entry.getValue());
-            //将这两者放入一个collegevo对象 加入list容器
-            CollegeVO collegeVO = new CollegeVO(entry.getKey(),entry.getValue(),majors);
-            collegeVOs.add(collegeVO);
-        }
-        return collegeVOs;
+        return collegeDao.findCollegeAndMajor();
     }
 
     @Override
@@ -52,18 +42,13 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public Boolean findCollege(College college) {
-        return collegeDao.findCollegeByName(college.getName()) != null;
-    }
-
-    @Override
     public Boolean findCollegeById(College college) {
         return collegeDao.findCollegeById(college.getCollegeId()) != null;
     }
 
     @Override
-    public Boolean findMajor(Major major) {
-        return majorDao.findMajorByName(major.getName()) != null;
+    public Boolean findCollegeByName(College college) {
+        return collegeDao.findCollegeByName(college.getName()) != null;
     }
 
     @Override
@@ -72,22 +57,27 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public Boolean updateCollege(College college) {
-        return collegeDao.updateCollegeNameById(college.getCollegeId(), college.getName()) != null;
+    public Boolean findMajorByName(Major major) {
+        return majorDao.findMajorByName(major.getName()) != null;
     }
 
     @Override
-    public Boolean updateMajor(Major major) {
-        return majorDao.updateMajorNameById(major.getMajorId(),major.getName(),major.getCollegeName()) != null;
+    public void updateCollege(College college) {
+        collegeDao.updateCollegeNameById(college.getCollegeId(), college.getName());
     }
 
     @Override
-    public Boolean deleteCollege(College college) {
-        return collegeDao.deleteCollege(college.getName()) != 0;
+    public void updateMajor(Major major) {
+        majorDao.updateMajorNameById(major.getMajorId(), major.getName(), major.getCollegeName());
     }
 
     @Override
-    public Boolean deleteMajor(Major major) {
-        return majorDao.deleteMajor(major.getName()) != 0;
+    public void deleteCollege(College college) {
+        collegeDao.deleteCollege(college.getName());
+    }
+
+    @Override
+    public void deleteMajor(Major major) {
+        majorDao.deleteMajor(major.getName());
     }
 }

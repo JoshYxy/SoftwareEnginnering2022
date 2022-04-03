@@ -11,8 +11,10 @@ import java.util.List;
 public interface TeacherDao {
     //新增老师
     int insertUser(User user);
-    //修改老师信息
-    int updateTeaInfo(User user);
+    //老师修改手机号、邮箱、登陆密码
+    int updateTeaInfoByUser(User user);
+    //管理员修改除学工号以外的信息
+    int updateTeaInfoByAdmin(User user);
     //根据number修改老师密码
     int updatePwdByNumber(String password,String number);
     //查看所有老师信息

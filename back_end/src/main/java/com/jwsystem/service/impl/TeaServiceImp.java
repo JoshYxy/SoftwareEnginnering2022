@@ -18,7 +18,9 @@ public class TeaServiceImp implements TeaService {
     TeacherDao teacherDao;
 
     @Override
-    public Boolean insertUser(User user) { return teacherDao.insertUser(user) !=0;  }
+    public void insertUser(User user) {
+        teacherDao.insertUser(user);
+    }
 
     @Override
     public User getUserByNumber(String number) {
@@ -36,13 +38,18 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
-    public Boolean updatePwdByNumber(String password,String number) {
-        return teacherDao.updatePwdByNumber(password,number) != 0;
+    public void updatePwdByNumber(String password, String number) {
+        teacherDao.updatePwdByNumber(password, number);
     }
 
     @Override
-    public Boolean updateTeaInfo(User user) {
-        return teacherDao.updateTeaInfo(user) != 0;
+    public Boolean updateTeaInfoByUser(User user) {
+        return teacherDao.updateTeaInfoByUser(user) != 0;
+    }
+
+    @Override
+    public void updateTeaInfoByAdmin(User user){
+        teacherDao.updateTeaInfoByAdmin(user);
     }
 
     @Override

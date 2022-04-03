@@ -8,6 +8,22 @@
                   #{name}
               )
     </insert>
+    <!-- 查询学院和对应专业 -->
+    <resultMap id="CollegeAndMajor" type="com.jwsystem.entity.CollegeVO">
+        <!-- 学院信息 -->
+        <id column="college_id" property="collegeVOId"/>
+        <result column="name" property="collegeVOName"/>
+        <collection property="majors" ofType="com.jwsystem.entity.MajorVO">
+            <id column="major_id" property="majorId"/>
+            <result column="major_name" property="majorName"/>
+        </collection>
+    </resultMap>
+    <select id="findCollegeAndMajor" resultMap="CollegeAndMajor">
+        SELECT college.college_id,college.name,major.major_id,major.name major_name
+        FROM
+        college left outer join major
+        on college.name = major.college_name
+    </select>
     <!-- 查询所有学院信息 -->
     <select id="findAllCollegeInfos" resultType="map">
         SELECT *

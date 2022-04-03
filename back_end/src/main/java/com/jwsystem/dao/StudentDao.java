@@ -10,8 +10,10 @@ import java.util.List;
 public interface StudentDao {
     //新增学生
     int insertUser(User user);     //这边是传入Student还是传入User? 前端给的是什么形式？
-    //修改学生信息
-    int updateStuInfo(User user);
+    //学生修改手机号、邮箱、登陆密码
+    int updateStuInfoByUser(User user);
+    //管理员修改除学工号以外的信息
+    int updateStuInfoByAdmin(User user);
     //修改学生密码
     int updatePwdByNumber(String password,String number);
     //查看所有学生信息
