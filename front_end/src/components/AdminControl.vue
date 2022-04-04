@@ -126,9 +126,6 @@ export default {
 
   data(){
     return {
-      uploadData: {
-        // file:'1'
-      },
       collegeData: [
         { 
           id: 1,
@@ -169,6 +166,8 @@ export default {
         major: '',
         college: {},
       },
+      collegeBackup: {},
+      majorBackup: '',
       rules: {
         college: [{required: true, message: '请选择学院', trigger: 'change'}],
         major: [{required: true, message: '请选择专业', trigger: 'change'}],
@@ -191,12 +190,12 @@ export default {
     }
   },
   watch:{
-    "userData.college": {
+    //如果没有.name会出错，因为在college = college.name赋值中改变了college，但不会认为college.name改变（此时不希望watch被触发）    
+    "userData.college.name": {
       handler(){
-        console.log(this.userData.college)
+        // console.log(this.userData.college)
         this.userData.major='';  
       },
-      deep: true  
     }
   },
   methods:{
@@ -207,9 +206,11 @@ export default {
             this.userData.number = this.userData.stu_id
           if(this.userData.role == 'teacher')
             this.userData.number = this.userData.teach_id
-          console.log(this.userData)
+          this.collegeBackup = this.userData.college
+          this.majorBackup = this.userData.major
+          this.userData.college = this.userData.college.name
           // axios.post('http://localhost:8081/register', null, {params:this.userData})
-          axios.post('http://localhost:8081/user/new', this.userData)
+          axios.post('http://localhost:8081/admin/new', this.userData)
           .then(function(resp){
             console.log(resp)
             alert('提交成功')
@@ -229,6 +230,9 @@ export default {
             }
             console.dir(error);
           })
+          console.log(this.userData)
+          this.userData.college = this.collegeBackup
+          this.userData.major = this.majorBackup
         }
         else{
           console.log('error ssssubmit');
@@ -249,6 +253,11 @@ export default {
       let param = new FormData(); 
       param.append('file',file)
       axios.post("http://localhost:8081/admin/users",param)
+        .then(function(){
+          alert('批量导入信息完成，无导入失败')                  
+        }).catch(error => {
+          alert(error.response.message)
+        })
     }
   }
 }

@@ -16,7 +16,7 @@
           <span>
             <a v-if="data.majors" @click="append(data)"> 新增专业 </a>
      
-            <a @click="openAlter(data)"> 修改 </a>
+            <a @click="openAlter(node, data)"> 修改 </a>
             <a @click="openRemove(node, data)"> 删除 </a>
           </span>
         </span>
@@ -68,18 +68,34 @@ export default {
   methods: {
     appendCollege() {
       const data = {id: this.id++, name: '新的学院'+this.id, majors:[]}
-      this.collegeData.push(data)
       
-      this.openAlter(data)
+      axios.post('http://localhost:8081/admin/edu/college/new',{name: data.name})
+        .then(res => {
+          console.log(res)
+          this.collegeData.push(data)
+          this.openAlter(data)
+        }).catch(error => {
+          alert("学院名称重复")
+          console.dir(error);
+        });
+      
     },
     append(data) {
       const newChild = { id: this.id++, name: '新的专业'+this.id}
       if (!data.majors) {
         data.majors = []
       }
-      data.majors.push(newChild)
-      this.openAlter(newChild)
-      this.collegeData = [...this.collegeData]//更新数据，刷新页面
+      axios.post('http://localhost:8081/admin/edu/major/new',{collegeName: data.name, name: newChild.name})
+        .then(res => {
+          console.log(res)
+          data.majors.push(newChild)
+          this.openAlter(newChild)
+          this.collegeData = [...this.collegeData]//更新数据，刷新页面
+        }).catch(error => {
+          alert("专业名称重复")
+          console.dir(error);
+        });
+      
     },
     alter(data, name) {
       data.name=name;
@@ -106,11 +122,28 @@ export default {
         }
       )
         .then(() => {
-          this.remove(node, data)
-          ElMessage({
-            type: 'success',
-            message: '删除成功',
-          })
+          if(data.majors) { //修改学院
+            axios.delete('http://localhost:8081/admin/edu/college',{collegeId: data.id, name: data.name})
+              .then(res => {
+                console.log(res)
+                this.remove(node, data)
+                ElMessage({type: 'success', message: `删除成功`})
+              }).catch(error => {
+                ElMessage.error('删除失败')
+                console.dir(error);
+              });
+          }
+          else {
+            axios.delete('http://localhost:8081/admin/edu/major',{majorId: data.id, name: data.name, collegeName: node.parent.name})
+              .then(res => {
+                console.log(res)
+                this.remove(node, data)
+                ElMessage({type: 'success', message: `删除成功`})
+              }).catch(error => {
+                ElMessage.error('删除失败')
+                console.dir(error);
+              });
+          }
         })
         .catch(() => {
           ElMessage({
@@ -119,18 +152,37 @@ export default {
           })
         })
     },
-    openAlter(data) {
+    openAlter(node, data) {
       const alertMessage='请输入新的'+(data.majors?'学院':'专业')+'名称'
       ElMessageBox.prompt(alertMessage, '修改', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
       })
         .then(({ value }) => {
-          this.alter(data, value)
-          ElMessage({  
-            type: 'success',
-            message: `修改成功`,
-          })
+          if(data.majors) {//修改学院
+            axios.post('http://localhost:8081/admin/edu/college',{collegeId: data.id, name: value})
+              .then(res => {
+                console.log(res)
+                this.alter(data, value)
+                ElMessage({type: 'success', message: `修改成功`})
+              }).catch(error => {
+                if(error.response.status == 426)
+                  ElMessage.error('学院名称重复')
+                console.dir(error);
+              });
+          }
+          else { //修改专业
+            axios.post('http://localhost:8081/admin/edu/major',{majorId: data.id, name: value, collegeName: node.parent.name})
+              .then(res => {
+                console.log(res)
+                this.alter(data, value)
+                ElMessage({type: 'success', message: `修改成功`})
+              }).catch(error => {
+                if(error.response.status == 426)
+                  ElMessage.error('专业名称重复')
+                console.dir(error);
+              });        
+          }
         })
         .catch(() => {
           ElMessage({
@@ -153,7 +205,7 @@ export default {
           
         }
       }).catch(error => {
-            
+        alert('获取服务器信息失败')
         console.dir(error);
       });
   }

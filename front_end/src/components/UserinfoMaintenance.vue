@@ -82,9 +82,7 @@
 </template>
 
 <script>
-
-// import axios from 'axios'
-
+import axios from 'axios'
 import {validName,validPhone,validPassport,validEmail} from './jsComponents/CheckRules'//格式检查
 export default {
   name: 'UserinfoMaintenance',
@@ -154,37 +152,27 @@ export default {
       submit(){
       this.$refs['user'].validate(valid => {
         if(valid){
-          //axios
-            this.dialogFormVisible = false
+            
             this.user.college = this.user.college.name
-            this.$emit('changeInfo', this.user);
-            //axios
+            axios.post('http://localhost:8081/admin/user/info', this.user)
+                .then(function(resp){//修改成功关闭修改界面
+                  console.log(resp)
+                  this.dialogFormVisible = false
+                  this.$emit('changeInfo', this.user);  
+                  for(let i in this.collegeData) {
+                    if(this.collegeData[i].name === this.user.college)
+                      this.user.college = this.collegeData[i]
+                  }                  
+                }).catch(error => {//修改失败留在修改界面
+                  if(error.response.status == 420){
+                    alert('身份证已存在');
+                    this.userData.id = ''
+                  }
+                })
             for(let i in this.collegeData) {
               if(this.collegeData[i].name === this.user.college)
                 this.user.college = this.collegeData[i]
-            }
-        //   console.log(this.user)
-        //   // axios.post('http://localhost:8081/register', null, {params:this.user})
-        //   axios.post('http://localhost:8081/user/new', this.user)
-        //   .then(function(resp){
-        //     console.log(resp)
-        //     alert('提交成功')
-              
-        //   }).catch(error => {
-        //     if(error.response.status == 421){
-        //       if(this.user.role == 'student')
-        //         alert('学号已存在')
-        //       else
-        //         alert('工号已存在')
-        //       this.user.stu_id = ''
-        //       this.user.teach_id = ''
-        //     }
-        //     if(error.response.status == 420){
-        //       alert('身份证已存在');
-        //       this.user.id = ''
-        //     }
-        //     console.dir(error);
-        //   })
+            }   
         }
         else{
           console.log('error ssssubmit');

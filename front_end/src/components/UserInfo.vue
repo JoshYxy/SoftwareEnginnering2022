@@ -16,11 +16,13 @@
       <el-table-column prop="major_" label="Major" width="150" />
       <el-table-column prop="password" label="Password" width="150" />
       <el-table-column fixed="right" label="Status" width="180">
-      <template #default="scope" >
-        <el-radio v-if="scope.row.role=='student'" v-model="scope.row.status" label="在读" >在读</el-radio>
-        <el-radio v-if="scope.row.role=='student'" v-model="scope.row.status" label="毕业" >毕业</el-radio>
-        <el-radio v-if="scope.row.role=='teacher'" v-model="scope.row.status" label="在岗" >在岗</el-radio>
-        <el-radio v-if="scope.row.role=='teacher'" v-model="scope.row.status" label="离职" >离职</el-radio>
+      <template #default="scope">
+        <el-radio-group v-model="scope.row.status" @change="updataStatus">
+          <el-radio v-if="scope.row.role=='student'" label="studying" >在读</el-radio>
+          <el-radio v-if="scope.row.role=='student'" label="graduated" >毕业</el-radio>
+          <el-radio v-if="scope.row.role=='teacher'" label="working" >在岗</el-radio>
+          <el-radio v-if="scope.row.role=='teacher'" label="quit" >离职</el-radio>
+        </el-radio-group>
       </template>
       </el-table-column>
       <el-table-column fixed="right" label="Operations" width="180">
@@ -42,6 +44,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import UserinfoMaintenance from './UserinfoMaintenance.vue'
 export default {
   name: 'UserInfo',
@@ -83,7 +86,7 @@ export default {
             phone: '13332221111',
             email: '123@qq.com',
             id: '311222322222111111',
-            status: '在读',
+            status: 'studying',
             college: '计算机科学技术学院', 
             major_: '大数据',
             password: '123455'
@@ -95,7 +98,7 @@ export default {
             phone: '13332221111',
             email: '123@qq.com',
             id: '31122232222221',
-            status: '在岗',
+            status: 'working',
             major_: '信息安全',
             college: '计算机科学技术学院', 
             password: '123455'
@@ -103,11 +106,11 @@ export default {
         ],
       }
   },
-  watch: {
-    userData: {
-      //axios post
-    }
-  },
+  // watch: {
+  //   userData: {
+  //     //axios post
+  //   }
+  // },
   methods: {
     updateUser(index, e){
       // console.log(e);
@@ -117,16 +120,37 @@ export default {
       this.userData[index].major_=e.major_;
       this.userData[index].email=e.email;
       this.userData[index].password=e.password;
-      this.userData[index].college=e.college;
-    }
+      this.userData[index].college=e.college;      
+    },  
+    updataStatus() {
+      axios.post('http://localhost:8081/admin/user/info', this.user)
+    },
   },
+
   created() {
-      //获取用户信息和学院信息
-      // axios.get('http://localhost:8081/user/info')
-      //      .then(function(resp){
-      //          _this.userData = resp.data
-      //          console.log(resp)
-      //      })
+      //获取用户信息
+    axios.get('http://localhost:8081/admin/users')
+      .then(res => {
+        this.userData = res
+      }).catch(error => {
+        alert("服务器访问失败")
+        console.dir(error);
+      });
+      //获取学院信息
+    axios.get("http://localhost:8081/admin/edu")
+      .then(res => {
+        this.collegeData = res
+        for(let i in this.collegeData) {//替换变量名,对应后端数据
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+          
+        }
+      }).catch(error => {
+        alert('获取服务器信息失败')
+        console.dir(error);
+      });
   }
 }
 </script>

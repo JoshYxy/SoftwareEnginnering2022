@@ -31,11 +31,11 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 import {Edit} from '@element-plus/icons-vue'
 export default {
     name: 'EditableFormitem',
-    props: ["data", "rule", "label"],
+    props: ["data", "rule", "label", "userData"],
     components:{
         Edit,
     },
@@ -44,10 +44,10 @@ export default {
             buttonOn: false,
             edit: false,
             user:{
-                info:this.data
+                info:this.data//修改中的值
             },
             // info: this.data,
-            edited_info: this.data,
+            edited_info: this.data,//显示出来的值
         }
     },
     methods: {
@@ -55,6 +55,17 @@ export default {
             //axios
             this.$refs['user'].validate(valid => {
                 if(valid){
+                    //匹配后端格式
+                    axios.post('http://localhost:8081/user/info',
+                        {
+                            role: this.userData.role, 
+                            number: this.userData.number,
+                            password: this.userData.password,
+                            phone: this.label==='电话：'?this.user.info:this.userData.phone,
+                            email: this.label==='邮箱：'?this.user.info:this.userData.email,
+                        })
+                    this.$emit('changeInfo', {label: this.label, value: this.user.info})
+                    console.log(1)
                     this.edited_info=this.user.info
                     this.edit=false
                 }

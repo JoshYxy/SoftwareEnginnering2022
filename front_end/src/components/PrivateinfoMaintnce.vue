@@ -21,8 +21,8 @@
       <span class="info-container">{{userData.major}}</span>
     </el-form-item>
 
-    <editable-formitem label="电话：" :data="userData.phone" :rule="phoneRules"></editable-formitem>
-    <editable-formitem label="邮箱：" :data="userData.email" :rule="emailRules"></editable-formitem>
+    <editable-formitem @changeInfo="updateUser($event)" label="电话：" :data="userData.phone" :rule="phoneRules" :userData="userData"></editable-formitem>
+    <editable-formitem @changeInfo="updateUser($event)" label="邮箱：" :data="userData.email" :rule="emailRules" :userData="userData"></editable-formitem>
     <el-form-item label="密码：" class="form-label" @mouseover="buttonOn=true"
         @mouseout="buttonOn=false" >
       <span class="info-container">{{userData.password}}</span>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-// eslint-disable-next-line 
+import axios from 'axios'
 import EditableFormitem from './EditableFormitem.vue'
 import {Edit} from '@element-plus/icons-vue'
 export default {
@@ -107,8 +107,8 @@ export default {
         role: 'student',
         name: '张晓王',
         id: '310111200201553211',
-        phone: '13301182222',
-        email: '123@qq.com',
+        phone: '13301182222',//phone的真值存在editable_formitem里，此处的不能传给后端
+        email: '123@qq.com',//email的真值存在editable_formitem里，此处的不能传给后端
         stu_id: null,
         teach_id: null,
         password: '123456',
@@ -125,6 +125,10 @@ export default {
     }
   },
   methods: {
+    updateUser(e) {
+      if(e.label == '邮箱：')this.userData.email = e.value
+      if(e.label == '电话：')this.userData.phone = e.value
+    },
     editPassword() {
       this.userPassword.password=''
       this.userPassword.checkPassword=''
@@ -134,15 +138,29 @@ export default {
       this.$refs['userPassword'].validate(valid => {
         if(valid){
           this.dialogFormVisible=false
-          //axios
-          this.userData.password=this.userPassword.password
+                            
+          this.userData.password=this.userPassword.password  
+          axios.post('http://localhost:8081/user/info',
+            {
+              role: this.userData.role, 
+              number: this.userData.number,
+              password: this.userData.password,
+              phone: this.userData.phone,
+              email: this.userData.email,
+            })
         }
       })
     }
+  },
+  created() {
+    axios.get('http://localhost:8081/user/info')
+          .then(res => {
+            this.userData = res
+          }).catch(error => {
+            alert("与服务器连接失败")
+            console.dir(error);
+          });
   }
-  // created: {
-
-  // }
 }
 
 </script>
