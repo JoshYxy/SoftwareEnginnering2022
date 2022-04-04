@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StuService {
     //插入学生
-    void insertUser(User user);
+    Boolean insertUser(User user);
     //查找是否存在该学生，返回User类型
     User getUserByNumber(String number);
     //根据身份证号查找
@@ -22,4 +22,6 @@ public interface StuService {
     void updateStuInfoByAdmin(User user);
     //根据number删除学生
     Boolean deleteStuByNumber(String number);
+
+    boolean findUserMajor(String majorName);
 }

@@ -23,6 +23,9 @@ public interface EduService {
 
     Boolean findMajorByName(Major major);
 
+    //判断学院和专业是否对应
+    Boolean judgeMajorAndCollege(String majorName,String CollegeName);
+
     //修改学院信息
     void updateCollege(College college);
     //修改专业信息

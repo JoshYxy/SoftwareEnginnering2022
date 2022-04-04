@@ -1,5 +1,6 @@
 package com.jwsystem.service.impl;
 
+import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.TeacherDao;
 import com.jwsystem.entity.Teacher;
 import com.jwsystem.entity.User;
@@ -17,9 +18,12 @@ public class TeaServiceImp implements TeaService {
     @Autowired
     TeacherDao teacherDao;
 
+    @Autowired
+    MajorDao majorDao;
+
     @Override
-    public void insertUser(User user) {
-        teacherDao.insertUser(user);
+    public Boolean insertUser(User user) {
+        return teacherDao.insertUser(user) != 0;
     }
 
     @Override
@@ -59,5 +63,10 @@ public class TeaServiceImp implements TeaService {
 
     public Boolean legalNumber(String number){
         return number.length() == TEACHER_NUM_LENGTH && StringUtils.isNumeric(number);
+    }
+
+    @Override
+    public boolean findUserMajor(String majorName) {
+        return majorDao.findMajorByName(majorName) != null;
     }
 }

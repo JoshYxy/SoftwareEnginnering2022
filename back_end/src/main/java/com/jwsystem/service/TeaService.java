@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TeaService {
     //插入老师
-    void insertUser(User user);
+    Boolean insertUser(User user);
     //查找是否存在该老师，返回User类型
     User getUserByNumber(String number);
     //根据身份证号查找
@@ -22,4 +22,6 @@ public interface TeaService {
     void updateTeaInfoByAdmin(User user);
     //删除教师
     Boolean deleteTeaByNumber(String number);
+
+    boolean findUserMajor(String majorName);
 }

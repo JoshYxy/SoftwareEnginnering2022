@@ -1,5 +1,6 @@
 package com.jwsystem.service.impl;
 
+import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.StudentDao;
 import com.jwsystem.entity.Student;
 import com.jwsystem.entity.User;
@@ -17,9 +18,12 @@ public class StuServiceImp implements StuService {
     @Autowired
     StudentDao studentDao;
 
+    @Autowired
+    MajorDao majorDao;
+
     @Override
-    public void insertUser(User user) {
-        studentDao.insertUser(user);
+    public Boolean insertUser(User user) {
+        return studentDao.insertUser(user) != 0;
     }
 
     @Override
@@ -60,4 +64,8 @@ public class StuServiceImp implements StuService {
         return number.length() == STUDENT_NUM_LENGTH && StringUtils.isNumeric(number);
     }
 
+    @Override
+    public boolean findUserMajor(String majorName) {
+        return majorDao.findMajorByName(majorName) != null;
+    }
 }

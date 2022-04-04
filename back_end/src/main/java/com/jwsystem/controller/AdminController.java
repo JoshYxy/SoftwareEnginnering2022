@@ -137,6 +137,14 @@ public class AdminController extends MainController{
                 return Result.fail("学号需为6位整数！");
             }
 
+            if(!stuServiceImp.findUserMajor(tempUser.getMajor())){
+                return Result.fail("专业不存在！");
+            }
+
+            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                return Result.fail("无法找到专业对应学院！");
+            }
+
             stuServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
         } else if(tempUser.getRole().equals("teacher")){
             //老师
@@ -153,6 +161,14 @@ public class AdminController extends MainController{
             if(!teaServiceImp.legalNumber(tempUser.getNumber())){
                 //response.setStatusWrongNumber(WRONG_NUMBER);
                 return Result.fail("工号需为8位整数！");
+            }
+
+            if(!teaServiceImp.findUserMajor(tempUser.getMajor())){
+                return Result.fail("专业不存在！");
+            }
+
+            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                return Result.fail("无法找到专业对应学院！");
             }
 
             teaServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法

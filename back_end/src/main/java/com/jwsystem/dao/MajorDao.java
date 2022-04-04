@@ -23,4 +23,6 @@ public interface MajorDao {
     Major updateMajorNameById(@Param("major_id") Integer majorId,String name,@Param("college_name") String collegeName);
     // 删除专业
     int deleteMajor(String name);
+    //判断学院专业对应
+    String findCollegeByMajorName(String name);
 }
