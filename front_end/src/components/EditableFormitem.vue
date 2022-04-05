@@ -66,7 +66,6 @@ export default {
                 if(valid){
                     //匹配后端格式
                     let postData = {
-                        status: this.userData.status,
                         role: this.userData.role, 
                         number: this.userData.number,
                         password: this.userData.password,

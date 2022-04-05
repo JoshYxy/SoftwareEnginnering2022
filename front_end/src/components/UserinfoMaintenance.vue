@@ -15,15 +15,15 @@
           text-align:center 
           :hide-required-asterisk=true
           >
-            <el-form-item prop="college" label="学院">
-                <el-select v-model="user.college" value-key="name" placeholder="学院">
+            <el-form-item prop="college_" label="学院">
+                <el-select v-model="user.college_" value-key="name" placeholder="学院">
                 <el-option :key="colleges.id" :value="colleges" :label="colleges.name" v-for="colleges in collegeData" ></el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item prop="major_" label="专业">
-                <el-select v-model="user.major_" placeholder="专业">
-                <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in user.college.major" ></el-option>
+            <el-form-item prop="major" label="专业">
+                <el-select v-model="user.major" placeholder="专业">
+                <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in user.college_.majors" ></el-option>
                 </el-select>
             </el-form-item>
             
@@ -104,13 +104,14 @@ export default {
           stu_id: null,
           teach_id: null,
           password: '',
-          major_: '',
+          major: '',
           college: '',
+          college_:{}
         },
 
         rules: {
             college: [{required: true, message: '请选择学院', trigger: 'change'}],
-            major_: [{required: true, message: '请选择专业', trigger: 'change'}],
+            major: [{required: true, message: '请选择专业', trigger: 'change'}],
             role: [{required: true, message: '请选择身份', trigger: 'change'}],
             name: [{required: true, message: '姓名不能为空', trigger: 'blur'},
                 {validator: validName, trigger: ['blur', 'change']}],
@@ -125,35 +126,42 @@ export default {
         },
     }
   },
-  watch:{
-    "user.college.name": {
-      handler(){
-        // console.log(123)
-        // console.log(this.user)
-        this.user.major_='';  
-      },  
-    }
-  },
+  // watch:{
+  //   "user.college.name": {
+  //     handler(){
+  //       // console.log(123)
+  //       // console.log(this.user)
+  //       this.user.major='';  
+  //     },  
+  //   }
+  // },
   methods: {
       startChange(){
         this.dialogFormVisible = true
+        // console.log(this.collegeData)
         //从数据库获取user信息
         //或许不用，父组件信息更新，子组件自动更新
-        this.user.major_=this.major_b//开始时major会因为college的更新被清除，简单解决方案
+        // for(let i in this.collegeData) {
+          
+        //   if(this.collegeData[i].name === this.user.college){
+        //     this.user.college = this.collegeData[i]
+        //     console.log(1)}
+        // }
+        this.user.major=this.userInfo.major//开始时major会因为college的更新被清除，简单解决方案
       },
       cancel(){
         this.dialogFormVisible = false
         this.user=JSON.parse(JSON.stringify(this.userInfo))
         for(let i in this.collegeData) {
           if(this.collegeData[i].name === this.user.college)
-            this.user.college = this.collegeData[i]
+            this.user.college_ = this.collegeData[i]
         }
       },
       submit(){
       this.$refs['user'].validate(valid => {
         if(valid){
             
-            this.user.college = this.user.college.name
+            this.user.college = this.user.college_.name
             axios.post('http://localhost:8081/admin/user/info', this.user)
                 .then(function(resp){//修改成功关闭修改界面
                   console.log(resp)
@@ -161,7 +169,7 @@ export default {
                   this.$emit('changeInfo', this.user);  
                   for(let i in this.collegeData) {
                     if(this.collegeData[i].name === this.user.college)
-                      this.user.college = this.collegeData[i]
+                      this.user.college_ = this.collegeData[i]
                   }                  
                 }).catch(error => {//修改失败留在修改界面
                   if(error.response.status == 420){
@@ -169,10 +177,7 @@ export default {
                     this.userData.id = ''
                   }
                 })
-            for(let i in this.collegeData) {
-              if(this.collegeData[i].name === this.user.college)
-                this.user.college = this.collegeData[i]
-            }   
+   
         }
         else{
           console.log('error ssssubmit');
@@ -182,12 +187,19 @@ export default {
         
     }
   },
-  created: function(){
-    this.user=JSON.parse(JSON.stringify(this.userInfo))
-    for(let i in this.collegeData) {
-      if(this.collegeData[i].name === this.user.college)
-        this.user.college = this.collegeData[i]
-    }
+  created(){
+    this.user=this.userInfo
+    // this.user=JSON.parse(JSON.stringify(this.userInfo))
+    // for(let i in this.collegeData) {
+    //   if(this.collegeData[i].name === this.user.college)
+    //     // this.$set(this.user, 'college_', this.collegeData[i])
+    //     this.user.college_ = this.collegeData[i]
+    // }
+    this.$watch("user.college_.name", function(){//watch放在这防止major在college初始化时被修改
+        this.user.major='';  
+      }  
+    )
+    
     console.log(this.user)
   }
 }

@@ -22,7 +22,7 @@
         </div>
       </template>
     </el-upload>
-    <el-form id="admin_container" ref="userData" :model="userData" :rules="rules" autocomplete="on"  text-align: center>
+    <el-form id="admin_container" ref="userData" :model="userData" :rules="rules" autocomplete="off"  text-align: center>
       <el-form-item prop="role">
         <el-select v-model="userData.role" placeholder="角色">
           <el-option label="学生" value="student"></el-option>
@@ -30,15 +30,15 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item class="college" prop="college">
-        <el-select v-model="userData.college" value-key="name" placeholder="学院">
-          <el-option :key="colleges.id" :value="colleges" :label="colleges.name" v-for="colleges in collegeData" ></el-option>
+      <el-form-item class="college" prop="college_">
+        <el-select v-model="userData.college_" value-key="name" placeholder="学院">
+          <el-option :key="college.id" :value="college" :label="college.name" v-for="college in collegeData" ></el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item class="major" prop="major" >
         <el-select v-model="userData.major" placeholder="专业">
-          <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in userData.college.major" ></el-option>
+          <el-option :key="major.id" :value="major.name" :label="major.name" v-for="major in userData.college_.majors" ></el-option>
         </el-select>
       </el-form-item>
       
@@ -130,7 +130,7 @@ export default {
         { 
           id: 1,
           name: '计算机科学技术学院', 
-          major: [
+          majors: [
               {id: 1, name: '大数据'},
               {id: 2, name: '信息安全'}
           ]
@@ -138,7 +138,7 @@ export default {
         { 
           id: 1,
           name: '生命科学学院', 
-          major: [
+          majors: [
               {id: 1, name: '生物'},
               {id: 2, name: '123'}
           ]
@@ -146,7 +146,7 @@ export default {
         { 
           id: 1,
           name: '软件工程学院', 
-          major: [
+          majors: [
               {id: 1, name: '软件工程'},
           ]
         },
@@ -164,12 +164,14 @@ export default {
         teach_id: null,
         password: '123456',
         major: '',
-        college: {},
+        college_: {name:''},
+        college: '',
+        status: ''
       },
       collegeBackup: {},
       majorBackup: '',
       rules: {
-        college: [{required: true, message: '请选择学院', trigger: 'change'}],
+        college_: [{required: true, message: '请选择学院', trigger: 'change'}],
         major: [{required: true, message: '请选择专业', trigger: 'change'}],
         role: [{required: true, message: '请选择身份', trigger: 'change'}],
         stu_id: [{required: true, message: '学号不能为空', trigger: 'blur'},
@@ -191,7 +193,7 @@ export default {
   },
   watch:{
     //如果没有.name会出错，因为在college = college.name赋值中改变了college，但不会认为college.name改变（此时不希望watch被触发）    
-    "userData.college.name": {
+    "userData.college_.name": {
       handler(){
         // console.log(this.userData.college)
         this.userData.major='';  
@@ -200,39 +202,40 @@ export default {
   },
   methods:{
     submit(){
-      this.$refs['userData'].validate(valid => {
+      this.$refs['userData'].validate(async valid => {
         if(valid){
-          if(this.userData.role == 'student')
+          if(this.userData.role == 'student'){
             this.userData.number = this.userData.stu_id
-          if(this.userData.role == 'teacher')
+            this.userData.status = 'studying'
+          }
+          if(this.userData.role == 'teacher'){
             this.userData.number = this.userData.teach_id
-          this.collegeBackup = this.userData.college
-          this.majorBackup = this.userData.major
-          this.userData.college = this.userData.college.name
+            this.userData.status = 'working'
+          }
+          this.userData.college = this.userData.college_.name
+          // console.log(this.userData)
           // axios.post('http://localhost:8081/register', null, {params:this.userData})
-          axios.post('http://localhost:8081/admin/new', this.userData)
-          .then(function(resp){
-            console.log(resp)
-            alert('提交成功')
-              
-          }).catch(error => {
-            if(error.response.status == 421){
-              if(this.userData.role == 'student')
-                alert('学号已存在')
-              else
-                alert('工号已存在')
-              this.userData.stu_id = ''
-              this.userData.teach_id = ''
-            }
-            if(error.response.status == 420){
-              alert('身份证已存在');
-              this.userData.id = ''
-            }
-            console.dir(error);
-          })
-          console.log(this.userData)
-          this.userData.college = this.collegeBackup
-          this.userData.major = this.majorBackup
+          await axios.post('http://localhost:8081/admin/new', this.userData)
+            .then(function(resp){
+              console.log(resp)
+              alert('提交成功')
+                
+            }).catch(error => {
+              if(error.response.status == 421){
+                if(this.userData.role == 'student')
+                  alert('学号已存在')
+                else
+                  alert('工号已存在')
+                this.userData.stu_id = ''
+                this.userData.teach_id = ''
+              }
+              if(error.response.status == 420){
+                alert('身份证已存在');
+                this.userData.id = ''
+              }
+              console.dir(error);
+            })
+          // console.log(this.userData)
         }
         else{
           console.log('error ssssubmit');
@@ -259,6 +262,21 @@ export default {
           alert(error.response.message)
         })
     }
+  },
+  async created() {
+    await axios.get("http://localhost:8081/admin/edu")
+      .then(res => {
+        this.collegeData = res.data.data
+        for(let i in this.collegeData) {//替换变量名,对应后端数据
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+          this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+        }
+      }).catch(error => {
+        alert('获取服务器信息失败')
+        console.dir(error);
+      });
   }
 }
 

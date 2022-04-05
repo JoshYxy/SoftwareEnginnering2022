@@ -1,9 +1,6 @@
 <template>
   <div class="info">
     <h1>信息查询</h1>
-
-    <h2>施工中。。。。。。</h2>
-    <img alt="Vue logo" src="../assets/logo.png">
     <!-- table-layout为fixed时出错 -->
     <el-table class="table" :data="userData" >
       <el-table-column fixed prop="number" label="Number" width="120" />
@@ -13,11 +10,11 @@
       <el-table-column prop="email" label="Email" width="180" />
       <el-table-column prop="id" label="Id" width="180" />
       <el-table-column prop="college" label="College" width="180" />
-      <el-table-column prop="major_" label="Major" width="150" />
+      <el-table-column prop="major" label="Major" width="150" />
       <el-table-column prop="password" label="Password" width="150" />
       <el-table-column fixed="right" label="Status" width="180">
       <template #default="scope">
-        <el-radio-group v-model="scope.row.status" @change="updataStatus">
+        <el-radio-group v-model="scope.row.status" @change="updataStatus(scope.$index)">
           <el-radio v-if="scope.row.role=='student'" label="studying" >在读</el-radio>
           <el-radio v-if="scope.row.role=='student'" label="graduated" >毕业</el-radio>
           <el-radio v-if="scope.row.role=='teacher'" label="working" >在岗</el-radio>
@@ -31,7 +28,7 @@
           @changeInfo="updateUser(scope.$index,$event)" 
           :userInfo="scope.row" 
           :collegeData="this.collegeData" 
-          :major_b="this.userData[scope.$index].major_" />
+          :major_b="this.userData[scope.$index].major" />
         <!-- </userinfo-maintenance> -->
         <!-- <el-switch @change="test" on-value="1" off-value="0" v-model="scope.row.role"> -->
         <!-- 向组件传入用户id -->
@@ -79,30 +76,32 @@ export default {
             },
         ],
         userData: [
-            {
-            number: 1,
-            name: 'undefined',
-            role: 'student',
-            phone: '13332221111',
-            email: '123@qq.com',
-            id: '311222322222111111',
-            status: 'studying',
-            college: '计算机科学技术学院', 
-            major_: '大数据',
-            password: '123455'
-            },
-            {
-            number: 2,
-            name: 'un1ed',
-            role: 'teacher',
-            phone: '13332221111',
-            email: '123@qq.com',
-            id: '31122232222221',
-            status: 'working',
-            major_: '信息安全',
-            college: '计算机科学技术学院', 
-            password: '123455'
-            }
+            // {
+            // number: 1,
+            // name: 'undefined',
+            // role: 'student',
+            // phone: '13332221111',
+            // email: '123@qq.com',
+            // id: '311222322222111111',
+            // status: 'studying',
+            // college: '计算机科学技术学院', 
+            // college_:{},
+            // major: '大数据',
+            // password: '123455'
+            // },
+            // {
+            // number: 2,
+            // name: 'un1ed',
+            // role: 'teacher',
+            // phone: '13332221111',
+            // email: '123@qq.com',
+            // id: '31122232222221',
+            // status: 'working',
+            // major: '信息安全',
+            // college: '计算机科学技术学院', 
+            // college_:{},
+            // password: '123455'
+            // }
         ],
       }
   },
@@ -117,29 +116,35 @@ export default {
       this.userData[index].name=e.name;
       this.userData[index].id=e.id;
       this.userData[index].phone=e.phone;
-      this.userData[index].major_=e.major_;
+      this.userData[index].major=e.major;
       this.userData[index].email=e.email;
       this.userData[index].password=e.password;
       this.userData[index].college=e.college;      
     },  
-    updataStatus() {
-      axios.post('http://localhost:8081/admin/user/info', this.user)
+    updataStatus(index) {
+      axios.post('http://localhost:8081/admin/user/info', this.userData[index])
+      .catch(error =>{
+        console.dir(error)
+      })
     },
   },
 
-  created() {
+  async created() {
       //获取用户信息
-    axios.get('http://localhost:8081/admin/users')
+    await axios.get('http://localhost:8081/admin/users')
       .then(res => {
-        this.userData = res
+                console.log(res)
+        this.userData = res.data.data
       }).catch(error => {
         alert("服务器访问失败")
         console.dir(error);
       });
       //获取学院信息
-    axios.get("http://localhost:8081/admin/edu")
+    // console.log(this.userData)
+    await axios.get("http://localhost:8081/admin/edu")
       .then(res => {
-        this.collegeData = res
+
+        this.collegeData = res.data.data
         for(let i in this.collegeData) {//替换变量名,对应后端数据
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
@@ -151,6 +156,13 @@ export default {
         alert('获取服务器信息失败')
         console.dir(error);
       });
+    for(let i in this.userData) {
+      for(let j of this.collegeData) {
+        if(j.name == this.userData[i].college)
+          this.userData[i].college_ = j
+      }
+    }
+    console.log(this.userData)
   }
 }
 </script>

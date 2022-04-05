@@ -14,7 +14,7 @@
         <span class="custom-tree-node">
           <span>{{ data.name }}</span>
           <span>
-            <a v-if="data.majors" @click="append(data)"> 新增专业 </a>
+            <a v-if="data.majors" @click="append(node, data)"> 新增专业 </a>
      
             <a @click="openAlter(node, data)"> 修改 </a>
             <a @click="openRemove(node, data)"> 删除 </a>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 export default {
@@ -39,48 +40,41 @@ export default {
         label: 'name',
       },
       collegeData: [
-        { 
-          id: 1,
-          name: '计算机科学技术学院', 
-          majors: [
-              {id: 1, name: '大数据'},
-              {id: 2, name: '信息安全'}
-          ]
-        },
-        { 
-          id: 2,
-          name: '生命科学学院', 
-          majors: [
-              {id: 1, name: '生物'},
-              {id: 2, name: '123'}
-          ]
-        },
-        { 
-          id: 3,
-          name: '软件工程学院', 
-          majors: [
-              {id: 1, name: '软件工程'},
-          ]
-        },
-      ],
+        {
+          id:0,
+          name:'1',
+          majors:{id:1,name:'2'}
+        }
+      ]
     }
   },
   methods: {
+    setId() {//根据数据库中“新的学院xx”“新的专业xx”后的数字设置id，避免名称重复
+      for(let i of this.collegeData)
+      {
+        if(i.name.indexOf('新的学院') > -1) this.id = Math.max(this.id, parseInt(i.name.substr(4)))
+        for(let j of i.majors) {
+          if(j.name.indexOf('新的专业') > -1) this.id = Math.max(this.id, parseInt(j.name.substr(4)))
+        }
+        // this.id = Math.max(this.id, i.name.slice(9))
+      }
+      // console.log(this.id)
+    },
     appendCollege() {
       const data = {id: this.id++, name: '新的学院'+this.id, majors:[]}
       
       axios.post('http://localhost:8081/admin/edu/college/new',{name: data.name})
         .then(res => {
           console.log(res)
-          this.collegeData.push(data)
-          this.openAlter(data)
+          // this.collegeData.push(data)
+          // this.openAlter(data)
         }).catch(error => {
           alert("学院名称重复")
           console.dir(error);
         });
       
     },
-    append(data) {
+    append(node, data) {
       const newChild = { id: this.id++, name: '新的专业'+this.id}
       if (!data.majors) {
         data.majors = []
@@ -89,7 +83,7 @@ export default {
         .then(res => {
           console.log(res)
           data.majors.push(newChild)
-          this.openAlter(newChild)
+          this.openAlter(node, newChild)
           this.collegeData = [...this.collegeData]//更新数据，刷新页面
         }).catch(error => {
           alert("专业名称重复")
@@ -122,8 +116,8 @@ export default {
         }
       )
         .then(() => {
-          if(data.majors) { //修改学院
-            axios.delete('http://localhost:8081/admin/edu/college',{collegeId: data.id, name: data.name})
+          if(data.majors) { //删除学院
+            axios.delete('http://localhost:8081/admin/edu/college',{data: {collegeId: data.id, name: data.name}})//delete传参需多裹一层{data:}
               .then(res => {
                 console.log(res)
                 this.remove(node, data)
@@ -134,7 +128,7 @@ export default {
               });
           }
           else {
-            axios.delete('http://localhost:8081/admin/edu/major',{majorId: data.id, name: data.name, collegeName: node.parent.name})
+            axios.delete('http://localhost:8081/admin/edu/major',{data:{majorId: data.id, name: data.name, collegeName: node.parent.data.name}})
               .then(res => {
                 console.log(res)
                 this.remove(node, data)
@@ -166,20 +160,22 @@ export default {
                 this.alter(data, value)
                 ElMessage({type: 'success', message: `修改成功`})
               }).catch(error => {
-                if(error.response.status == 426)
+                if(error.response.status == 428){
                   ElMessage.error('学院名称重复')
+                }
                 console.dir(error);
               });
           }
           else { //修改专业
-            axios.post('http://localhost:8081/admin/edu/major',{majorId: data.id, name: value, collegeName: node.parent.name})
+            axios.post('http://localhost:8081/admin/edu/major',{majorId: data.id, name: value, collegeName: node.parent.data.name})
               .then(res => {
                 console.log(res)
                 this.alter(data, value)
                 ElMessage({type: 'success', message: `修改成功`})
               }).catch(error => {
-                if(error.response.status == 426)
+                if(error.response.status == 429)
                   ElMessage.error('专业名称重复')
+                
                 console.dir(error);
               });        
           }
@@ -193,10 +189,10 @@ export default {
     }
    
   },
-  created() {
-    axios.get("http://localhost:8081/admin/edu")
+  async created() {
+    await axios.get("http://localhost:8081/admin/edu")
       .then(res => {
-        this.collegeData = res
+        this.collegeData = res.data.data
         for(let i in this.collegeData) {//替换变量名,对应后端数据
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
@@ -208,6 +204,7 @@ export default {
         alert('获取服务器信息失败')
         console.dir(error);
       });
+    this.setId()
   }
 }
 
