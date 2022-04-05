@@ -140,7 +140,7 @@ public class UserController extends MainController{
 
 
     //用户修改个人信息
-    //前端一定要返回完整的User对象，不然就寄了
+    //前端一定要返回完整的User对象
     //判断密码重复
     @PostMapping("/info")
     public Result changeInfo(@RequestBody User tempUser){

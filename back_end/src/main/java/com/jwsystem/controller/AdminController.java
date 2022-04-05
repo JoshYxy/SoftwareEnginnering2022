@@ -93,33 +93,32 @@ public class AdminController extends MainController{
         List<User> users = CSVUtils.getUserByCsv(multipartFile);
 
         //循环完成批量插入
-        //加入如果中途插入失败了，跳过错过的该条，并且加入对批量插入信息的处理，比如不存在的学院怎么办？是新增，还是不插入此条信息？返回错误总数
+        //加入如果中途插入失败了，跳过错过的该条，并且返回错误总数
+        int cnt =0;
         for (User temp : users) {
             Result res = register(temp);
-            System.out.println(res.getMsg());
+            String s = res.getMsg();
+            if(!s.equals("录入信息成功")) cnt++;
+            System.out.println(s);
+        }
+        if(cnt!=0){
+            response.setStatus(WRONG_RES);
+            String s = "批量导入信息完成，有" + cnt +"条数据导入失败";
+            return Result.fail(s,cnt);
         }
         return Result.succ("批量导入信息成功");
     }
-
-//    //管理员取得学院和专业信息
-//    @GetMapping("/new")
-//    public Result getRegInfo(){
-//        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
-//
-//        /*
-//        取出全部学院和专业信息，然后放在result的data里返回
-//        List<CollegeVO>
-//        每个college对象里有一个map<Major>
-//         */
-//
-//        return Result.succ("查询成功",collegeList);
-//    }
 
     //管理员单条录入信息
     @PostMapping("/new")
     public Result register(@RequestBody User tempUser){
         //增加数据格式检查功能
         System.out.println("进入了register...");
+        String status = tempUser.getStatus();
+        if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("状态设置不符合规定");
+        }
         if(tempUser.getRole().equals("student")){
             //学生
             if(stuServiceImp.selectStuById(tempUser.getId()) != null){
@@ -133,15 +132,17 @@ public class AdminController extends MainController{
             }
 
             if(!stuServiceImp.legalNumber(tempUser.getNumber())){
-                //response.setStatusWrongNumber(WRONG_NUMBER);
+                response.setStatus(WRONG_DATA);
                 return Result.fail("学号需为6位整数！");
             }
 
             if(!stuServiceImp.findUserMajor(tempUser.getMajor())){
+                response.setStatus(NO_MAJOR);
                 return Result.fail("专业不存在！");
             }
 
             if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                response.setStatus(NO_COLLEGE);
                 return Result.fail("无法找到专业对应学院！");
             }
 
@@ -159,15 +160,17 @@ public class AdminController extends MainController{
             }
 
             if(!teaServiceImp.legalNumber(tempUser.getNumber())){
-                //response.setStatusWrongNumber(WRONG_NUMBER);
+                response.setStatus(WRONG_DATA);
                 return Result.fail("工号需为8位整数！");
             }
 
             if(!teaServiceImp.findUserMajor(tempUser.getMajor())){
+                response.setStatus(NO_MAJOR);
                 return Result.fail("专业不存在！");
             }
 
             if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                response.setStatus(NO_COLLEGE);
                 return Result.fail("无法找到专业对应学院！");
             }
 
@@ -182,6 +185,7 @@ public class AdminController extends MainController{
 
     //管理员修改用户信息（包括状态）
     //加入身份证重复的判断
+    //加入学院专业是否存在的检测
     @PostMapping("/user/info")
     public Result changeUserInfo(@RequestBody User tempUser){
         //管理员可以修改用户除学工号以外的所有信息
@@ -189,13 +193,53 @@ public class AdminController extends MainController{
         if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
             response.setStatus(WRONG_DATA);
             return Result.fail("状态设置不符合规定");
-            //需要分别对状态选项做出限制吗？
         }
         if(tempUser.getRole().equals("student")){
             //学生
+            Student stuInDB = stuServiceImp.selectStuByNum(tempUser.getNumber());
+            String idInDB = stuInDB.getId();
+            if(!idInDB.equals(tempUser.getId())){
+                //身份证被修改，检查是否重复
+                Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
+                Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
+                if(temp1!=null || temp2!=null){
+                    response.setStatus(CONFLICT_ID);
+                    return Result.fail("修改后的身份证号已被注册！",tempUser.getId());
+                }
+            }
+            if(!stuServiceImp.findUserMajor(tempUser.getMajor())){
+                response.setStatus(NO_MAJOR);
+                return Result.fail("专业不存在！");
+            }
+
+            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                response.setStatus(NO_COLLEGE);
+                return Result.fail("无法找到专业对应学院！");
+            }
             stuServiceImp.updateStuInfoByAdmin(tempUser);
         } else if(tempUser.getRole().equals("teacher")){
             //老师
+            Teacher teaInDB = teaServiceImp.selectTeaByNum(tempUser.getNumber());
+            String idInDB = teaInDB.getId();
+            if(!idInDB.equals(tempUser.getId())){
+                //身份证被修改，检查是否重复
+                Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
+                Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
+                if(temp1!=null || temp2!=null){
+                    response.setStatus(CONFLICT_ID);
+                    return Result.fail("修改后的身份证号已被注册！",tempUser.getId());
+                }
+            }
+            if(!teaServiceImp.findUserMajor(tempUser.getMajor())){
+                response.setStatus(NO_MAJOR);
+                return Result.fail("专业不存在！");
+            }
+
+            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
+                response.setStatus(NO_COLLEGE);
+                return Result.fail("无法找到专业对应学院！");
+            }
+
             teaServiceImp.updateTeaInfoByAdmin(tempUser);
         }
         else{
@@ -219,15 +263,10 @@ public class AdminController extends MainController{
     @GetMapping("/edu")
     public Result showInfo(){
         List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
-        /*
-        取出全部学院和专业信息，然后放在result的data里返回
-        List<College>
-        每个college对象里有一个List<Major>
-         */
         return Result.succ("查询成功",collegeList);
     }
 
-    //管理员增加新的学院 有问题
+    //管理员增加新的学院
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody College college){
         if(eduServiceImp.insertCollege(college)){
@@ -238,7 +277,7 @@ public class AdminController extends MainController{
         }
     }
 
-    //管理员增加新的专业 同上 同名判断
+    //管理员增加新的专业
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody Major major){
         if(eduServiceImp.insertMajor(major)) {
@@ -249,14 +288,14 @@ public class AdminController extends MainController{
         }
     }
 
-    //管理员删除已有学院 不存在的判断
+    //管理员删除已有学院
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
         boolean exist = eduServiceImp.findCollegeByName(college);
         //存在，进行删除，并且删除对应的所有专业
         if(exist){
-            eduServiceImp.deleteCollege(college); //记得要删除对应的所有专业
+            eduServiceImp.deleteCollege(college);
         }
         else{
             response.setStatus(NO_COLLEGE);

@@ -12,6 +12,8 @@ public interface TeaService {
     User getUserByNumber(String number);
     //根据身份证号查找
     Teacher selectTeaById(String id);
+    //根据工号查找
+    Teacher selectTeaByNum(String number);
     //查找所有老师信息，返回list user
     List<User> getAllUserInfos();
     //根据number修改用户密码

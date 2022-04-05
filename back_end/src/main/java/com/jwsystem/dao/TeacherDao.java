@@ -21,6 +21,8 @@ public interface TeacherDao {
     List<User> getAllTea();
     //根据身份证号查找
     Teacher selectById(String id);
+    //根据工号查找
+    Teacher selectByNum(String number);
     //查看指定老师信息
     User getUserByNumber(String number);
     //老师查看个人信息

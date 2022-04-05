@@ -37,6 +37,11 @@ public class StuServiceImp implements StuService {
     }
 
     @Override
+    public Student selectStuByNum(String number) {
+        return studentDao.selectByNum(number);
+    }
+
+    @Override
     public List<User> getAllUserInfos() {
         return studentDao.getAllStu();
     }

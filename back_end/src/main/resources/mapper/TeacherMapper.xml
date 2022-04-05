@@ -78,6 +78,16 @@
             id = #{id}
     </select>
 
+    <!--根据工号查找-->
+    <select id="selectByNum" resultType="com.jwsystem.entity.Teacher">
+        SELECT
+            *
+        FROM
+            teacher
+        WHERE
+            number = #{number}
+    </select>
+
     <!--查看教师信息-->
     <select id="getUserByNumber" resultType="com.jwsystem.entity.User">
         SELECT

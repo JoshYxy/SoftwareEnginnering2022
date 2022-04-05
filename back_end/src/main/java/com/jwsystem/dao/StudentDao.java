@@ -20,6 +20,8 @@ public interface StudentDao {
     List<User> getAllStu();
     //根据身份证号查找
     Student selectById(String id);
+    //根据学号查找
+    Student selectByNum(String number);
     //查看指定学生信息
     User getUserByNumber(String number);
     //学生查看个人信息

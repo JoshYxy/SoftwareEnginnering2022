@@ -37,6 +37,11 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
+    public Teacher selectTeaByNum(String number) {
+        return teacherDao.selectByNum(number);
+    }
+
+    @Override
     public List<User> getAllUserInfos() {
         return teacherDao.getAllTea();
     }

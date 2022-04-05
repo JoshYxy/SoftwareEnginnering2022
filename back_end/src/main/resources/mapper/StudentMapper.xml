@@ -79,6 +79,16 @@
             id = #{id}
     </select>
 
+    <!--根据学号查找-->
+    <select id="selectByNum" resultType="com.jwsystem.entity.Student">
+        SELECT
+            *
+        FROM
+            student
+        WHERE
+            number = #{number}
+    </select>
+
     <!--查看指定学生信息-->
     <select id="getUserByNumber" resultType="com.jwsystem.entity.User">
         SELECT

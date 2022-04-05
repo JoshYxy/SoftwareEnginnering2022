@@ -12,6 +12,8 @@ public interface StuService {
     User getUserByNumber(String number);
     //根据身份证号查找
     Student selectStuById(String id);
+    //根据学号查找
+    Student selectStuByNum(String number);
     //查找所有学生信息，返回list user
     List<User> getAllUserInfos();
     //根据number修改用户密码
