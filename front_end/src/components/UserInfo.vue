@@ -3,7 +3,7 @@
     <h1>信息查询</h1>
 
     <h2>施工中。。。。。。</h2>
-    <img alt="Vue logo" src="../assets/logo.png">
+<!--    <img alt="Vue logo" src="../assets/logo.png">-->
     <!-- table-layout为fixed时出错 -->
     <el-table class="table" :data="userData" >
       <el-table-column fixed prop="number" label="Number" width="120" />

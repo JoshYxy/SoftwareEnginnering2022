@@ -1,10 +1,9 @@
 <template>
-  <div >
+  <div class="majorMaintenance" >
     <h2 style="margin-right:250px">专业信息管理</h2>
-    <el-button type='primary' @click="appendCollege()"> 新增学院 </el-button>
+    <el-button style="display:block;margin:0 615px auto auto"  type='primary' @click="appendCollege()"> 新增学院 </el-button>
     <el-tree
       :data="this.collegeData"
-    
       default-expand-all
       :props="this.defaultProps" 
       :expand-on-click-node="false"
@@ -14,10 +13,10 @@
         <span class="custom-tree-node">
           <span>{{ data.name }}</span>
           <span>
-            <a v-if="data.majors" @click="append(data)"> 新增专业 </a>
+            <a v-if="data.majors" @click="append(data)" style="font-weight: bold"> 新增专业 </a>
      
-            <a @click="openAlter(data)"> 修改 </a>
-            <a @click="openRemove(node, data)"> 删除 </a>
+            <a @click="openAlter(data)" style="font-weight: bold"> 修改 </a>
+            <a @click="openRemove(node, data)" style="font-weight: bold"> 删除 </a>
           </span>
         </span>
       </template>
@@ -164,8 +163,11 @@ export default {
 <style>
 .el-tree-container{
   width:600px;
-  margin-left: 150px;
-
+  border: grey 2px solid;
+  margin-top: 20px;
+  margin-left: 50px;
+  padding: 20px 200px 20px 0;
+  position: absolute;
 }
 .el-tree-node__expand-icon{
   width:300px;
@@ -187,7 +189,8 @@ export default {
   align-items: center;
   justify-content: space-between;
   font-size: 14px;
-  padding-right: 8px;  
+  padding-right: 8px;
+  padding-left: 0;
   font-size: 16px;
 }
 </style>

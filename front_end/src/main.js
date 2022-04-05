@@ -6,11 +6,15 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from './router'
 import store from './store'
+import Icons from '@element-plus/icons'
 
 const app = createApp(App)
 app.use(VueAxios, axios)
 app.use(ElementPlus)
 app.use(store).use(router).mount('#app')
+Object.keys(Icons).forEach(key => {
+    app.component(key, Icons[key])
+})
 
 axios.interceptors.request.use(config => {
     /* 判断token是否存在和是否需要token验证的路由 */

@@ -7,9 +7,10 @@ import WelcomePage from '../components/WelcomePage.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import MajorMaintenance from '../components/MajorMaintenance.vue'
 // import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
-import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
+// import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 import EduMaintenance from '../components/course/EduMaintenance.vue'
+import CoursePermission from "@/components/course/CoursePermission";
 const routes = [
   {
     path: '/',
@@ -57,18 +58,6 @@ const routes = [
         component: MajorMaintenance,
         meta: { role: ['admin'], nav_name: '学院专业管理'},
       },
-      // {
-      //   path: 'infochange',
-      //   name: 'infochange',
-      //   component: UserinfoMaintenance,
-      //   meta: { role: ['admin'] },
-      // },
-      {
-        path: 'privateinfo',
-        name: 'privateinfo',
-        component: PrivateinfoMaintnce,
-        meta: { role: ['admin','student','teacher'], nav_name: '个人信息' }
-      },
       {
         path: 'course',
         name: 'course',
@@ -80,6 +69,12 @@ const routes = [
         name: 'edu',
         component: EduMaintenance,
         meta: { role: ['admin'], nav_name: '教务管理'},
+      },
+      {
+        path: 'coursePermission',
+        name: 'coursePermission',
+        component: CoursePermission,
+        meta: { role: ['admin'], nav_name: '选课权限管理'}
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')
@@ -97,26 +92,26 @@ const router = createRouter({
   routes
 })
 //拦截器
-router.beforeEach((to, from, next) => {
-  if (to.path === '/login') {
-    next();
-  } 
-  else {
-    let token = localStorage.getItem('Authorization');
- 
-    if (token === null || token === '') {
-      alert("无权访问")
-      next('/login')
-    } 
-    else 
-    {
-      if(to.meta.role.indexOf(localStorage.getItem('role')) >= 0)
-        next()
-      else{
-        alert("无权访问")
-        next(false)
-      } 
-    }
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/login') {
+//     next();
+//   }
+//   else {
+//     let token = localStorage.getItem('Authorization');
+//
+//     if (token === null || token === '') {
+//       alert("无权访问")
+//       next('/login')
+//     }
+//     else
+//     {
+//       if(to.meta.role.indexOf(localStorage.getItem('role')) >= 0)
+//         next()
+//       else{
+//         alert("无权访问")
+//         next(false)
+//       }
+//     }
     // else {
     //   axios.post('http://localhost:8081/verify').then(function(resp){
     //         console.log(resp)
@@ -133,6 +128,6 @@ router.beforeEach((to, from, next) => {
     //       next(false);
     //     })
     // }
-  }
-});
+//   }
+// });
 export default router
