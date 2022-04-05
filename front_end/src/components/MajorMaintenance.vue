@@ -62,12 +62,13 @@ export default {
     },
     appendCollege() {
       const data = {id: this.id++, name: '新的学院'+this.id, majors:[]}
-      
+      const node = {}
       axios.post('http://localhost:8081/admin/edu/college/new',{name: data.name})
         .then(res => {
           console.log(res)
-          // this.collegeData.push(data)
-          // this.openAlter(data)
+          data.id = res.data.data
+          this.collegeData.push(data)
+          this.openAlter(node, data)
         }).catch(error => {
           alert("学院名称重复")
           console.dir(error);
@@ -82,6 +83,7 @@ export default {
       axios.post('http://localhost:8081/admin/edu/major/new',{collegeName: data.name, name: newChild.name})
         .then(res => {
           console.log(res)
+          newChild.id = res.data.data
           data.majors.push(newChild)
           this.openAlter(node, newChild)
           this.collegeData = [...this.collegeData]//更新数据，刷新页面

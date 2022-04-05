@@ -162,7 +162,7 @@ export default {
           this.userData[i].college_ = j
       }
     }
-    console.log(this.userData)
+    // console.log(this.userData)
   }
 }
 </script>

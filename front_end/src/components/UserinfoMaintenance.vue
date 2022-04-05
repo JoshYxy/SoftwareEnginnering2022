@@ -126,15 +126,18 @@ export default {
         },
     }
   },
-  // watch:{
-  //   "user.college.name": {
-  //     handler(){
-  //       // console.log(123)
-  //       // console.log(this.user)
-  //       this.user.major='';  
-  //     },  
-  //   }
-  // },
+  watch:{
+    "collegeData": {
+      handler(){
+        for(let i in this.collegeData) {
+          if(this.collegeData[i].name === this.user.college){
+            // console.log('fuck')
+            this.user["college_"]=this.collegeData[i]
+          }
+        }
+      }
+    }
+  },
   methods: {
       startChange(){
         this.dialogFormVisible = true
@@ -160,21 +163,17 @@ export default {
       submit(){
       this.$refs['user'].validate(valid => {
         if(valid){
-            
             this.user.college = this.user.college_.name
             axios.post('http://localhost:8081/admin/user/info', this.user)
-                .then(function(resp){//修改成功关闭修改界面
+                .then((resp) => {//修改成功关闭修改界面
                   console.log(resp)
                   this.dialogFormVisible = false
-                  this.$emit('changeInfo', this.user);  
-                  for(let i in this.collegeData) {
-                    if(this.collegeData[i].name === this.user.college)
-                      this.user.college_ = this.collegeData[i]
-                  }                  
+                  this.$emit('changeInfo', this.user);                 
                 }).catch(error => {//修改失败留在修改界面
+                  console.dir(error)
                   if(error.response.status == 420){
                     alert('身份证已存在');
-                    this.userData.id = ''
+                    this.user.id = ''
                   }
                 })
    
@@ -187,20 +186,20 @@ export default {
         
     }
   },
-  created(){
-    this.user=this.userInfo
-    // this.user=JSON.parse(JSON.stringify(this.userInfo))
-    // for(let i in this.collegeData) {
-    //   if(this.collegeData[i].name === this.user.college)
-    //     // this.$set(this.user, 'college_', this.collegeData[i])
-    //     this.user.college_ = this.collegeData[i]
-    // }
+  mounted(){
+    this.user=JSON.parse(JSON.stringify(this.userInfo))
+    for(let i in this.collegeData) {
+      if(this.collegeData[i].name === this.user.college){
+        console.log('fuck')
+        this.user["college_"]=this.collegeData[i]
+      } 
+    }
     this.$watch("user.college_.name", function(){//watch放在这防止major在college初始化时被修改
         this.user.major='';  
       }  
     )
     
-    console.log(this.user)
+    // console.log(this.user)
   }
 }
 
