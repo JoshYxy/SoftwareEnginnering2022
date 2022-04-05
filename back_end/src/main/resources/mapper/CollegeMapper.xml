@@ -44,6 +44,10 @@
         UPDATE COLLEGE SET name = #{name}
         where college_id = #{college_id}
     </select>
+    <select id="selectCollegeByName" resultType="com.jwsystem.entity.College">
+        SELECT *
+        FROM COLLEGE WHERE name = #{name}
+    </select>
     <!-- 删除学院 -->
     <delete id="deleteCollege">
         DELETE FROM COLLEGE WHERE name = #{name}

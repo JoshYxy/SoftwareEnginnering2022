@@ -275,7 +275,8 @@ public class AdminController extends MainController{
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody College college){
         if(eduServiceImp.insertCollege(college)){
-            return Result.succ("增加成功");
+            College inserted = eduServiceImp.selectCollegeByName(college);
+            return Result.succ("增加成功",inserted.getCollegeId());
         }else {
             response.setStatus(COLLEGE_CONFLICT);
             return Result.fail("增加失败");
@@ -286,7 +287,8 @@ public class AdminController extends MainController{
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody Major major){
         if(eduServiceImp.insertMajor(major)) {
-            return Result.succ("增加成功");
+            Major inserted = eduServiceImp.selectMajorByName(major);
+            return Result.succ("增加成功",inserted.getMajorId());
         }else{
             response.setStatus(MAJOR_CONFLICT);
             return Result.fail("增加失败");

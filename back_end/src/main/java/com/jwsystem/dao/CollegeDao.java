@@ -26,4 +26,6 @@ public interface CollegeDao {
     College updateCollegeNameById(@Param("college_id") Integer collegeId,String name);
     // 删除学院
     int deleteCollege(String name);
+
+    College selectCollegeByName(College college);
 }

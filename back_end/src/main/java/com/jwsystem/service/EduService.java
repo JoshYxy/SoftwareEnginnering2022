@@ -18,6 +18,10 @@ public interface EduService {
 
     Boolean findCollegeByName(College college);
 
+    College selectCollegeByName(College college);
+
+    Major selectMajorByName(Major major);
+
     //查询某专业
     Boolean findMajorById(Major major);
 

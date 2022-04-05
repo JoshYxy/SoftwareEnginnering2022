@@ -52,6 +52,16 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
+    public College selectCollegeByName(College college) {
+        return collegeDao.selectCollegeByName(college);
+    }
+
+    @Override
+    public Major selectMajorByName(Major major) {
+        return majorDao.selectMajorByName(major);
+    }
+
+    @Override
     public Boolean findMajorById(Major major) {
         return majorDao.findMajorById(major.getMajorId()) != null;
     }
