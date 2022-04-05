@@ -31,6 +31,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import axios from 'axios'
 import {Edit} from '@element-plus/icons-vue'
 export default {
@@ -50,24 +51,40 @@ export default {
             edited_info: this.data,//显示出来的值
         }
     },
+    watch: {
+        data: {
+            handler(){
+                this.edited_info=this.data;
+                this.user.info=this.data;
+            },
+        }
+    },
     methods: {
         submit() {
             //axios
             this.$refs['user'].validate(valid => {
                 if(valid){
                     //匹配后端格式
-                    axios.post('http://localhost:8081/user/info',
-                        {
-                            role: this.userData.role, 
-                            number: this.userData.number,
-                            password: this.userData.password,
-                            phone: this.label==='电话：'?this.user.info:this.userData.phone,
-                            email: this.label==='邮箱：'?this.user.info:this.userData.email,
+                    let postData = {
+                        status: this.userData.status,
+                        role: this.userData.role, 
+                        number: this.userData.number,
+                        password: this.userData.password,
+                        phone: this.label==='电话：'?this.user.info:this.userData.phone,
+                        email: this.label==='邮箱：'?this.user.info:this.userData.email,
+                    }
+                    axios.post('http://localhost:8081/user/info',postData) 
+                        .then(res =>{
+                            console.log(res)
+                            this.$emit('changeInfo', {label: this.label, value: this.user.info})
+                            this.edited_info=this.user.info
+                            this.edit=false
                         })
-                    this.$emit('changeInfo', {label: this.label, value: this.user.info})
-                    console.log(1)
-                    this.edited_info=this.user.info
-                    this.edit=false
+                        .catch(error => {
+                        alert("修改失败")
+                            console.dir(error)
+                        })
+
                 }
             })
         },

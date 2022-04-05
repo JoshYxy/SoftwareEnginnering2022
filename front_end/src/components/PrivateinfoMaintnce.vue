@@ -103,6 +103,19 @@ export default {
         checkPassword: '',
       },
       userData: {
+        number: 1,
+        role: '',
+        name: '',
+        id: '',
+        phone: '',//phone的真值存在editable_formitem里，此处的不能传给后端
+        email: '',//email的真值存在editable_formitem里，此处的不能传给后端
+        stu_id: null,
+        teach_id: null,
+        password: '',
+        major: '',
+        college: ''
+      },
+      userData_b: {
         number: 220001,
         role: 'student',
         name: '张晓王',
@@ -140,13 +153,10 @@ export default {
           this.dialogFormVisible=false
                             
           this.userData.password=this.userPassword.password  
-          axios.post('http://localhost:8081/user/info',
-            {
-              role: this.userData.role, 
-              number: this.userData.number,
-              password: this.userData.password,
-              phone: this.userData.phone,
-              email: this.userData.email,
+          axios.post('http://localhost:8081/user/info',this.userData)
+          .catch(error => {
+            alert("修改失败")
+              console.dir(error)
             })
         }
       })
@@ -155,7 +165,9 @@ export default {
   created() {
     axios.get('http://localhost:8081/user/info')
           .then(res => {
-            this.userData = res
+            this.userData = res.data.data
+            console.log(this.userData)
+  
           }).catch(error => {
             alert("与服务器连接失败")
             console.dir(error);
