@@ -91,6 +91,11 @@ public class AdminController extends MainController{
 
         //从CSV文件批量获取User对象
         List<User> users = CSVUtils.getUserByCsv(multipartFile);
+        if(users == null){
+            //csv文件为空
+            response.setStatus(WRONG_RES);
+            return Result.fail("csv文件读取失败！请检查文件格式或文件是否为空！");
+        }
 
         //循环完成批量插入
         //加入如果中途插入失败了，跳过错过的该条，并且返回错误总数

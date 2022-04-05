@@ -33,27 +33,31 @@ public class CSVUtils {
         ArrayList<User> users = new ArrayList<>();
 
         InputStreamReader in = null;
-        try {
-            in = new InputStreamReader(file.getInputStream(), "utf-8");
-            BufferedReader bufferedReader = new BufferedReader(in);
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] split = line.split(",");
-                User user = new User();
-                user.setRole(splitResult(split[0]));
-                user.setNumber(splitResult(split[1]));
-                user.setId(splitResult(split[2]));
-                user.setName(splitResult(split[3]));
-                user.setPassword(splitResult(split[4]));
-                user.setPhone(splitResult(split[5]));
-                user.setEmail(splitResult(split[6]));
-                user.setStatus(splitResult(split[7]));
-                user.setMajor(splitResult(split[8]));
-                user.setCollege(splitResult(split[9]));
-                users.add(user);
+        try{
+            try {
+                in = new InputStreamReader(file.getInputStream(), "utf-8");
+                BufferedReader bufferedReader = new BufferedReader(in);
+                String line = null;
+                while ((line = bufferedReader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    User user = new User();
+                    user.setRole(splitResult(split[0]));
+                    user.setNumber(splitResult(split[1]));
+                    user.setId(splitResult(split[2]));
+                    user.setName(splitResult(split[3]));
+                    user.setPassword(splitResult(split[4]));
+                    user.setPhone(splitResult(split[5]));
+                    user.setEmail(splitResult(split[6]));
+                    user.setStatus(splitResult(split[7]));
+                    user.setMajor(splitResult(split[8]));
+                    user.setCollege(splitResult(split[9]));
+                    users.add(user);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException e){
+            return null;
         }
         return users;
     }
