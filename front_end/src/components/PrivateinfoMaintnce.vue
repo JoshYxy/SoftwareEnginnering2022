@@ -8,7 +8,7 @@
     <el-form-item label="姓名：" class="form-label" >
       <span class="info-container">{{userData.name}}</span>
     </el-form-item>
-    <el-form-item label="学号：" class="form-label" >
+    <el-form-item label="学号/工号：" class="form-label" >
       <span class="info-container">{{userData.number}}</span>
     </el-form-item>
     <el-form-item label="身份证：" class="form-label" >
