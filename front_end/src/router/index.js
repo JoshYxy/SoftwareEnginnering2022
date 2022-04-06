@@ -7,10 +7,12 @@ import WelcomePage from '../components/WelcomePage.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import MajorMaintenance from '../components/MajorMaintenance.vue'
 // import UserinfoMaintenance from '../components/UserinfoMaintenance.vue'
-// import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
+import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 import EduMaintenance from '../components/course/EduMaintenance.vue'
-import CoursePermission from "@/components/course/CoursePermission";
+import CoursePermission from "@/components/course/CoursePermission"
+import OptionalCourse from "@/components/course/OptionalCourse"
+import TeacherCourse from "@/components/course/TeacherCourse";
 const routes = [
   {
     path: '/',
@@ -53,6 +55,12 @@ const routes = [
         meta: { role: ['admin'], nav_name: '用户信息管理' },
       },
       {
+        path: 'privateInfo',
+        name:'privateInfo',
+        component: PrivateinfoMaintnce,
+        meta: {role: ['teacher','student'],nav_name: '个人信息管理'}
+      },
+      {
         path: 'collegeinfo',
         name: 'collegeinfo',
         component: MajorMaintenance,
@@ -75,6 +83,18 @@ const routes = [
         name: 'coursePermission',
         component: CoursePermission,
         meta: { role: ['admin'], nav_name: '选课权限管理'}
+      },
+      {
+        path: 'optionalCourse',
+        name: 'optionalCourse',
+        component: OptionalCourse,
+        meta: { role: ['student'],nav_name: '可选课程查询'}
+      },
+      {
+        path: 'teacherCourse',
+        name:'teacherCourse',
+        component: TeacherCourse,
+        meta: { role: ['teacher'],nav_name: '课程维护'}
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')

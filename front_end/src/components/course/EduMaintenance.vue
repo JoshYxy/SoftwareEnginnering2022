@@ -2,15 +2,14 @@
     <div >
         <h2>教学时间设置</h2>
         <el-button @click="addCourse(-1)">增加第一节课</el-button>
-        <el-button type='primary' @click="submit">提交修改</el-button>
         <div class="course-container" v-for="(item, index) in startTime" :key="item.id">
             <span class="course-left">第{{index+1}}节课</span>
             <div class="course-right">
                 <el-time-select
                     v-model="startTime[index]"
-                    :min-time="index==0?'7:55':(endTime[index-1]?endTime[index-1]:'8:00')"
+                    :min-time="index===0?'7:55':(endTime[index-1]?endTime[index-1]:'8:00')"
                     :max-time="endTime[index]"
-                    :start="index==0?'8:00':(endTime[index-1]?endTime[index-1]:'8:00')"
+                    :start="index===0?'8:00':(endTime[index-1]?endTime[index-1]:'8:00')"
                     placeholder="上课时间"
                     step="00:05"
                     end="22:30"
@@ -24,11 +23,14 @@
                     step="00:05"
                     end="23:30"
                     />
-                <el-button @click="addCourse(index)">增加一节课</el-button>
-                <el-button @click="deleteCourse(index)">删除这节课</el-button>
+                <el-button type="primary" @click="addCourse(index)">增加一节课</el-button>
+                <el-button type="primary" @click="deleteCourse(index)">删除这节课</el-button>
                 <el-button @click="test(index)">test</el-button>
             </div>
         </div>
+
+      <el-button type='primary' @click="submit">提交修改</el-button>
+    </div>
         <div class="class-container">
             <h2>上课教室设置</h2>
             <el-input
@@ -82,7 +84,7 @@
 
             </el-card>
         </div>
-    </div>
+<!--    </div>-->
 </template>
 
 <script>
@@ -155,8 +157,8 @@ export default {
                 alert('教室号不能为空')
                 return
             }
-            var i;
-            i = this.classroom.findIndex((building) => building.name == this.newClassroom.name)//寻找classroom已有的教学楼中是否有newClassroom中的教学楼 
+          let i;
+          i = this.classroom.findIndex((building) => building.name === this.newClassroom.name)//寻找classroom已有的教学楼中是否有newClassroom中的教学楼
             if(i >= 0) {
                 if(this.classroom[i].room.indexOf(this.newRoom) > -1) {
                     alert('教室已存在，请勿重复添加')
@@ -268,7 +270,7 @@ export default {
 }
 .card-item-container .button2{
     width: 50%;
-    margin: 0px;
+    margin: 0;
 
 }
 .card-item {
@@ -314,13 +316,12 @@ export default {
 }
 .course-left{
     flex: 0;
-    margin-left:200px;
     min-width: 100px;
     padding-right:auto;
     /* padding-bottom:20px; */
     padding-left: auto;
-    margin:10px;
-    text-align:right;
+  margin: 10px;
+  text-align:right;
 }
 .course-right{
     max-width:800px;

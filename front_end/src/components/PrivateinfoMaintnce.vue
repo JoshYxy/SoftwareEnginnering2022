@@ -25,7 +25,7 @@
     <editable-formitem label="邮箱：" :data="userData.email" :rule="emailRules"></editable-formitem>
     <el-form-item label="密码：" class="form-label" @mouseover="buttonOn=true"
         @mouseout="buttonOn=false" >
-      <span class="info-container">{{userData.password}}</span>
+      <span class="info-container">*********</span>
 
       <el-button v-show="buttonOn" type="text" style="float:right" @click="editPassword()" >
         编辑<el-icon class="el-icon--right"><Edit /></el-icon>
@@ -43,6 +43,9 @@
           text-align:center 
           hide-required-asterisk
           >
+            <el-form-item label="旧密码">
+              <el-input type="text" name="password"/>
+            </el-form-item>
             <el-form-item prop="password" label="新密码">
                 <el-input type="text" name="password" v-model="userPassword.password"/>
             </el-form-item>
