@@ -40,3 +40,17 @@ export function validEmail(rule, value, callback){
         return callback(new Error('邮箱地址不符合规则'))
       }
   }
+
+export function validTimetable(rule, value, callback){
+    var flag = false
+    for(let i = 0; i < value.length; i++){
+      if(value[i].length > 0){
+        flag = true
+      }
+    }
+    if (!flag) {
+      callback(new Error('上课时间不能为空'))
+    } else{
+      callback()
+    }
+  }

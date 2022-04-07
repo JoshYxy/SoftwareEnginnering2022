@@ -2,7 +2,7 @@
   <div class="info">
     <h1>信息查询</h1>
     <!-- table-layout为fixed时出错 -->
-    <el-table class="table" :data="userData" >
+    <el-table class="table" :data="userData" max-height="500px">
       <el-table-column fixed prop="number" label="Number" width="120" />
       <el-table-column prop="name" label="Name" width="120" />
       <el-table-column prop="role" label="Role" width="120" />

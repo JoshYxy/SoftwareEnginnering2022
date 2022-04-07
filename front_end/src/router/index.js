@@ -10,6 +10,8 @@ import MajorMaintenance from '../components/MajorMaintenance.vue'
 import PrivateinfoMaintnce from '../components/PrivateinfoMaintnce.vue'
 import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 import EduMaintenance from '../components/course/EduMaintenance.vue'
+import TeacherCourse from '../components/course/TeacherCourse.vue'
+import AdminCourse from '../components/course/AdminCourse.vue'
 const routes = [
   {
     path: '/',
@@ -73,13 +75,25 @@ const routes = [
         path: 'course',
         name: 'course',
         component: CourseMaintenance,
-        meta: { role: ['admin'], nav_name: '课程管理'},
+        meta: { role: ['admin'], nav_name: '新增课程'},
       },
       {
         path: 'edu',
         name: 'edu',
         component: EduMaintenance,
         meta: { role: ['admin'], nav_name: '教务管理'},
+      },
+      {
+        path: 'teacher/course',
+        name: 'teacherCourse',
+        component: TeacherCourse,
+        meta: { role: ['admin', 'teacher'], nav_name: '课程管理'}
+      },
+      {
+        path: 'admin/course',
+        name: 'adminCourse',
+        component: AdminCourse,
+        meta: { role: ['admin'], nav_name: '课程管理'}
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')
