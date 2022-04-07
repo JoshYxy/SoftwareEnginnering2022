@@ -12,6 +12,7 @@ import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 import EduMaintenance from '../components/course/EduMaintenance.vue'
 import TeacherCourse from '../components/course/TeacherCourse.vue'
 import AdminCourse from '../components/course/AdminCourse.vue'
+import CourseVerify from '../components/course/CourseVerify.vue'
 const routes = [
   {
     path: '/',
@@ -94,7 +95,13 @@ const routes = [
         name: 'adminCourse',
         component: AdminCourse,
         meta: { role: ['admin'], nav_name: '课程管理'}
-      }
+      },
+      {
+        path: 'admin/course/verify',
+        name: 'courseVerify',
+        component: CourseVerify,
+        meta: { role: ['admin'], nav_name: '课程审核'}
+      },
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')
   },

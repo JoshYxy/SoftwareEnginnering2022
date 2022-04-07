@@ -98,6 +98,7 @@
             </el-form-item>      
             <el-form-item label="上课教室" prop="classroom">
                 <el-cascader :props="roomProps" :options="classroom" v-model="selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
+                <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
             </el-form-item>
             <el-form-item label="上课时间" prop="selectTime">
                 <div class="time-container">
@@ -138,6 +139,7 @@
 // import CourseTime from './CourseTime.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {validTimetable} from '../jsComponents/CheckRules'
+import {setCourseTime} from '../jsComponents/CourseSet'
 export default {
     data() {
         return {
@@ -367,7 +369,7 @@ export default {
                 if(valid){
                     this.courses[index].courseName = this.editCourse.courseName
                     this.courses[index].times = this.editCourse.selectTime
-                    this.setCourseTime(this.courses[index], this.editCourse.selectTime)
+                    setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].status = 'changed'
                     this.editTableVisible[index] = false;
                 }
@@ -381,7 +383,7 @@ export default {
             this.$refs['newCourse'].validate(valid => {
                 if(valid){
                     this.newCourse['times'] = this.newCourse.selectTime
-                    this.setCourseTime(this.newCourse, this.newCourse.selectTime)
+                    setCourseTime(this.newCourse, this.newCourse.selectTime)
                     this.newCourse['status'] = 'new'
                     this.courses.push(JSON.parse(JSON.stringify(this.newCourse)))
                     this.editTableVisible.push(false)
@@ -397,73 +399,15 @@ export default {
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
             this.newTableVisible = false
         },
-        setCourseTime(data, e) {
-            console.log(e)
-            for(let i = 0; i < e.length; i++) {
-                e[i].sort(function(a,b){
-                    if(a.length != b.length) return a.length - b.length
-                    else return a - b
-                })
-            }
-            data.times = e
-            data['classHours'] = 0
-            var flag = false//是否多节连上
-            var k, j
-                data.courseTime = ''
-                for(let i in data.times) {
-                    j = data.times[i]
-                    k = 0
-                    flag = false
-                    if(j.length > 0) {
-                        data.courseTime += this.periods[parseInt(i)]+': '
-                        while(k < j.length){
-                            data.classHours++
-                            if(k == 0) data.courseTime += j[k]
-                            else if(!k || j[k] != j[k - 1] + 1){
-                                if(flag) data.courseTime += '-'+j[k-1]+','+j[k]
-                                else data.courseTime += ',' + j[k]
-                                flag = false
-                            }
-                            else flag = true
-                            k++
-                        }
-                        k--
-                        if(flag) data.courseTime += '-'+j[k]+'; '
-                        else data.courseTime += '; '
-                    }
-                }
-        },
         test() {
             // this.courses[0].status = 'changed'
             console.log(this.courses)
         }
     },
     created() {
-        var flag = false//是否多节连上
-        var k, j
         for(let course of this.courses) {
             course.courseTime = ''
-            for(let i in course.times) {
-                j = course.times[i]
-                k = 0
-                flag = false
-                if(j.length > 0) {
-                    course.courseTime += this.periods[parseInt(i)]+': '
-                    while(k < j.length){
-                        if(k == 0) course.courseTime += j[k]
-                        else if(!k || j[k] != j[k - 1] + 1){
-                            if(flag) course.courseTime += '-'+j[k-1]+','+j[k]
-                            else course.courseTime += ',' + j[k]
-                            flag = false
-                        }
-                        else flag = true
-                        k++
-                    }
-                    k--
-                    if(flag) course.courseTime += '-'+j[k]+'; '
-                    else course.courseTime += '; '
-                }
-            }
+            setCourseTime(course, course.times)
         }
         this.timeData = []
         for(let i = 0; i < 7; i++) {//创建选课时间数组

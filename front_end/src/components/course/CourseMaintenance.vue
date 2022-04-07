@@ -44,8 +44,8 @@
                             
                             <el-checkbox-button 
                                 v-for="time in day.times" 
-                                :key="time.name" 
-                                :label="time.name" 
+                                :key="time.num" 
+                                :label="time.num" 
                                 :disabled="time.disable" 
                                 style="display:block;"
                                 >
@@ -56,6 +56,9 @@
                     </div>
                 </div>
             </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submit">提交</el-button>
         </el-form-item>
     </el-form>
     <!-- <course-time>
@@ -70,6 +73,8 @@
 <script>
 /* eslint-disable */
 import CourseTime from './CourseTime.vue'
+import {validTimetable} from '../jsComponents/CheckRules'
+import {setCourseTime} from '../jsComponents/CourseSet'
 export default {
     components: {
         CourseTime
@@ -183,14 +188,13 @@ export default {
             },
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: 'blur'}],
-                courseNum: [{required: true, message: '请输入课程编号', trigger: 'blur'},
-                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                courseNum: [{required: true, message: '请输入课程编号', trigger: 'blur'}],
                 credits: [{required: true, message: '请输入学分', trigger: 'blur'},
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 courseInfo: [{required: true, message: '请输入课程介绍', trigger: 'blur'}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
-                selectTime: [{required: true, message: '课程时间不能为空', trigger: ['blur','change']}],
+                selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
             }
         }
     },
@@ -212,6 +216,13 @@ export default {
         test() {
             console.log(this.selectTime)
             // console.log(this.selectRoom)
+        },
+        submit() {
+            setCourseTime(this.courseData, this.courseData.selectTime)
+            console.log(this.courseData)
+            console.log(this.selectRoom)
+            console.log(this.courseData.selectTime)
+            
         }
     },
     created() {
@@ -223,7 +234,7 @@ export default {
             this.timeData[i].name = '周'+ i
             this.timeData[i].times = []
             for(let j in this.times) {
-                this.timeData[i].times.push({name:this.times[j].name, disable:false})
+                this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
             }
         }
         console.log(this.timeData)
