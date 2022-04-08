@@ -8,7 +8,11 @@
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
-        <el-table-column prop="classroom" label="上课地点" width="140" />
+        <el-table-column prop="building,roomNum" label="上课地点" width="140" >
+            <template #default="scope">
+                {{scope.row.building}}{{scope.row.roomNum}}
+            </template>
+        </el-table-column>
         <el-table-column prop="courseTime" label="上课时间" width="180" />
         <el-table-column prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
@@ -24,7 +28,6 @@
             <el-button size="small" @click="handleEdit(scope.$index, scope.row)">申请修改</el-button>
             <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">申请删除</el-button>
             <el-dialog 
-                class="course-teacher" 
                 v-model="editTableVisible[scope.$index]" 
                 title="修改课程" 
                 :append-to-body="true" 
@@ -97,7 +100,7 @@
                 <el-input v-model="newCourse.courseInfo" type="textarea" />
             </el-form-item>      
             <el-form-item label="上课教室" prop="classroom">
-                <el-cascader :props="roomProps" :options="classroom" v-model="selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
+                <el-cascader :props="roomProps" :options="classroom" v-model="newCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
                 <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
             </el-form-item>
             <el-form-item label="上课时间" prop="selectTime">
@@ -140,6 +143,8 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {validTimetable} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
+import global_ from '../jsComponents/global'
+
 export default {
     data() {
         return {
@@ -153,9 +158,9 @@ export default {
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
             },
-            periods:[
-                '周一','周二','周三','周四','周五','周六','周日',
-            ],
+            periods: global_.periods,
+            abbrToBuilding: global_.abbrToBuilding,
+            buildingToAbbr: global_.buildingToAbbr,
             editTableVisible:[false,false],//传入时数量与课程数需一直
             dialogTableVisible:[false,false],
             newTableVisible: false,
@@ -269,8 +274,10 @@ export default {
                         [],
                         []
                     ],
+                    building: 'H3',
+                    roomNum: '301',
                     courseInfo: '123',
-                    status: 'normal',
+                    type: 'normal',
                 },
                 {
                     courseId: 2,
@@ -288,21 +295,23 @@ export default {
                         [3,8],
                         []
                     ],
+                    building: 'HGX',
+                    roomNum: '502',
                     courseInfo: '123',
-                    status: 'normal',
+                    type: 'normal',
                 }
             ],
             editCourse: {
                 selectTime:[[]],
                 index: '',
-                selectRoom: '',
+                selectRoom: [],
                 courseName: '',
                 classroom: '',
                 // times: '',
             },
             newCourse: {
                 selectTime:[[]],
-                selectRoom: '',
+                selectRoom: [],
                 courseName: '',
                 courseNum: '',
                 college: '',
@@ -313,23 +322,27 @@ export default {
                 position: '',
                 capacity: 0,
                 classHours: '',
+                building: '',
+                roomNum: '',
             }
         }
     },
     methods: {
         // eslint-disable-next-line
         tableRowClassName(row, rowIndex) {//根据该行课程的状态动态显示该行表格颜色
-            if(row.row.status == 'changed')
+            if(row.row.type == 'changed')
                 return 'changing-row';
-            if(row.row.status == 'deleted')
+            if(row.row.type == 'deleted')
                 return 'deleting-row';
-            if(row.row.status == 'new')
+            if(row.row.type == 'new')
                 return 'new-row';
+            return 'normal-row';
         },
         handleNew() {
             for(let i in this.newCourse)
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
+            this.newCourse['selectRoom']= []
             this.newTableVisible = true
             // this.newCourse = {}
         },
@@ -344,7 +357,7 @@ export default {
                 }
             )
                 .then(() => {
-                    data.status = 'deleted'
+                    data.type = 'deleted'
                     ElMessage({
                         type: 'success',
                         message: '已发起申请',
@@ -361,6 +374,9 @@ export default {
             //axios获取教室
             this.editCourse.selectTime = data.times
             this.editCourse.courseName = data.courseName
+            this.editCourse.selectRoom = []
+            this.editCourse.selectRoom[0] = this.abbrToBuilding[data.building] 
+            this.editCourse.selectRoom[1] = data.roomNum
             this.editTableVisible[index] = true;
         },
         submitEdit(index) {
@@ -369,8 +385,10 @@ export default {
                 if(valid){
                     this.courses[index].courseName = this.editCourse.courseName
                     this.courses[index].times = this.editCourse.selectTime
+                    this.courses[index].building = this.buildingToAbbr[this.editCourse.selectRoom[0]]
+                    this.courses[index].roomNum = this.editCourse.selectRoom[1]
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
-                    this.courses[index].status = 'changed'
+                    this.courses[index].type = 'changed'
                     this.editTableVisible[index] = false;
                 }
             })
@@ -382,9 +400,12 @@ export default {
         submitNew() {
             this.$refs['newCourse'].validate(valid => {
                 if(valid){
+                    console.log(this.newCourse.selectRoom)
                     this.newCourse['times'] = this.newCourse.selectTime
                     setCourseTime(this.newCourse, this.newCourse.selectTime)
-                    this.newCourse['status'] = 'new'
+                    this.newCourse['type'] = 'new'
+                    this.newCourse.building = this.buildingToAbbr[this.newCourse.selectRoom[0]]
+                    this.newCourse.roomNum = this.newCourse.selectRoom[1]
                     this.courses.push(JSON.parse(JSON.stringify(this.newCourse)))
                     this.editTableVisible.push(false)
                     this.dialogTableVisible.push(false)
@@ -397,10 +418,11 @@ export default {
             for(let i in this.newCourse)
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
+            this.newCourse['selectRoom']= []
             this.newTableVisible = false
         },
         test() {
-            // this.courses[0].status = 'changed'
+            // this.courses[0].type = 'changed'
             console.log(this.courses)
         }
     },

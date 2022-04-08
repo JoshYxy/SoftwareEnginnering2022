@@ -3,7 +3,7 @@
     <div><el-button @click="test">
         测试
     </el-button></div>
-    <el-form class="new-course-admin" :model="courseData" :rules="rules" hide-required-asterisk>
+    <el-form class="new-course-admin" :model="courseData" ref="courseData" :rules="rules" hide-required-asterisk>
         <el-form-item label="课程名称" prop="courseName">
             <el-input v-model="courseData.courseName" />
         </el-form-item>
@@ -25,12 +25,12 @@
             </el-select>
         </el-form-item>
         <el-form-item label="任课教师" prop="teacher">
-            <el-select v-model="courseData.teacherId" value-key="number" placeholder="教师">
-                <el-option :key="teacher.number" :value="teacher.number" :label="teacher.name+teacher.number" v-for="teacher in teacherData" />
+            <el-select v-model="courseData.teacher" value-key="number" placeholder="教师">
+                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in teacherData" />
             </el-select>
         </el-form-item> 
-        <el-form-item label="上课教室" prop="classroom">
-            <el-cascader :props="roomProps" :options="classroom" v-model="selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
+        <el-form-item label="上课教室" prop="selectRoom">
+            <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
         </el-form-item>
         <el-form-item label="上课时间" prop="selectTime">            
             <div class="time-container">
@@ -73,19 +73,21 @@
 <script>
 /* eslint-disable */
 import CourseTime from './CourseTime.vue'
-import {validTimetable} from '../jsComponents/CheckRules'
+import {validTimetable, validSelectRoom, validTeacher} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
+
+import global_ from '../jsComponents/global'
 export default {
     components: {
         CourseTime
     },
     data() {
         return {
-            
+            buildingToAbbr: global_.buildingToAbbr,
             periods:[
-                '周一','周二','周三','周四','周五','周六','周日',
+                '周日','周一','周二','周三','周四','周五','周六',
             ],
-            selectRoom: '',
+
             roomProps: {
                 children: 'room',
                 label: 'name',
@@ -175,16 +177,21 @@ export default {
             ],
             courseData: {
                 selectTime:[[]],
+                selectRoom: '',
                 courseName: '',
                 courseNum: '',
                 college: '',
                 period: 0,
                 credits: 0,//学分
-                teacher: '',
+                teacher: {name:'',number:''},
+                teacherNum: '',
+                teacherName: '',
                 courseInfo: '',
                 time: '',
                 position: '',
-                capacity: 0
+                capacity: 0,
+                building: '',
+                room: '',
             },
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: 'blur'}],
@@ -194,6 +201,9 @@ export default {
                 courseInfo: [{required: true, message: '请输入课程介绍', trigger: 'blur'}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                collegeName: [{required: true, message: '请选择开课院系', trigger: 'blur'}], 
+                teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
+                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
             }
         }
@@ -218,11 +228,18 @@ export default {
             // console.log(this.selectRoom)
         },
         submit() {
-            setCourseTime(this.courseData, this.courseData.selectTime)
-            console.log(this.courseData)
-            console.log(this.selectRoom)
-            console.log(this.courseData.selectTime)
-            
+            this.$refs['courseData'].validate(valid => {
+                if(valid){
+                    this.courseData.teacherName = this.courseData.teacher.name
+                    this.courseData.teacherNum = this.courseData.teacher.number
+                    this.courseData.building = this.buildingToAbbr[this.courseData.selectRoom[0]]
+                    this.courseData.room = this.courseData.selectRoom[1]
+                    setCourseTime(this.courseData, this.courseData.selectTime)
+                    console.log(this.courseData)
+                    console.log(this.selectRoom)
+                    console.log(this.courseData.selectTime)
+                }
+            })
         }
     },
     created() {

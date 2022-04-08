@@ -1,5 +1,5 @@
 export function setCourseTime(data, e) {
-    var periods =['周一','周二','周三','周四','周五','周六','周日',]
+    var periods =['周日','周一','周二','周三','周四','周五','周六']
     for(let i = 0; i < e.length; i++) {
         e[i].sort(function(a,b){
             if(a.length != b.length) return a.length - b.length
@@ -20,7 +20,7 @@ export function setCourseTime(data, e) {
                 while(k < j.length){
                     data.classHours++
                     if(k == 0) data.courseTime += j[k]
-                    else if(!k || j[k] != j[k - 1] + 1){
+                    else if(!k || parseInt(j[k]) != parseInt(j[k - 1]) + 1){
                         if(flag) data.courseTime += '-'+j[k-1]+','+j[k]
                         else data.courseTime += ',' + j[k]
                         flag = false

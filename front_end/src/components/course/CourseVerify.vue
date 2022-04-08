@@ -8,7 +8,11 @@
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
-        <el-table-column prop="classroom" label="上课地点" width="140" />
+        <el-table-column prop="building,roomNum" label="上课地点" width="140" >
+            <template #default="scope">
+                {{scope.row.building}}{{scope.row.roomNum}}
+            </template>
+        </el-table-column>
         <el-table-column prop="courseTime" label="上课时间" width="180" />
         <el-table-column prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
@@ -65,8 +69,10 @@ export default {
                         [],
                         []
                     ],
+                    building: 'H3',
+                    roomNum: '301',
                     courseInfo: '123',
-                    status: 'deleted',
+                    type: 'deleted',
                     result: '',
                 }   
             ]
@@ -74,11 +80,11 @@ export default {
     },
     methods: {
         tableRowClassName(row) {//根据该行课程的状态动态显示该行表格颜色
-            if(row.row.status == 'changed')
+            if(row.row.type == 'changed')
                 return 'changing-row';
-            if(row.row.status == 'deleted')
+            if(row.row.type == 'deleted')
                 return 'deleting-row';
-            if(row.row.status == 'new')
+            if(row.row.type == 'new')
                 return 'new-row';
         },
         approve(pending_course) {
@@ -90,8 +96,8 @@ export default {
         },
     },
     created() {
-        this.pendingCourses[0].showStatus = this.statusToShow[this.pendingCourses[0].status]
-        console.log(this.pendingCourses[0].status)
+        this.pendingCourses[0].showStatus = this.statusToShow[this.pendingCourses[0].type]
+        console.log(this.pendingCourses[0].type)
     }
 }
 </script>

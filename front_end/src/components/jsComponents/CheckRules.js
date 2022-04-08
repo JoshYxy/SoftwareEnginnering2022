@@ -49,7 +49,21 @@ export function validTimetable(rule, value, callback){
       }
     }
     if (!flag) {
-      callback(new Error('上课时间不能为空'))
+      return callback(new Error('上课时间不能为空'))
+    } else{
+      callback()
+    }
+  }
+export function validSelectRoom(rule, value, callback){
+    if (value == null || value[0] == null || value[0] == '') {
+      return callback(new Error('请选择上课教室'))
+    } else{
+      callback()
+    }
+  }
+export function validTeacher(rule, value, callback){
+    if (value == null || value.name == null || value.name == '') {
+      return callback(new Error('请选择任课教师'))
     } else{
       callback()
     }
