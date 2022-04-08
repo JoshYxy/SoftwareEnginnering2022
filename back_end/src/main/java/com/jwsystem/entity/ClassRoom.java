@@ -2,6 +2,7 @@ package com.jwsystem.entity;
 
 //room类，表示教室
 public class ClassRoom {
-    String building;
-    String classNUmber;
+    private Integer roomId;
+    private String building;
+    private String roomNum;
 }
