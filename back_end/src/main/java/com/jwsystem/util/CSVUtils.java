@@ -1,6 +1,7 @@
 package com.jwsystem.util;
 
-//import com.jwsystem.entity.Course;
+
+import com.jwsystem.entity.Course;
 import com.jwsystem.entity.User;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -62,36 +63,42 @@ public class CSVUtils {
         return users;
     }
 
-//    public static List<Course> getCourseByCsv(MultipartFile file) {
-//        ArrayList<Course> courses = new ArrayList<>();
-//
-//        InputStreamReader in = null;
-//        try {
-//            in = new InputStreamReader(file.getInputStream(), "utf-8");
-//            BufferedReader bufferedReader = new BufferedReader(in);
-//            String line = null;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                String[] split = line.split(",");
-//                Course course = new Course();
-//                course.setCourseId(Integer.parseInt(splitResult(split[0])));
-//                course.setCourseName(splitResult(split[1]));
-//                course.setCourseNum(splitResult(split[2]));
-//                course.setCollegeId(splitResult(split[3]));
-//                course.setCollegeName(splitResult(split[4]));
-//                course.setClassHours(Integer.parseInt(splitResult(split[5])));
-//                course.setCredits(Integer.parseInt(splitResult(split[6])));
-//                course.setTeacherNum(splitResult(split[7]));
-//                course.setTeacherName(splitResult(split[8]));
-//                course.setCourseInfo(splitResult(split[8]));
-//                course.setTime(splitResult(split[8]));
-//                course.setClassroom(splitResult(split[8]));
-//                course.setCapacity(Integer.parseInt(splitResult(split[8])));
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return courses;
-//    }
+    public static List<Course> getCourseByCsv(MultipartFile file) {
+        ArrayList<Course> courses = new ArrayList<>();
+
+        InputStreamReader in = null;
+        try {
+            in = new InputStreamReader(file.getInputStream(), "utf-8");
+            BufferedReader bufferedReader = new BufferedReader(in);
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] split = line.split(",");
+                Course course = new Course();
+                course.setCourseName(splitResult(split[0]));
+                course.setCourseNum(splitResult(split[1]));
+                course.setCollegeName(splitResult(split[2]));
+                course.setClassHours(splitResult(split[3]));
+                course.setCredits(splitResult(split[4]));
+                course.setTeacherName(splitResult(split[5]));
+                course.setTeacherNum(splitResult(split[6]));
+                course.setCourseInfo(splitResult(split[7]));
+                course.setBuilding(splitResult(split[8]));
+                course.setRoomNum(splitResult(split[9]));
+                course.setCapacity(splitResult(split[10]));
+                course.setMon(splitResult(split[11]));
+                course.setTue(splitResult(split[12]));
+                course.setWed(splitResult(split[13]));
+                course.setThu(splitResult(split[14]));
+                course.setFri(splitResult(split[15]));
+                course.setSat(splitResult(split[16]));
+                course.setSun(splitResult(split[17]));
+                courses.add(course);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
 
     /**
      * 解析csv文件并转成bean（方法二）

@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Section {
+public class Times {
     private Integer id;
+    private String name;
     private String startTime;
     private String endTime;
 }

@@ -1,6 +1,8 @@
 package com.jwsystem.config;
 import com.jwsystem.interceptor.adminInterceptor;
 import com.jwsystem.interceptor.loginInterceptor;
+import com.jwsystem.interceptor.studentInterceptor;
+import com.jwsystem.interceptor.teacherInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -23,6 +25,12 @@ public class SpringbootConfig implements WebMvcConfigurer {
         return new adminInterceptor();
     }
 
+    @Bean
+    public studentInterceptor getStuInterceptor() { return new studentInterceptor();}
+
+    @Bean
+    public teacherInterceptor getTeaInterceptor() { return new teacherInterceptor();}
+
     //将自己的拦截器注册到拦截器链中，并说明拦截路径规则
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -30,6 +38,12 @@ public class SpringbootConfig implements WebMvcConfigurer {
 //                .addPathPatterns("/**")//需要拦截的路径（*表示全部路径）
                 .excludePathPatterns("/**");//需要放行的路径
         registry.addInterceptor(getAdminInterceptor())
+//                .addPathPatterns("/edu/*","/admin/*");
+                .excludePathPatterns("/**");//需要放行的路径
+        registry.addInterceptor(getStuInterceptor())
+//                .addPathPatterns("/edu/*","/admin/*");
+                .excludePathPatterns("/**");//需要放行的路径
+        registry.addInterceptor(getTeaInterceptor())
 //                .addPathPatterns("/edu/*","/admin/*");
                 .excludePathPatterns("/**");//需要放行的路径
     }
