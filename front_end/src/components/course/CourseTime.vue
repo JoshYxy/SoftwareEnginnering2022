@@ -10,7 +10,7 @@
             <div class="right-part">
                 <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
                     <div class="right-down">
-                    <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="selectTime[day.id]">
+                    <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="selectTime[day.id]">
                         
                         <el-checkbox-button 
                             v-for="time in day.times" 

@@ -25,10 +25,10 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
         <template #default="scope">
-            <el-button size="small" v-if="pendingCourses[scope.$index].result== ''" type="primary" @click="approve(scope.row)">通过</el-button>
-            <el-button size="small" v-if="pendingCourses[scope.$index].result == ''" type="danger" @click="reject(scope.row)">拒绝</el-button>
-            <span v-if="pendingCourses[scope.$index].result == '1'" style="color:#67c23a"> 已通过 </span>
-            <span v-if="pendingCourses[scope.$index].result == '0'" style="color:#f56c6c"> 已拒绝 </span>                
+            <el-button size="small" v-if="pendingCourses[scope.$index].examined == false" type="primary" @click="approve(scope.row)">通过</el-button>
+            <el-button size="small" v-if="pendingCourses[scope.$index].examined == false" type="danger" @click="reject(scope.row)">拒绝</el-button>
+            <span v-if="pendingCourses[scope.$index].passed == true && pendingCourses[scope.$index].examined == true" style="color:#67c23a"> 已通过 </span>
+            <span v-if="pendingCourses[scope.$index].passed == false && pendingCourses[scope.$index].examined == true" style="color:#f56c6c"> 已拒绝 </span>                
         </template>
 
         </el-table-column>
@@ -41,9 +41,9 @@ export default {
     data() {
         return {
             statusToShow: {
-                new: '新增',
-                deleted: '删除',
-                changed: '修改',
+                add: '新增',
+                delete: '删除',
+                change: '修改',
             },
             dialogTableVisible:[false],
             pendingCourses:[
@@ -72,27 +72,30 @@ export default {
                     building: 'H3',
                     roomNum: '301',
                     courseInfo: '123',
-                    type: 'deleted',
-                    result: '',
+                    type: 'delete',
+                    examined: false,
+                    passed: false,
                 }   
             ]
         }
     },
     methods: {
         tableRowClassName(row) {//根据该行课程的状态动态显示该行表格颜色
-            if(row.row.type == 'changed')
+            if(row.row.type == 'change')
                 return 'changing-row';
-            if(row.row.type == 'deleted')
+            if(row.row.type == 'delete')
                 return 'deleting-row';
-            if(row.row.type == 'new')
+            if(row.row.type == 'add')
                 return 'new-row';
         },
         approve(pending_course) {
-            pending_course.result = '1'
+            pending_course.examined = true
+            pending_course.passed = true
         },
         
         reject(pending_course) {
-            pending_course.result = '0'
+            pending_course.examined = true
+            pending_course.passed = false
         },
     },
     created() {

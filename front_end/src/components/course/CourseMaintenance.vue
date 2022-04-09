@@ -20,17 +20,17 @@
             <el-input v-model="courseData.courseInfo" type="textarea" />
         </el-form-item>      
         <el-form-item label="开课院系" prop="collegeName">
-            <el-select v-model="courseData.collegeName" value-key="name" placeholder="学院">
+            <el-select v-model="courseData.collegeName" value-key="name" placeholder="学院" @change="updateCollege">
                 <el-option :key="college.id" :value="college.name" :label="college.name" v-for="college in collegeData" />
             </el-select>
         </el-form-item>
         <el-form-item label="任课教师" prop="teacher">
-            <el-select v-model="courseData.teacher" value-key="number" placeholder="教师">
-                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in teacherData" />
+            <el-select v-model="courseData.teacher" value-key="number" placeholder="教师" no-data-text="未选择开课院系或学院无教师" @change="updateTeacher">
+                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in avalTeacher" />
             </el-select>
         </el-form-item> 
         <el-form-item label="上课教室" prop="selectRoom">
-            <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
+            <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
         </el-form-item>
         <el-form-item label="上课时间" prop="selectTime">            
             <div class="time-container">
@@ -40,7 +40,7 @@
                 <div class="right-part">
                     <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
                         <div class="right-down">
-                        <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="courseData.selectTime[day.id]">
+                        <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="courseData.selectTime[day.id]">
                             
                             <el-checkbox-button 
                                 v-for="time in day.times" 
@@ -136,6 +136,24 @@ export default {
                     endTime:'11:20'
                 },                
             ],
+            unavalTeaTimes: [
+                [],
+                [1,2,3,5,6,8,10,11,12],
+                [3],
+                [3,8],
+                [],
+                [],
+                []
+            ],
+            unavalRoomTimes: [
+                [],
+                [1,2,3,5],
+                [3],
+                [3,8],
+                [],
+                [],
+                [1,2,3]
+            ],
             collegeData: [
                 { 
                 id: 1,
@@ -163,18 +181,20 @@ export default {
             ],
             teacherData: [
                 {
-                    name:'小王',
-                    number: 22200000
+                    collegeName:'计算机科学技术学院',
+                    teachers: [
+                        {name:'小王',number: 22200000}
+                    ]
                 },
                 {
-                    name:'小一',
-                    number: 22111100
-                },
-                {
-                    name:'小零',
-                    number: 20000000
+                    collegeName: '软件工程学院',
+                    teachers: [
+                        {name:'小一',number: 22111100},
+                        {name:'小零',number: 20000000},
+                    ]
                 }
             ],
+            avalTeacher: [],
             courseData: {
                 selectTime:[[]],
                 selectRoom: '',
@@ -220,12 +240,47 @@ export default {
                     }
                 }
             }
-        }
+        },
     },
     methods: {
         test() {
             console.log(this.selectTime)
             // console.log(this.selectRoom)
+        },
+        updateCollege(value) {
+            this.avalTeacher = []
+            this.courseData.teacher = {}
+            this.courseData.teacher['number'] = null
+            this.courseData.teacher['name'] = ''
+            for(let i = 0; i < this.teacherData.length; i++){
+                if(this.teacherData[i].collegeName == value) {
+                    this.avalTeacher = this.teacherData[i].teachers
+                    console.log(this.avalTeacher)
+                    break
+                }
+            }
+        },
+        updateTeacher(value) {
+            //axios获取教师不可用时间
+            for(let i = 0; i < 7; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = true
+                    else
+                        this.timeData[i].times[j-1].disable = false
+                }
+            } 
+        },
+        updateRoom(value) {
+            //axios获取教室不可用时间
+            for(let i = 0; i < 7; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
+                        this.timeData[i].times[j - 1].disable = true
+                    else
+                        this.timeData[i].times[j - 1].disable = false
+                }
+            } 
         },
         submit() {
             this.$refs['courseData'].validate(valid => {

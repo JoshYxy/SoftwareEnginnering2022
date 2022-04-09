@@ -1,5 +1,5 @@
 <template>
-    <h2>我的课程</h2>
+    <h2>所有课程</h2>
     <el-button @click="test">test </el-button>
     <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName">
         <el-table-column fixed prop="courseName" label="课程名" width="120" />
@@ -77,7 +77,7 @@
                             <div class="right-part">
                                 <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
                                     <div class="right-down">
-                                    <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="editCourse.selectTime[day.id]">
+                                    <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="editCourse.selectTime[day.id]">
                                         
                                         <el-checkbox-button 
                                             v-for="time in day.times" 
@@ -268,8 +268,8 @@ export default {
                     courseId: 1,
                     courseName: '软件工程',
                     courseNum: 'SOFT220011',
-                    teacherNum: '22000001',
-                    teacherName: '朱一',
+                    teacherNum: 22200000,
+                    teacherName: '小王',
                     classHours: '4',
                     credits: '4',
                     courseTime:'',

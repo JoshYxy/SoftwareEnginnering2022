@@ -42,7 +42,7 @@
                         <el-form-item prop="courseName" label="课程名称">
                             <el-input type="text" name="courseName" v-model="editCourse.courseName"/>
                         </el-form-item>
-                        <el-form-item label="上课教室" prop="classroom">
+                        <el-form-item label="上课教室" prop="selectRoom">
                             <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>     
                             <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
                         </el-form-item>
@@ -55,7 +55,7 @@
                                 <div class="right-part">
                                     <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
                                         <div class="right-down">
-                                        <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="editCourse.selectTime[day.id]">
+                                        <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="editCourse.selectTime[day.id]">
                                             
                                             <el-checkbox-button 
                                                 v-for="time in day.times" 
@@ -99,7 +99,7 @@
             <el-form-item label="课程简介" prop="courseInfo">
                 <el-input v-model="newCourse.courseInfo" type="textarea" />
             </el-form-item>      
-            <el-form-item label="上课教室" prop="classroom">
+            <el-form-item label="上课教室" prop="selectRoom">
                 <el-cascader :props="roomProps" :options="classroom" v-model="newCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
                 <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
             </el-form-item>
@@ -111,7 +111,7 @@
                     <div class="right-part">
                         <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
                             <div class="right-down">
-                            <el-checkbox-group v-for="day in timeData" :key="day.name" v-model="newCourse.selectTime[day.id]">
+                            <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="newCourse.selectTime[day.id]">
                                 
                                 <el-checkbox-button 
                                     v-for="time in day.times" 
@@ -141,7 +141,7 @@
 <script>
 // import CourseTime from './CourseTime.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {validTimetable} from '../jsComponents/CheckRules'
+import {validTimetable, validSelectRoom} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
 import global_ from '../jsComponents/global'
 
@@ -157,6 +157,7 @@ export default {
                 capacity: [{required: true, message: '请输入选课容量', trigger: ['blur','change']},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
+                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
             },
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
@@ -255,6 +256,15 @@ export default {
                     endTime:'11:20'
                 },                   
             ],
+            unavalTeaTimes: [
+                [],
+                [1,2,3,5,6,8,10,11,12],
+                [3],
+                [3,8],
+                [],
+                [],
+                []
+            ],
             courses: [
                 {
                     courseId: 1,
@@ -290,7 +300,7 @@ export default {
                     collegeName: '计算机与技术学院',
                     times: [
                         [],
-                        [3,4],
+                        [],
                         [],
                         [3,8],
                         []
@@ -330,11 +340,11 @@ export default {
     methods: {
         // eslint-disable-next-line
         tableRowClassName(row, rowIndex) {//根据该行课程的状态动态显示该行表格颜色
-            if(row.row.type == 'changed')
+            if(row.row.type == 'change')
                 return 'changing-row';
-            if(row.row.type == 'deleted')
+            if(row.row.type == 'delete')
                 return 'deleting-row';
-            if(row.row.type == 'new')
+            if(row.row.type == 'add')
                 return 'new-row';
             return 'normal-row';
         },
@@ -343,6 +353,7 @@ export default {
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
             this.newCourse['selectRoom']= []
+            this.setAvalTime()
             this.newTableVisible = true
             // this.newCourse = {}
         },
@@ -357,7 +368,7 @@ export default {
                 }
             )
                 .then(() => {
-                    data.type = 'deleted'
+                    data.type = 'delete'
                     ElMessage({
                         type: 'success',
                         message: '已发起申请',
@@ -372,30 +383,41 @@ export default {
         },
         handleEdit(index, data) {
             //axios获取教室
+            //设定不能选择的时间
+            for(let i = 0; i < 7; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1 && data.times[i].indexOf(j) < 0)
+                        this.timeData[i].times[j-1].disable = true
+                }
+            }
+            
             this.editCourse.selectTime = data.times
             this.editCourse.courseName = data.courseName
             this.editCourse.selectRoom = []
             this.editCourse.selectRoom[0] = this.abbrToBuilding[data.building] 
             this.editCourse.selectRoom[1] = data.roomNum
             this.editTableVisible[index] = true;
+            console.log(this.editCourse.selectTime)
         },
         submitEdit(index) {
-            
             this.$refs['editCourse'].validate(valid => {
                 if(valid){
-                    this.courses[index].courseName = this.editCourse.courseName
-                    this.courses[index].times = this.editCourse.selectTime
-                    this.courses[index].building = this.buildingToAbbr[this.editCourse.selectRoom[0]]
-                    this.courses[index].roomNum = this.editCourse.selectRoom[1]
-                    setCourseTime(this.courses[index], this.editCourse.selectTime)
-                    this.courses[index].type = 'changed'
+
+                    // this.courses[index].courseName = this.editCourse.courseName
+                    // this.courses[index].times = this.editCourse.selectTime
+                    // this.courses[index].building = this.buildingToAbbr[this.editCourse.selectRoom[0]]
+                    // this.courses[index].roomNum = this.editCourse.selectRoom[1]
+                    // setCourseTime(this.courses[index], this.editCourse.selectTime)
+                    this.courses[index].type = 'change'
                     this.editTableVisible[index] = false;
+                    this.clearAvalTime()
                 }
             })
 
         },
         cancelEdit(index) {
             this.editTableVisible[index] = false;
+            this.clearAvalTime()
         },
         submitNew() {
             this.$refs['newCourse'].validate(valid => {
@@ -403,12 +425,13 @@ export default {
                     console.log(this.newCourse.selectRoom)
                     this.newCourse['times'] = this.newCourse.selectTime
                     setCourseTime(this.newCourse, this.newCourse.selectTime)
-                    this.newCourse['type'] = 'new'
+                    this.newCourse['type'] = 'add'
                     this.newCourse.building = this.buildingToAbbr[this.newCourse.selectRoom[0]]
                     this.newCourse.roomNum = this.newCourse.selectRoom[1]
                     this.courses.push(JSON.parse(JSON.stringify(this.newCourse)))
                     this.editTableVisible.push(false)
                     this.dialogTableVisible.push(false)
+                    this.clearAvalTime()
                     this.newTableVisible = false                        
                 }
             })
@@ -419,11 +442,27 @@ export default {
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
             this.newCourse['selectRoom']= []
+            this.clearAvalTime()
             this.newTableVisible = false
         },
         test() {
-            // this.courses[0].type = 'changed'
+            // this.courses[0].type = 'change'
             console.log(this.courses)
+        },
+        setAvalTime() {
+            for(let i = 0; i < 7; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1)
+                        this.timeData[i].times[j - 1].disable = true
+                }
+            } 
+        },
+        clearAvalTime() {
+            for(let i = 0; i < 7; i++) {
+                for(let j = 0; j < this.times.length; j++) {
+                    this.timeData[i].times[j].disable = false
+                }
+            }   
         }
     },
     created() {
