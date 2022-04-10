@@ -79,7 +79,7 @@ public class CourseController extends MainController{
         //courseVO 截成两段
 
         Coursepart coursePart = new Coursepart(
-                null,
+                courseVO.getCourseId(),
                 courseVO.getCourseName(),
                 courseVO.getCourseNum(),
                 courseVO.getCollegeName(),
