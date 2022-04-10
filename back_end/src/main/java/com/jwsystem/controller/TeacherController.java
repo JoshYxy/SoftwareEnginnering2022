@@ -62,7 +62,7 @@ public class TeacherController extends MainController{
         //对每个CoursePart，根据课程的id找出对应的所有timePart部分
         for (CoursePart c:
              coursePartList) {
-            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getCourseId());
+            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getId());
 
             //包装成CourseVO的List
             CourseVO tempVO = courseUtil.transToVO(c,timePartList);
@@ -81,7 +81,7 @@ public class TeacherController extends MainController{
     @PostMapping("/courseRequest")
     public Result addRequest(@RequestBody CourseRequest courseRequest){
 
-        //返回请求id给我
+        //把申请的部分插入申请表，返回requestId给我
         int requestId = courseRequestService.insertRequest(
                 courseRequest.getType(),
                 courseRequest.getCourseVO().getCourseId(),
@@ -90,12 +90,11 @@ public class TeacherController extends MainController{
                 courseRequest.isPassed()
         );
 
-        //存和课程相关的部分
+        //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 
         CourseVO courseVO = courseRequest.getCourseVO();
         CoursePart coursePart = new CoursePart(
-                null,
                 requestId,
                 courseVO.getCourseName(),
                 courseVO.getCourseNum(),
@@ -107,7 +106,8 @@ public class TeacherController extends MainController{
                 courseVO.getCourseInfo(),
                 courseVO.getCapacity());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
-        courseService.insertCoursePart(coursePart);
+        //存到req-coursePart表里
+        courseService.insertReqCoursePart(coursePart);
 
         try{
             for(int i=0;i<7;i++){
@@ -130,7 +130,6 @@ public class TeacherController extends MainController{
 
                     //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
                     TimePart timePart = new TimePart(
-                            null,
                             requestId,
                             courseVO.getTeacherNum(),
                             courseVO.getBuilding(),
@@ -139,24 +138,17 @@ public class TeacherController extends MainController{
                             timeString
                     );
 
-                    //在插入的时候根据老师和教室判断有没有时间冲突
-                    /*
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                     */
-                    boolean res = courseService.insertTimePart(timePart);
-                    if(res == false){
-                        //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
-                        courseService.deleteCoursePartByRequestId(requestId);
-                        //删除本条申请
-                        courseRequestService.deleteById(requestId);
-                        response.setStatus(CONFLICT_TIME);
-                        return Result.fail("插入失败，时间冲突");
-                    }
+                   //因为是申请的课程信息，就不用判断是否冲突了
+                    //存到req-timePart表里
+                    courseService.insertReqTimePart(timePart);
+//                    if(res == false){
+//                        //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
+//                        courseService.deleteCoursePartByRequestId(requestId);
+//                        //删除本条申请
+//                        courseRequestService.deleteById(requestId);
+//                        response.setStatus(CONFLICT_TIME);
+//                        return Result.fail("插入失败，时间冲突");
+//                    }
                 }
             }
         } catch (IndexOutOfBoundsException e ){

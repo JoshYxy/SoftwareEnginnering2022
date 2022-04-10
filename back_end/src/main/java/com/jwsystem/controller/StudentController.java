@@ -69,7 +69,7 @@ public class StudentController extends MainController{
 
         for (CoursePart c:
                 coursePartList) {
-            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getCourseId());
+            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getId());
 
             //包装成CourseVO的List
             CourseVO tempVO = courseUtil.transToVO(c,timePartList);

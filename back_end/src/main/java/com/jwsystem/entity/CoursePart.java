@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CoursePart {
-    private Integer courseId = null;
-    private Integer requestId = null;
+    private Integer id;         //courseId或者requestId
     private String courseName;  //课程名称
     private String courseNum;   //课程编号
     private String collegeName; //学院

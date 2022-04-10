@@ -18,7 +18,7 @@ public class CourseUtil {
 
         CourseVO VO = new CourseVO();
 
-        VO.setCourseId(coursePart.getCourseId());
+        VO.setCourseId(coursePart.getId());
         VO.setCourseName(coursePart.getCourseName());
         VO.setCourseNum(coursePart.getCourseNum());
         VO.setCollegeName(coursePart.getCollegeName());
