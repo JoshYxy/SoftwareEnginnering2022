@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class Timepart {
     private Integer id;
-    private Integer courseId = null;   //对应课程
-    private Integer requestId = null;  //对应请求
+    private Integer relationId; //courseId或requestId
     private String teacherNum;  //教师工号
     private String building;    //上课楼
     private String roomNum;     //教室号

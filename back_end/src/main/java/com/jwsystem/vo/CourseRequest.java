@@ -1,4 +1,4 @@
-package com.jwsystem.dto;
+package com.jwsystem.vo;
 
 import com.jwsystem.vo.CourseVO;
 import lombok.AllArgsConstructor;
