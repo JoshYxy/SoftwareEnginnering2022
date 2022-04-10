@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Timepart {
     private Integer id;
     private Integer relationId; //courseId或requestId

@@ -2,6 +2,7 @@ package com.jwsystem.dao;
 
 import com.jwsystem.entity.Timepart;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface TimepartDao {
     List<String> selectSectionByRoom(String roomNum,Integer weekday);
     void insertTimepart(Timepart timepart);
     void insertReqTimepart(Timepart timepart);
-    List<Timepart> getAllTimeByRoom(String building, String roomNum);
+    List<Timepart> getAllTimeByRoom(String building, @Param("room_num") String roomNum);
 }

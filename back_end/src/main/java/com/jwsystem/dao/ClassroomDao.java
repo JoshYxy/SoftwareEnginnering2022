@@ -13,8 +13,8 @@ public interface ClassroomDao {
 
     void deleteById(Integer roomId);
 
-    //得到所有楼宇信息
-    List<Classroom> getAllClassrooms();
+    //得到所有教室信息
+    List<Classroom> getClassroomsByBuilding(String building);
 
     Classroom findByNumAndBuilding(String roomNum, String building);
 

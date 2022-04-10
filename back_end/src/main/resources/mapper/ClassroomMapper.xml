@@ -16,12 +16,6 @@
         DELETE FROM classroom WHERE room_id = #{room_id}
     </delete>
 
-    <!-- 得到所有教室信息 -->
-    <select id="getAllClassrooms" resultType="com.jwsystem.entity.Classroom">
-        SELECT *
-        FROM classroom
-    </select>
-
     <select id="findByNumAndBuilding" resultType="com.jwsystem.entity.Classroom">
         SELECT *
         FROM classroom
@@ -32,6 +26,12 @@
         SELECT *
         FROM classroom
         where room_id = #{room_id}
+    </select>
+
+    <select id="getClassroomsByBuilding" resultType="com.jwsystem.entity.Classroom">
+        SELECT *
+        FROM classroom
+        where building = #{building}
     </select>
 
 

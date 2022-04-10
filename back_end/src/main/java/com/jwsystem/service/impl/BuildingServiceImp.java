@@ -31,7 +31,7 @@ public class BuildingServiceImp implements BuildingService {
         List<BuildingVO> buildingVOList = new ArrayList<>();
         List<Building> buildings = buildingDao.getAllBuildings();
         for(Building b:buildings){
-            List<Classroom> classrooms = classroomDao.getAllClassrooms();
+            List<Classroom> classrooms = classroomDao.getClassroomsByBuilding(b.getAbbrName());
             BuildingVO buildingVO = new BuildingVO(b.getId(),b.getFullName(),b.getAbbrName(),classrooms);
             buildingVOList.add(buildingVO);
         }

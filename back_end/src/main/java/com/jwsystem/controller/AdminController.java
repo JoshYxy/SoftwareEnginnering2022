@@ -60,8 +60,7 @@ public class AdminController extends MainController{
      */
 
 
-
-        //管理员查看全部用户信息
+    //管理员查看全部用户信息
     @GetMapping("/users")
     public Result getAll(){
         List<User> users = teaServiceImp.getAllUserInfos();

@@ -5,7 +5,7 @@
         SELECT *
         FROM timepart WHERE course_id = #{course_id}
     </select>
-    <resultMap id="TimepartMapping" type="Timepart">
+    <resultMap id="TimepartMapping" type="com.jwsystem.entity.Timepart">
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->

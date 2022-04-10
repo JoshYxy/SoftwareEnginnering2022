@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 10/04/2022 21:13:54
+ Date: 10/04/2022 23:36:38
 */
 
 SET NAMES utf8mb4;
@@ -297,6 +297,7 @@ CREATE TABLE `timepart`  (
 -- ----------------------------
 -- Records of timepart
 -- ----------------------------
+INSERT INTO `timepart` VALUES (1, 1, 20000002, 'H3', 106, 2, '1 2 3');
 
 -- ----------------------------
 -- Table structure for times
