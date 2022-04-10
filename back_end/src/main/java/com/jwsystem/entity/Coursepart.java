@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Coursepart {
-    private Integer relationid;         //courseId或者requestId
+    private Integer relationId;         //courseId或者requestId
     private String courseName;  //课程名称
     private String courseNum;   //课程编号
     private String classHours;  //学时

@@ -30,10 +30,6 @@
         SELECT college_name
         FROM MAJOR WHERE name = #{name}
     </select>
-    <select id="selectMajorByName" resultType="com.jwsystem.entity.Major">
-        SELECT *
-        FROM MAJOR WHERE name = #{name}
-    </select>
     <!-- 删除专业 -->
     <delete id="deleteMajor">
         DELETE FROM Major WHERE name = #{name}

@@ -1,6 +1,7 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
+import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.vo.CourseRequest;
 import com.jwsystem.entity.*;
 import com.jwsystem.service.TeaService;
@@ -43,7 +44,7 @@ public class TeacherController extends MainController{
     private CourseServiceImp courseServiceImp;
 
     @Autowired
-    private CourseRequestService courseRequestService;
+    private CourseRequestImp courseRequestImp;
 
     @Autowired
     private BuildingServiceImp buildingServiceImp;
@@ -62,14 +63,14 @@ public class TeacherController extends MainController{
         }
 
         //根据教师工号查出全部的CoursePart，以list返回
-        List<Coursepart> coursepartList = courseService.getAllCoursePartByTeacherNum(number);
+        List<Coursepart> coursepartList = courseServiceImp.getAllCoursepartByTeacherNum(number);
 
         List<CourseVO> courseVOList = new ArrayList<>();
 
         //对每个CoursePart，根据课程的id找出对应的所有timePart部分
         for (Coursepart c:
                 coursepartList) {
-            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationid());
+            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
             CourseVO tempVO = courseUtil.transToVO(c, timepartList);
@@ -89,7 +90,7 @@ public class TeacherController extends MainController{
     public Result addRequest(@RequestBody CourseRequest courseRequest){
 
         //把申请的部分插入申请表，返回requestId给我
-        int requestId = courseRequestService.insertRequest(
+        int requestId = courseRequestImp.insertRequest(
                 courseRequest.getType(),
                 courseRequest.getCourseVO().getCourseId(),
                 courseRequest.getCourseVO().getTeacherNum(),
@@ -114,7 +115,7 @@ public class TeacherController extends MainController{
                 courseVO.getCapacity());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里
-        courseService.insertReqCoursePart(coursePart);
+        courseServiceImp.insertReqCoursepart(coursePart);
 
         try{
             for(int i=0;i<7;i++){
@@ -123,7 +124,7 @@ public class TeacherController extends MainController{
                 if(courseVO.getTimes()[i].length>0){
                     int[] intArray = courseVO.getTimes()[i];
                     //周i有课，转int数组为String
-                    String strArray[] = Arrays.stream(intArray)
+                    String[] strArray = Arrays.stream(intArray)
                             .mapToObj(String::valueOf)
                             .toArray(String[]::new);
 
@@ -148,7 +149,7 @@ public class TeacherController extends MainController{
 
                    //因为是申请的课程信息，就不用判断是否冲突了
                     //存到req-timePart表里
-                    courseService.insertReqTimePart(timePart);
+                    courseServiceImp.insertReqTimepart(timePart);
 //                    if(res == false){
 //                        //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
 //                        courseService.deleteCoursePartByRequestId(requestId);

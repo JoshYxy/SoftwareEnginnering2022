@@ -53,12 +53,12 @@ public class EduServiceImp implements EduService {
 
     @Override
     public College selectCollegeByName(College college) {
-        return collegeDao.selectCollegeByName(college);
+        return collegeDao.findCollegeByName(college.getName());
     }
 
     @Override
     public Major selectMajorByName(Major major) {
-        return majorDao.selectMajorByName(major);
+        return majorDao.findMajorByName(major.getName());
     }
 
     @Override

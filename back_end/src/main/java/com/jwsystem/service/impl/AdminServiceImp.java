@@ -14,4 +14,12 @@ public class AdminServiceImp implements AdminService {
     public User getUserByNumber(String number) {
         return adminDao.getUserByNumber(number);
     }
+    @Override
+    public boolean getCurr(){
+        return adminDao.getCurr();
+    }
+    @Override
+    public void setCurr(boolean choice) {
+        adminDao.setCurr(choice);
+    }
 }

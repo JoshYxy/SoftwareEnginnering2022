@@ -4,6 +4,8 @@ import com.jwsystem.common.Result;
 import com.jwsystem.entity.*;
 import com.jwsystem.service.AdminService;
 import com.jwsystem.service.StuService;
+import com.jwsystem.service.impl.AdminServiceImp;
+import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.CourseUtil;
@@ -45,15 +47,15 @@ public class StudentController extends MainController{
     private CourseServiceImp courseServiceImp;
 
     @Autowired
-    private AdminService adminService;
+    private AdminServiceImp adminServiceImp;
 
     @Autowired
-    private CourseRequestService courseRequestService;
+    private CourseRequestImp courseRequestImp;
 
     @GetMapping("/course")
     public Result avaliableCourse(){
 
-        if(adminService.getCurr() == false){
+        if(!adminServiceImp.getCurr()){
             //从管理员表中查询是否在选课时间段，若不在选课时段
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Result.fail("当前不在选课时间段");
@@ -67,11 +69,11 @@ public class StudentController extends MainController{
         //取出该学生所属学院开设的全部课程
         List<CourseVO> courses = new ArrayList<>();
         //根据学院名称取出对应的全部coursePart部分
-        List<Coursepart> coursepartList = courseServiceImp.getCoursePartByCollege(collegeName);
+        List<Coursepart> coursepartList = courseServiceImp.getCoursepartByCollege(collegeName);
 
         for (Coursepart c:
                 coursepartList) {
-            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationid());
+            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
             CourseVO tempVO = courseUtil.transToVO(c, timepartList);

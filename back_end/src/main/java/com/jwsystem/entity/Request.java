@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 public class Request {
     private Integer requestId;   //作为键的id
     private String type;        //请求类型
-    private String courseId;
+    private Integer courseId;
     private String teacherNum;
     private String building;
     private String roomName;
-    private boolean examined = false;   //是否被审核过
-    private boolean passed = false; //请求是否通过
+    private boolean examined; //= false;   //是否被审核过 默认为0
+    private boolean passed; //= false; //请求是否通过
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.RequestDao">
+    <update id="examinedById">
+        UPDATE request
+        SET examined = #{examined}, passed = #{passed}
+        WHERE request_id = #{request_id}
+    </update>
+    <!-- 得到所有未被审核的申请 -->
+    <select id="getAllRequests" resultType="com.jwsystem.entity.Request">
+        SELECT *
+        FROM request where examined = false
+    </select>
+    <!--得到某条申请 -->
+    <select id="selectRequestById" resultType="com.jwsystem.entity.Request">
+        SELECT *
+        FROM request where request_id = #{request_id}
+    </select>
+    <!--插入申请并返回request_id-->
+    <insert id="insertRequest">
+        <selectKey keyProperty="request_id" order="AFTER" resultType="java.lang.Integer">
+            select last_insert_id()
+        </selectKey>
+        insert into user(type,courseId,teacherNum,examined,passed)
+        values (#{type},#{courseId},#{teacherNum},#{examined},#{passed})
+    </insert>
+</mapper>

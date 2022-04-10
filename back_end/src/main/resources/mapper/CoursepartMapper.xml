@@ -1,10 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.CoursepartDao">
+    <!-- 插入课程主体信息部分并返回自增主键 -->
+    <insert id="insertCoursepart" parameterType="com.jwsystem.entity.Coursepart" keyProperty="relationId" useGeneratedKeys="true">
+        insert into coursepart(
+            course_id as relation_id,
+            course_name,
+            course_num,
+            class_hours,
+            credits,
+            course_info,
+            college_name,
+            teacher_num,
+            teacher_name,
+            capacity
+        )
+        values(
+                  #{course_id},
+                  #{course_name},
+                  #{course_num},
+                  #{class_hours},
+                  #{credits},
+                  #{course_info},
+                  #{college_name},
+                  #{teacher_num},
+                  #{teacher_name},
+                  #{capacity}
+              )
+    </insert>
+    <!-- 插入申请的课程主体信息部分 -->
+    <insert id="insertReqCoursepart" parameterType="com.jwsystem.entity.Coursepart">
+        insert into coursepart(
+            request_id as relation_id,
+            course_name,
+            course_num,
+            class_hours,
+            credits,
+            course_info,
+            college_name,
+            teacher_num,
+            teacher_name,
+            capacity
+        )
+        values(
+                  #{course_id},
+                  #{course_name},
+                  #{course_num},
+                  #{class_hours},
+                  #{credits},
+                  #{course_info},
+                  #{college_name},
+                  #{teacher_num},
+                  #{teacher_name},
+                  #{capacity}
+              )
+    </insert>
     <!-- 查询所有课程信息 -->
-    <select id="getCoursepartInfos" resultType="com.jwsystem.entity.Coursepart">
+    <resultMap id="CoursepartMapping" type="com.jwsystem.entity.Coursepart">
+        <!-- id属性来映射主键字段 -->
+        <id column="course_id" property="relationId"/>
+        <!-- result属性映射非主键字段 -->
+        <result column="course_name" property="courseName"/>
+        <result column="course_num" property="courseNum"/>
+        <result column="class_hours" property="classHours"/>
+        <result column="credits" property="credits"/>
+        <result column="course_info" property="courseInfo"/>
+        <result column="college_name" property="collegeName"/>
+        <result column="teacher_num" property="teacherNum"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="capacity" property="capacity"/>
+    </resultMap>
+    <select id="getCoursepartInfos" resultMap="CoursepartMapping">
         SELECT *
-        FROM coursepart
+        FROM coursepart where course_id = #{course_id}
+    </select>
+<!--    根据学院名查询课程信息-->
+    <select id="getCoursepartByCollege" resultMap="CoursepartMapping">
+        SELECT *
+        FROM coursepart where college_name = #{college_name}
     </select>
 
+    <select id="getAllCoursepartByTeacherNum" resultMap="CoursepartMapping">
+        SELECT *
+        FROM coursepart where teacher_num = #{teacher_num}
+    </select>
+
+    <!--查询所有未审核课程信息-->
+    <select id="getReqCoursepartByRequestId" resultMap="ReqCoursepartMapping">
+        SELECT *
+        FROM req_coursepart where request_id = #{request_id}
+    </select>
+
+    <resultMap id="ReqCoursepartMapping" type="com.jwsystem.entity.Coursepart">
+        <!-- id属性来映射主键字段 -->
+        <id column="request_id" property="relationId"/>
+        <!-- result属性映射非主键字段 -->
+        <result column="course_name" property="courseName"/>
+        <result column="course_num" property="courseNum"/>
+        <result column="class_hours" property="classHours"/>
+        <result column="credits" property="credits"/>
+        <result column="course_info" property="courseInfo"/>
+        <result column="college_name" property="collegeName"/>
+        <result column="teacher_num" property="teacherNum"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="capacity" property="capacity"/>
+    </resultMap>
+
+    <!-- 删除 Coursepart-->
+    <delete id="deleteCoursepartByCourseId">
+        DELETE FROM coursepart WHERE course_id = #{course_id}
+    </delete>
 </mapper>

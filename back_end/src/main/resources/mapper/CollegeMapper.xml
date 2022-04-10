@@ -44,14 +44,10 @@
         FROM COLLEGE WHERE name = #{name}
     </select>
     <!-- 根据id修改某学院名 -->
-    <select id="updateCollegeNameById" resultType="com.jwsystem.entity.College">
+    <update id="updateCollegeNameById" >
         UPDATE COLLEGE SET name = #{name}
         where college_id = #{college_id}
-    </select>
-    <select id="selectCollegeByName" resultType="com.jwsystem.entity.College">
-        SELECT *
-        FROM COLLEGE WHERE name = #{name}
-    </select>
+    </update>
     <!-- 删除学院 -->
     <delete id="deleteCollege">
         DELETE FROM COLLEGE WHERE name = #{name}

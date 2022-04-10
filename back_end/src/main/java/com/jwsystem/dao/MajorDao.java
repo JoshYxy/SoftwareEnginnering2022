@@ -10,11 +10,8 @@ import java.util.Map;
 
 @Mapper
 public interface MajorDao {
-    // 新增专业
-    int insertMajor(@Param("name") String name, @Param("college_name") String collegeName);
-    // 根据学院name查询该学院下的所有专业
-//    @MapKey("name")
-//    Map<Integer,String> findMajorByCollegeName(String collegeName);
+    //新增专业
+    int insertMajor(String name, String collegeName);
     //根据id查询某专业是否存在
     Major findMajorById(Integer majorId);
     //根据name查询某专业是否存在
@@ -25,6 +22,4 @@ public interface MajorDao {
     int deleteMajor(String name);
     //判断学院专业对应
     String findCollegeByMajorName(String name);
-
-    Major selectMajorByName(Major major);
 }
