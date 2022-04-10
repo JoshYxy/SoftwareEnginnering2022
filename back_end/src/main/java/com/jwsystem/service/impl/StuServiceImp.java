@@ -3,7 +3,7 @@ package com.jwsystem.service.impl;
 import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.StudentDao;
 import com.jwsystem.entity.Student;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 import com.jwsystem.service.StuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.jwsystem.util;
 
 
-import com.jwsystem.entity.Course;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.CourseDTO;
+import com.jwsystem.dto.User;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
@@ -63,8 +63,8 @@ public class CSVUtils {
         return users;
     }
 
-    public static List<Course> getCourseByCsv(MultipartFile file) {
-        ArrayList<Course> courses = new ArrayList<>();
+    public static List<CourseDTO> getCourseByCsv(MultipartFile file) {
+        ArrayList<CourseDTO> courses = new ArrayList<>();
 
         InputStreamReader in = null;
         try {
@@ -73,26 +73,26 @@ public class CSVUtils {
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
                 String[] split = line.split(",");
-                Course course = new Course();
-                course.setCourseName(splitResult(split[0]));
-                course.setCourseNum(splitResult(split[1]));
-                course.setCollegeName(splitResult(split[2]));
-                course.setClassHours(splitResult(split[3]));
-                course.setCredits(splitResult(split[4]));
-                course.setTeacherName(splitResult(split[5]));
-                course.setTeacherNum(splitResult(split[6]));
-                course.setCourseInfo(splitResult(split[7]));
-                course.setBuilding(splitResult(split[8]));
-                course.setRoomNum(splitResult(split[9]));
-                course.setCapacity(splitResult(split[10]));
-                course.setMon(splitResult(split[11]));
-                course.setTue(splitResult(split[12]));
-                course.setWed(splitResult(split[13]));
-                course.setThu(splitResult(split[14]));
-                course.setFri(splitResult(split[15]));
-                course.setSat(splitResult(split[16]));
-                course.setSun(splitResult(split[17]));
-                courses.add(course);
+                CourseDTO courseDTO = new CourseDTO();
+                courseDTO.setCourseName(splitResult(split[0]));
+                courseDTO.setCourseNum(splitResult(split[1]));
+                courseDTO.setCollegeName(splitResult(split[2]));
+                courseDTO.setClassHours(splitResult(split[3]));
+                courseDTO.setCredits(splitResult(split[4]));
+                courseDTO.setTeacherName(splitResult(split[5]));
+                courseDTO.setTeacherNum(splitResult(split[6]));
+                courseDTO.setCourseInfo(splitResult(split[7]));
+                courseDTO.setBuilding(splitResult(split[8]));
+                courseDTO.setRoomNum(splitResult(split[9]));
+                courseDTO.setCapacity(splitResult(split[10]));
+                courseDTO.setMon(splitResult(split[11]));
+                courseDTO.setTue(splitResult(split[12]));
+                courseDTO.setWed(splitResult(split[13]));
+                courseDTO.setThu(splitResult(split[14]));
+                courseDTO.setFri(splitResult(split[15]));
+                courseDTO.setSat(splitResult(split[16]));
+                courseDTO.setSun(splitResult(split[17]));
+                courses.add(courseDTO);
             }
         } catch (IOException e) {
             e.printStackTrace();

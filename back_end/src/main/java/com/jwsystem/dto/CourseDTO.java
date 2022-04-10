@@ -1,4 +1,4 @@
-package com.jwsystem.entity;
+package com.jwsystem.dto;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
+public class CourseDTO {
     @CsvBindByName(column = "courseName")
     private String courseName;  //课程名称
     @CsvBindByName(column = "courseNum")

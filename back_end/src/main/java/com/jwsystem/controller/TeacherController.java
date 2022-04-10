@@ -1,16 +1,20 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
+import com.jwsystem.dto.CourseRequest;
 import com.jwsystem.entity.*;
 import com.jwsystem.service.TeaService;
+import com.jwsystem.service.impl.BuildingServiceImp;
+import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CourseUtil;
 import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.BuildingVO;
+import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,10 +40,13 @@ public class TeacherController extends MainController{
     private TeaService teaService;
 
     @Autowired
-    private CourseService courseService;
+    private CourseServiceImp courseServiceImp;
 
     @Autowired
     private CourseRequestService courseRequestService;
+
+    @Autowired
+    private BuildingServiceImp buildingServiceImp;
 
     //教师获得自己开设的课程信息
     @GetMapping("/course")
@@ -55,24 +62,24 @@ public class TeacherController extends MainController{
         }
 
         //根据教师工号查出全部的CoursePart，以list返回
-        List<CoursePart> coursePartList = courseService.getAllCoursePartByTeacherNum(number);
+        List<Coursepart> coursepartList = courseService.getAllCoursePartByTeacherNum(number);
 
         List<CourseVO> courseVOList = new ArrayList<>();
 
         //对每个CoursePart，根据课程的id找出对应的所有timePart部分
-        for (CoursePart c:
-             coursePartList) {
-            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getCourseId());
+        for (Coursepart c:
+                coursepartList) {
+            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getCourseId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c,timePartList);
+            CourseVO tempVO = courseUtil.transToVO(c, timepartList);
 
             courseVOList.add(tempVO);
         }
 
         //返回所有教室信息
         //需要写buildingVO的部分
-        List<Building> classroom = buildingService.getAllRooms;
+        List<BuildingVO> classroom = buildingServiceImp.getAllRooms();
 
         return Result.succ(courseVOList,classroom,null);
     }
@@ -94,7 +101,7 @@ public class TeacherController extends MainController{
         //courseVO 截成两段
 
         CourseVO courseVO = courseRequest.getCourseVO();
-        CoursePart coursePart = new CoursePart(
+        Coursepart coursePart = new Coursepart(
                 null,
                 requestId,
                 courseVO.getCourseName(),
@@ -129,7 +136,7 @@ public class TeacherController extends MainController{
                     System.out.println(timeString);
 
                     //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
-                    TimePart timePart = new TimePart(
+                    Timepart timePart = new Timepart(
                             null,
                             requestId,
                             courseVO.getTeacherNum(),

@@ -1,4 +1,4 @@
-package com.jwsystem.entity;
+package com.jwsystem.dto;
 
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;

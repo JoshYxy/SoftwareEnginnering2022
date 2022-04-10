@@ -1,10 +1,9 @@
 package com.jwsystem.util;
 
-import com.jwsystem.entity.CoursePart;
-import com.jwsystem.entity.CourseVO;
-import com.jwsystem.entity.TimePart;
+import com.jwsystem.entity.Coursepart;
+import com.jwsystem.vo.CourseVO;
+import com.jwsystem.entity.Timepart;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
 @Component
 public class CourseUtil {
 
-    public CourseVO transToVO(CoursePart coursePart, List<TimePart> timePartList){
+    public CourseVO transToVO(Coursepart coursePart, List<Timepart> timepartList){
 
         CourseVO VO = new CourseVO();
 
@@ -27,14 +26,14 @@ public class CourseUtil {
         VO.setTeacherNum(coursePart.getTeacherNum());
         VO.setTeacherName(coursePart.getTeacherName());
         VO.setCourseInfo(coursePart.getCourseInfo());
-        VO.setBuilding(timePartList.get(0).getBuilding());
-        VO.setRoomNum(timePartList.get(0).getRoomNum());
+        VO.setBuilding(timepartList.get(0).getBuilding());
+        VO.setRoomNum(timepartList.get(0).getRoomNum());
         VO.setCapacity(coursePart.getCapacity());
 
         //设置时间部分
         int[][] time = new int[7][];
-        for (TimePart t:
-             timePartList) {
+        for (Timepart t:
+                timepartList) {
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");

@@ -1,5 +1,6 @@
-package com.jwsystem.entity;
+package com.jwsystem.dto;
 
+import com.jwsystem.vo.CourseVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -12,5 +12,4 @@ import java.util.List;
 public class College {
     private Integer collegeId;
     private String name;
-    //private List<MajorVO> majors;
 }

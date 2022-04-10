@@ -1,13 +1,11 @@
 package com.jwsystem.dao;
 
 import com.jwsystem.entity.College;
-import com.jwsystem.entity.CollegeVO;
-import org.apache.ibatis.annotations.MapKey;
+import com.jwsystem.vo.CollegeVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface CollegeDao {
@@ -28,4 +26,6 @@ public interface CollegeDao {
     int deleteCollege(String name);
 
     College selectCollegeByName(College college);
+    //得到所有学院名字
+    List<String> getAllCollegeName();
 }

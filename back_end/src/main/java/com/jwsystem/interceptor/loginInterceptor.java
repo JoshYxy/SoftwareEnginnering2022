@@ -1,6 +1,6 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.jwsystem.controller.UserController.EXPIRED;
 import static com.jwsystem.controller.UserController.TEACHER_NUM_LENGTH;
-import static com.jwsystem.entity.User.GRADUATED;
-import static com.jwsystem.entity.User.QUIT;
+import static com.jwsystem.dto.User.GRADUATED;
+import static com.jwsystem.dto.User.QUIT;
 
 //登陆状态拦截器
 public class loginInterceptor implements HandlerInterceptor {

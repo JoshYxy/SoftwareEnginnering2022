@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.StudentDao">
     <!-- 新增学生 -->
-    <insert id="insertUser" parameterType="com.jwsystem.entity.User">
+    <insert id="insertUser" parameterType="com.jwsystem.dto.User">
         insert into student
             (role,
              number,
@@ -19,7 +19,7 @@
     </insert>
 
     <!-- 学生修改手机号、邮箱、登陆密码 -->
-    <update id="updateStuInfoByUser" parameterType="com.jwsystem.entity.User">
+    <update id="updateStuInfoByUser" parameterType="com.jwsystem.dto.User">
         UPDATE student
         SET password = #{password},
             phone = #{phone},
@@ -29,7 +29,7 @@
     </update>
 
     <!-- 管理员修改除学工号以外的信息 -->
-    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.entity.User">
+    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.dto.User">
         UPDATE student
         SET role = #{role},
             id = #{id},
@@ -53,7 +53,7 @@
     </update>
 
     <!--查看所有学生信息-->
-    <select id="getAllStu" resultType="com.jwsystem.entity.User">
+    <select id="getAllStu" resultType="com.jwsystem.dto.User">
         SELECT
             role,
             number,
@@ -90,7 +90,7 @@
     </select>
 
     <!--查看指定学生信息-->
-    <select id="getUserByNumber" resultType="com.jwsystem.entity.User">
+    <select id="getUserByNumber" resultType="com.jwsystem.dto.User">
         SELECT
             role,
             number,

@@ -2,15 +2,15 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.entity.Building;
-import com.jwsystem.entity.ClassRoom;
-import com.jwsystem.entity.TimePart;
+import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.Timepart;
 import com.jwsystem.entity.Times;
 import com.jwsystem.service.AdminService;
+import com.jwsystem.service.impl.TimesServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Time;
 import java.util.List;
 
 @RestController
@@ -30,7 +30,7 @@ public class AffairController extends MainController{
     ClassRoomService classRoomService;
 
     @Autowired
-    TimesService timesService;
+    TimesServiceImp timesServiceImp;
 
     @Autowired
     HttpServletResponse response;
@@ -40,17 +40,17 @@ public class AffairController extends MainController{
     public Result getAffair(){
         //按照学院对应的所有教室（需要类似学院专业那样，创建VO类？）
         List<Building> buildingList = buildingService.getAllRoom();
-        List<Times> timesList = timesService.getAll();
+        List<Times> timesList = timesServiceImp.getAllTimes();
         return Result.succ(buildingList,timesList,null);
     }
 
     //管理员获得某间教室的所有上课时间信息
     @GetMapping("/building/room/time")
-    public Result getRoomTime(@RequestBody ClassRoom classRoom){
-        List<TimePart> timePartList = courseService.getAllTimeByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+    public Result getRoomTime(@RequestBody Classroom classRoom){
+        List<Timepart> timepartList = courseService.getAllTimeByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
         int[][] time = new int[7][];
-        for (TimePart t:
-                timePartList) {
+        for (Timepart t:
+                timepartList) {
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");
@@ -139,7 +139,7 @@ public class AffairController extends MainController{
 
     //管理员增加教室
     @PostMapping("/room/new")
-    public Result addRoom(@RequestBody ClassRoom classRoom){
+    public Result addRoom(@RequestBody Classroom classRoom){
         if(classRoomService.findByNumAndBuilding(classRoom.getRoomNum(),classRoom.getBuilding())!=null){
             //存在同名教室
             response.setStatus(WRONG_RES);
@@ -151,7 +151,7 @@ public class AffairController extends MainController{
 
     //管理员删教室
     @DeleteMapping("/room")
-    public Result deleteRoom(@RequestBody ClassRoom classRoom){
+    public Result deleteRoom(@RequestBody Classroom classRoom){
         if(classRoomService.findById(classRoom.getRoomId())==null){
             //不存在
             response.setStatus(WRONG_RES);
@@ -163,7 +163,7 @@ public class AffairController extends MainController{
 
     //管理员改教室名
     @PostMapping("/room")
-    public Result changeRoom(@RequestBody ClassRoom classRoom){
+    public Result changeRoom(@RequestBody Classroom classRoom){
         if(classRoomService.findById(classRoom.getRoomId())==null){
             //不存在
             response.setStatus(WRONG_RES);

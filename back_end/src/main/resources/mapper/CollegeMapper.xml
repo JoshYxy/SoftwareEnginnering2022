@@ -9,11 +9,11 @@
               )
     </insert>
     <!-- 查询学院和对应专业 -->
-    <resultMap id="CollegeAndMajor" type="com.jwsystem.entity.CollegeVO">
+    <resultMap id="CollegeAndMajor" type="com.jwsystem.vo.CollegeVO">
         <!-- 学院信息 -->
         <id column="college_id" property="collegeVOId"/>
         <result column="name" property="collegeVOName"/>
-        <collection property="majors" ofType="com.jwsystem.entity.MajorVO">
+        <collection property="majors" ofType="com.jwsystem.vo.MajorVO">
             <id column="major_id" property="majorId"/>
             <result column="major_name" property="majorName"/>
         </collection>
@@ -27,6 +27,10 @@
     <!-- 查询所有学院信息 -->
     <select id="findAllCollegeInfos" resultType="map">
         SELECT *
+        FROM COLLEGE
+    </select>
+    <select id="getAllCollegeName" resultType="java.lang.String">
+        SELECT name
         FROM COLLEGE
     </select>
     <!--根据id查询某学院是否存在 -->

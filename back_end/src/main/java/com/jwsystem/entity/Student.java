@@ -1,6 +1,8 @@
 package com.jwsystem.entity;
 
-public class Student extends User{
+import com.jwsystem.dto.User;
+
+public class Student extends User {
     private String role;//角色 教师 学生 管理员
     private String number;
     private String id;

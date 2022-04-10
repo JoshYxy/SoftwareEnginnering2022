@@ -4,9 +4,11 @@ import com.jwsystem.common.Result;
 import com.jwsystem.entity.*;
 import com.jwsystem.service.AdminService;
 import com.jwsystem.service.StuService;
+import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.CourseUtil;
 import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +42,7 @@ public class StudentController extends MainController{
     private StuService stuService;
 
     @Autowired
-    private CourseService courseService;
+    private CourseServiceImp courseServiceImp;
 
     @Autowired
     private AdminService adminService;
@@ -65,14 +67,14 @@ public class StudentController extends MainController{
         //取出该学生所属学院开设的全部课程
         List<CourseVO> courses = new ArrayList<>();
         //根据学院名称取出对应的全部coursePart部分
-        List<CoursePart> coursePartList = courseService.getCoursePartByCollege(collegeName);
+        List<Coursepart> coursepartList = courseServiceImp.getCoursePartByCollege(collegeName);
 
-        for (CoursePart c:
-                coursePartList) {
-            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getCourseId());
+        for (Coursepart c:
+                coursepartList) {
+            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getCourseId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c,timePartList);
+            CourseVO tempVO = courseUtil.transToVO(c, timepartList);
 
             courses.add(tempVO);
         }

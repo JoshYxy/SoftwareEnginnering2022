@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 //room类，表示教室
-public class ClassRoom {
+public class Classroom {
     private Integer roomId;
     private String building;
     private String roomNum;

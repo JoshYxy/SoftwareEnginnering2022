@@ -1,7 +1,8 @@
 package com.jwsystem.service;
 
 import com.jwsystem.entity.Teacher;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
+import com.jwsystem.vo.TeacherData;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface TeaService {
     Boolean deleteTeaByNumber(String number);
 
     boolean findUserMajor(String majorName);
+    //返回教师信息 按照学院分类
+    List<TeacherData> getAllTeachersWithCollege();
 }

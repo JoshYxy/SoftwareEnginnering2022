@@ -1,11 +1,21 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
+import com.jwsystem.dto.CourseDTO;
+import com.jwsystem.dto.CourseRequest;
 import com.jwsystem.entity.*;
+import com.jwsystem.service.impl.BuildingServiceImp;
+import com.jwsystem.service.impl.CourseServiceImp;
+import com.jwsystem.service.impl.TeaServiceImp;
+import com.jwsystem.service.impl.TimesServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.CourseUtil;
 import com.jwsystem.util.JwtUtils;
 import com.jwsystem.util.RequestResult;
+import com.jwsystem.vo.BuildingDTO;
+import com.jwsystem.vo.BuildingVO;
+import com.jwsystem.vo.CourseVO;
+import com.jwsystem.vo.TeacherData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static com.jwsystem.entity.CourseRequest.*;
+import static com.jwsystem.dto.CourseRequest.*;
 
 //管理员对课程的管理
 @RestController
@@ -34,24 +44,33 @@ public class CourseController extends MainController{
     CourseUtil courseUtil;
 
     @Autowired
-    private CourseService courseService;
+    private CourseServiceImp courseServiceImp;
 
     @Autowired
     private CourseRequestService courseRequestService;
+
+    @Autowired
+    private TeaServiceImp teaServiceImp;
+
+    @Autowired
+    private BuildingServiceImp buildingServiceImp;
+
+    @Autowired
+    private TimesServiceImp timesServiceImp;
 
     //新增课程获得必要信息
     @GetMapping("/new")
     public Result getInfo(){
         //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
-        List<TeacherData> teacherData = teacherService.getAllTeachersWithCollege;
+        List<TeacherData> teacherDataList = teaServiceImp.getAllTeachersWithCollege();
 
         //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
-        List<Building> classroom = buildingService.getAllRooms;
+        List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
 
         //上课时间信息
-        List<Times> times = timeService.getAllTimes;
+        List<Times> times = timesServiceImp.getAllTimes();
 
-        return Result.succ(teacherData,classroom,times);
+        return Result.succ(teacherDataList,buildingVOList,times);
     }
 
     //新增课程
@@ -59,7 +78,7 @@ public class CourseController extends MainController{
     public Result addCourse(CourseVO courseVO){
         //courseVO 截成两段
 
-        CoursePart coursePart = new CoursePart(
+        Coursepart coursePart = new Coursepart(
                 null,
                 null,
                 courseVO.getCourseName(),
@@ -95,7 +114,7 @@ public class CourseController extends MainController{
                     System.out.println(timeString);
 
                     //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
-                    TimePart timePart = new TimePart(
+                    Timepart timePart = new Timepart(
                             courseId,
                             null,
                             courseVO.getTeacherNum(),
@@ -144,15 +163,15 @@ public class CourseController extends MainController{
     @GetMapping("/courseRequests")
     public Result getAllRequests(){
         //从数据库中取出所有没有被审核的申请
-        List<RequestInDB> requestInDBList = courseRequestService.getAllRequest();
+        List<Request> requestList = courseRequestService.getAllRequest();
 
         List<CourseRequest> courseRequestList = new ArrayList<>();
         //将每个requestInDB包装成CourseRequest
-        for (RequestInDB r:
-            requestInDBList) {
+        for (Request r:
+                requestList) {
                 CourseRequest courseRequest  = new CourseRequest();
-                CoursePart cp = courseService.getCoursePartByRequestId(r.getRequestId());
-                List<TimePart> tp = courseService.getAllTimePartByRequestId(r.getRequestId());
+                Coursepart cp = courseService.getCourseByRequestId(r.getRequestId());
+                List<Timepart> tp = courseService.getAllTimePartByRequestId(r.getRequestId());
 
                 courseRequest.setRequestId(r.getRequestId());
                 courseRequest.setType(r.getType());
@@ -173,13 +192,13 @@ public class CourseController extends MainController{
     public Result examine(@RequestBody RequestResult requestResult){
         //如果申请通过
         if(requestResult.isRes()){
-            RequestInDB r = courseRequestService.selectRequestById(requestResult.getRequestId());
+            Request r = courseRequestService.selectRequestById(requestResult.getRequestId());
             String type = r.getType();
 
             if(type.equals(ADD)){
                 //新增课程：
-                CoursePart cp = courseService.getCoursePartByRequestId(r.getRequestId());
-                List<TimePart> tp = courseService.getAllTimePartByRequestId(r.getRequestId());
+                Coursepart cp = courseService.getCoursePartByRequestId(r.getRequestId());
+                List<Timepart> tp = courseService.getAllTimePartByRequestId(r.getRequestId());
                 CourseVO courseVO = courseUtil.transToVO(cp,tp);
                 //用申请id删除掉申请对应的coursePart和TimePart（设置成连带删除）
                 courseService.deleteCoursePartByRequestId(requestResult.getRequestId());
@@ -216,14 +235,14 @@ public class CourseController extends MainController{
     public Result getAllCourse(){
 
         List<CourseVO> courses = new ArrayList<>();
-        List<CoursePart> coursePartList = courseService.getAllCoursePart();
+        List<Coursepart> coursepartList = courseServiceImp.getAllCoursepart();
 
-        for (CoursePart c:
-                coursePartList) {
-            List<TimePart> timePartList = courseService.getAllTimePartByCourseId(c.getCourseId());
+        for (Coursepart c:
+                coursepartList) {
+            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getCourseId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c,timePartList);
+            CourseVO tempVO = courseUtil.transToVO(c, timepartList);
 
             courses.add(tempVO);
         }
@@ -278,10 +297,10 @@ public class CourseController extends MainController{
 
         //从CSV文件批量获取User对象
         try{
-            List<Course> courses = CSVUtils.getCourseByCsv(multipartFile);
+            List<CourseDTO> courses = CSVUtils.getCourseByCsv(multipartFile);
             //循环完成批量插入（此时插入类型为Course，不是CourseVO）
-            for (Course temp : courses) {
-                CoursePart coursePart = new CoursePart(
+            for (CourseDTO temp : courses) {
+                Coursepart coursePart = new Coursepart(
                         null,
                         null,
                         temp.getCourseName(),
@@ -313,7 +332,7 @@ public class CourseController extends MainController{
                     if(timeMap.get(i)!=null){
 
                         //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
-                        TimePart timePart = new TimePart(
+                        Timepart timePart = new Timepart(
                                 courseId,
                                 null,
                                 temp.getTeacherNum(),

@@ -1,7 +1,7 @@
 package com.jwsystem.dao;
 
 import com.jwsystem.entity.Student;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

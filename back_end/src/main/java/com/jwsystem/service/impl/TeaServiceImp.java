@@ -1,14 +1,17 @@
 package com.jwsystem.service.impl;
 
+import com.jwsystem.dao.CollegeDao;
 import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.TeacherDao;
 import com.jwsystem.entity.Teacher;
-import com.jwsystem.entity.User;
+import com.jwsystem.vo.TeacherData;
+import com.jwsystem.dto.User;
 import com.jwsystem.service.TeaService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.jwsystem.controller.UserController.TEACHER_NUM_LENGTH;
@@ -20,6 +23,9 @@ public class TeaServiceImp implements TeaService {
 
     @Autowired
     MajorDao majorDao;
+
+    @Autowired
+    CollegeDao collegeDao;
 
     @Override
     public Boolean insertUser(User user) {
@@ -73,5 +79,22 @@ public class TeaServiceImp implements TeaService {
     @Override
     public boolean findUserMajor(String majorName) {
         return majorDao.findMajorByName(majorName) != null;
+    }
+
+    @Override
+    public List<TeacherData> getAllTeachersWithCollege(){
+        //将所有的有老师的college拿出来遍历，根据college名字去找到所有的teacher
+//        public class TeacherData {
+//            private String collegeName;
+//            private List<Teacher> teachers;
+//        }
+        List<TeacherData> teacherDataList = new ArrayList<>();
+        List<String> colleges;
+        colleges = collegeDao.getAllCollegeName();
+        for(String c:colleges){
+            TeacherData td = new TeacherData(c,teacherDao.getTeacherByCollegeName(c));
+            teacherDataList.add(td);
+        }
+        return teacherDataList;
     }
 }

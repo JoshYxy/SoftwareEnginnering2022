@@ -1,7 +1,7 @@
 package com.jwsystem.service;
 
 import com.jwsystem.entity.Student;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 
 import java.util.List;
 

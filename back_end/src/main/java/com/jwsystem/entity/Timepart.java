@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TimePart {
+public class Timepart {
+    private Integer id;
     private Integer courseId = null;   //对应课程
     private Integer requestId = null;  //对应请求
     private String teacherNum;  //教师工号

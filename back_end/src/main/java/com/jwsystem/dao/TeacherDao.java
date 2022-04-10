@@ -1,8 +1,7 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Student;
 import com.jwsystem.entity.Teacher;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -29,4 +28,6 @@ public interface TeacherDao {
     Teacher getTeaInfo(String number);
     //删除老师
     int deleteTeaByNumber(String number);
+    //根据学院名得到老师信息
+    List<Teacher> getTeacherByCollegeName(String college);
 }

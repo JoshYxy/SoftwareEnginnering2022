@@ -1,26 +1,23 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.CollegeVO;
-import com.jwsystem.entity.User;
+import com.jwsystem.vo.CollegeVO;
+import com.jwsystem.dto.User;
 import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.JwtUtils;
-import com.opencsv.exceptions.CsvException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
-import static com.jwsystem.entity.User.*;
+import static com.jwsystem.dto.User.*;
 
 @RestController
 @RequestMapping("/admin")

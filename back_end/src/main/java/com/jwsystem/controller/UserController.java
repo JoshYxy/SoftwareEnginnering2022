@@ -1,7 +1,7 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.User;
+import com.jwsystem.dto.User;
 import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
@@ -14,7 +14,7 @@ import com.jwsystem.util.CSVUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.jwsystem.entity.User.*;
+import static com.jwsystem.dto.User.*;
 
 @RestController
 @RequestMapping("/user")
