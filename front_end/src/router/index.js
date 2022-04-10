@@ -12,7 +12,8 @@ import CourseMaintenance from '../components/course/CourseMaintenance.vue'
 import EduMaintenance from '../components/course/EduMaintenance.vue'
 import CoursePermission from "@/components/course/CoursePermission"
 import OptionalCourse from "@/components/course/OptionalCourse"
-import TeacherCourse from "@/components/course/TeacherCourse";
+import TeacherCourse from "@/components/course/TeacherCourse"
+import ProcessApplication from "@/components/ProcessApplication";
 const routes = [
   {
     path: '/',
@@ -95,6 +96,12 @@ const routes = [
         name:'teacherCourse',
         component: TeacherCourse,
         meta: { role: ['teacher'],nav_name: '课程维护'}
+      },
+      {
+        path: 'process',
+        name: 'process',
+        component: ProcessApplication,
+        meta: { role: ['admin'],nav_name: '审批申请'}
       }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')
