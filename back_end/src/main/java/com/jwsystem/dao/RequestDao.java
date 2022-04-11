@@ -1,6 +1,7 @@
 package com.jwsystem.dao;
 
 import com.jwsystem.entity.Request;
+import com.jwsystem.vo.CourseRequest;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,6 +11,6 @@ import java.util.List;
 public interface RequestDao {
     List<Request> getAllRequests();
     Request selectRequestById(int requestId);
-    int insertRequest(String type, @Param("course_id") Integer courseId,@Param("teacher_num") String teacherNum, boolean examined, boolean passed);
-    void examinedById(int requestId, boolean examined, boolean passed);
+    int insertRequest(Request request);
+    void examinedById(@Param("request_id") int requestId, boolean examined, boolean passed);
 }

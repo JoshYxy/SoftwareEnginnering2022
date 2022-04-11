@@ -76,7 +76,7 @@
     </insert>
 
     <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.Timepart">
-        insert into timepart(
+        insert into req_timepart(
             id,
             request_id,
             teacher_num,

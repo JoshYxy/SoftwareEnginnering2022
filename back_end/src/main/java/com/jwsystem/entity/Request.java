@@ -13,7 +13,7 @@ public class Request {
     private Integer courseId;
     private String teacherNum;
     private String building;
-    private String roomName;
+    private String roomNum;
     private boolean examined; //= false;   //是否被审核过 默认为0
     private boolean passed; //= false; //请求是否通过
 }

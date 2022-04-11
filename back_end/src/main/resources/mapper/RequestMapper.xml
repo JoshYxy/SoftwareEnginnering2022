@@ -17,11 +17,11 @@
         FROM request where request_id = #{request_id}
     </select>
     <!--插入申请并返回request_id-->
-    <insert id="insertRequest">
-        <selectKey keyProperty="request_id" order="AFTER" resultType="java.lang.Integer">
-            select last_insert_id()
-        </selectKey>
-        insert into user(type,courseId,teacherNum,examined,passed)
-        values (#{type},#{courseId},#{teacherNum},#{examined},#{passed})
+    <insert id="insertRequest" parameterType="com.jwsystem.entity.Request" useGeneratedKeys="true" keyProperty="requestId">
+<!--        <selectKey keyProperty="request_id" order="AFTER" resultType="java.lang.Integer">-->
+<!--            select last_insert_id()-->
+<!--        </selectKey>-->
+        insert into request(request_id,type,course_id,teacher_num,building,room_num,examined,passed)
+        values (#{requestId},#{type},#{courseId},#{teacherNum},#{building},#{roomNum},#{examined},#{passed})
     </insert>
 </mapper>

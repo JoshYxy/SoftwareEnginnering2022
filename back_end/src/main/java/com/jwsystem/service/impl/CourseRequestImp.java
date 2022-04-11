@@ -7,6 +7,7 @@ import com.jwsystem.entity.Coursepart;
 import com.jwsystem.entity.Request;
 import com.jwsystem.entity.Timepart;
 import com.jwsystem.service.RequestService;
+import com.jwsystem.vo.CourseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,11 +49,14 @@ public class CourseRequestImp implements RequestService {
         requestDao.examinedById(requestId,examined,passed);
     }
 
-    public int insertRequest(String type,
-                             Integer courseId,
-                             String teacherNum,
-                             boolean examined,
-                             boolean passed) {
-        return requestDao.insertRequest(type,courseId,teacherNum,examined,passed);
+//    public int insertRequest(Integer requestId,
+//                             String type,
+//                             Integer courseId,
+//                             String teacherNum,
+//                             boolean examined,
+//                             boolean passed) {
+
+    public int insertRequest(Request request){
+        return requestDao.insertRequest(request);
     }
 }

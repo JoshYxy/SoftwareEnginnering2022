@@ -264,7 +264,7 @@ public class CourseController extends MainController{
         }
         //设置对应的请求，examined为true，passed为requestResult.isRes()
         courseRequestImp.examinedById(requestResult.getRequestId(),true,requestResult.isRes());
-        return Result.succ("审核成功");
+        return Result.succ("审核完毕");
     }
 
     //管理员获得全部课程

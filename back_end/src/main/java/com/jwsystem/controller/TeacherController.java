@@ -89,15 +89,28 @@ public class TeacherController extends MainController{
     @PostMapping("/courseRequest")
     public Result addRequest(@RequestBody CourseRequest courseRequest){
 
-        //把申请的部分插入申请表，返回requestId给我
-        int requestId = courseRequestImp.insertRequest(
+        Request request = new Request(
+                courseRequest.getRequestId(),
                 courseRequest.getType(),
                 courseRequest.getCourseVO().getCourseId(),
                 courseRequest.getCourseVO().getTeacherNum(),
+                courseRequest.getCourseVO().getBuilding(),
+                courseRequest.getCourseVO().getRoomNum(),
                 courseRequest.isExamined(),
                 courseRequest.isPassed()
         );
 
+        //把申请插入申请表，返回requestId给我
+        courseRequestImp.insertRequest(
+//                courseRequest.getRequestId(),
+//                courseRequest.getType(),
+//                courseRequest.getCourseVO().getCourseId(),
+//                courseRequest.getCourseVO().getTeacherNum(),
+//                courseRequest.isExamined(),
+//                courseRequest.isPassed()
+                request
+        );
+        int requestId = request.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 

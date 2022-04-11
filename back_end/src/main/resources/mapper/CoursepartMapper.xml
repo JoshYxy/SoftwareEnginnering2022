@@ -39,7 +39,7 @@
 <!--    </select>-->
     <!-- 插入申请的课程主体信息部分 -->
     <insert id="insertReqCoursepart" parameterType="com.jwsystem.entity.Coursepart">
-        insert into coursepart(
+        insert into req_coursepart(
             request_id,
             course_name,
             course_num,
