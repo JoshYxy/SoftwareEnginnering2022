@@ -284,7 +284,6 @@ public class CourseController extends MainController{
             courses.add(tempVO);
         }
         return Result.succ("获取课程信息成功",courses);
-        //return Result.succ("获取课程信息成功",coursepartList);
 
     }
 
