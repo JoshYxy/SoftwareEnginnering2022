@@ -12,6 +12,9 @@
     <delete id="deleteTimesByName">
         DELETE FROM times WHERE name = #{name}
     </delete>
+    <delete id="deleteAll">
+        DELETE FROM times
+    </delete>
     <!-- 得到所有楼宇信息 -->
     <select id="getAllTimes" resultType="com.jwsystem.entity.Times">
         SELECT *

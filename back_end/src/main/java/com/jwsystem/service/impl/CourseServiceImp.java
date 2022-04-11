@@ -95,6 +95,11 @@ public class CourseServiceImp implements CourseService {
     public List<Timepart> getAllTimeByRoom(String building,String roomNum){
         return timepartDao.getAllTimeByRoom(building,roomNum);
     }
+
+    @Override
+    public List<Timepart> getAllTimeByTea(String number) {
+        return timepartDao.getAllTimeByTeacherNum(number);
+    }
 }
 
 

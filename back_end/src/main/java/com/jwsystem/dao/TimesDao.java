@@ -18,4 +18,6 @@ public interface TimesDao {
     void addTimes(String name,@Param("start_time")String startTime,@Param("end_time")String endTime);
     //根据名字删除节数
     void deleteTimesByName(String name);
+
+    void deleteAll();
 }

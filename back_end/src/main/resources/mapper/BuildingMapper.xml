@@ -32,8 +32,9 @@
         DELETE FROM building WHERE full_name = #{full_name}
     </delete>
 
-
-
+    <delete id="deleteAllRoomByName">
+        DELETE FROM classroom WHERE building = #{abbrName}
+    </delete>
 
 
 </mapper>

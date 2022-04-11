@@ -41,4 +41,9 @@ public class TimesServiceImp implements TimesService {
     public void deleteTimesByName(String name){
         timesDao.deleteTimesByName(name);
     }
+
+    @Override
+    public void deleteAll() {
+        timesDao.deleteAll();
+    }
 }

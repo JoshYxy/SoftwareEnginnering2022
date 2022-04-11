@@ -15,5 +15,5 @@ public interface TimepartDao {
     void insertTimepart(Timepart timepart);
     void insertReqTimepart(Timepart timepart);
     List<Timepart> getAllTimeByRoom(String building, @Param("room_num") String roomNum);
-    List<Timepart> getTeaClassTimeByTeaNum(Integer teacherNum);
+    List<Timepart> getAllTimeByTeacherNum(String number);
 }

@@ -72,35 +72,35 @@ public class AffairController extends MainController{
         return Result.succ(time);
     }
 
-//    //管理员获得某个老师所有上课时间
-//    @GetMapping("/affair/teacher/time")
-//    public Result getTeaTime(@RequestBody User user){
-//        User temp = teaServiceImp.getUserByNumber(user.getNumber());
-//        if(temp==null){
-//            response.setStatus(WRONG_DATA);
-//            return Result.fail("获取教师上课时间失败：该老师不存在");
-//        }
-//
-//        List<Timepart> timepartList = courseServiceImp.getAllTimeByTea(user.getNumber());
-//
-//        int[][] time = new int[7][];
-//        for (Timepart t:
-//                timepartList) {
-//            int i = t.getWeekday();
-//            //转字符串为int数组
-//            String[] s = t.getSection().split(" ");
-//            time[i] = new int[s.length];
-//            for(int cnt=0; cnt<s.length; cnt++){
-//                time[i][cnt]=Integer.parseInt(s[cnt]);
-//            }
-//        }
-//
-//        for(int i=0;i<7;i++){
-//            if(time[i]==null) time[i] = new int[0];
-//        }
-//
-//        return Result.succ(time);
-//    }
+    //管理员获得某个老师所有上课时间
+    @GetMapping("/affair/teacher/time")
+    public Result getTeaTime(@RequestBody User user){
+        User temp = teaServiceImp.getUserByNumber(user.getNumber());
+        if(temp==null){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("获取教师上课时间失败：该老师不存在");
+        }
+
+        List<Timepart> timepartList = courseServiceImp.getAllTimeByTea(user.getNumber());
+
+        int[][] time = new int[7][];
+        for (Timepart t:
+                timepartList) {
+            int i = t.getWeekday();
+            //转字符串为int数组
+            String[] s = t.getSection().split(" ");
+            time[i] = new int[s.length];
+            for(int cnt=0; cnt<s.length; cnt++){
+                time[i][cnt]=Integer.parseInt(s[cnt]);
+            }
+        }
+
+        for(int i=0;i<7;i++){
+            if(time[i]==null) time[i] = new int[0];
+        }
+
+        return Result.succ(time);
+    }
 
     //管理员修改某节课开始结束时间
     @PostMapping("/times")
@@ -116,12 +116,12 @@ public class AffairController extends MainController{
 
         //yxy的阴间要求：一改改全部
         //先把times表清空
-//        timesServiceImp.deleteAll();
-//        //再插入list中的全部对象
-//        for (Times t:
-//             times) {
-//            timesServiceImp.addTimes(t);
-//        }
+        timesServiceImp.deleteAll();
+        //再插入list中的全部对象
+        for (Times t:
+             times) {
+            timesServiceImp.addTimes(t);
+        }
 //
         return Result.succ("修改成功");
     }
@@ -176,18 +176,18 @@ public class AffairController extends MainController{
         return Result.succ("删除成功");
     }
 
-//    //管理员删除一栋楼里所有教室（但是不删楼）
-//    @DeleteMapping("/building/rooms")
-//    public Result deleteRoomsInBuilding(@RequestBody Building building){
-//        if(buildingServiceImp.findByName(building.getFullName())==null){
-//            //不存在
-//            response.setStatus(WRONG_RES);
-//            return Result.fail("不存在此教学楼，无法删除");
-//        }
-//        //删除对应的教室，但是不删除楼
-//        buildingServiceImp.deleteAllRoomByName(building.getFullName());
-//        return Result.succ("删除成功");
-//    }
+    //管理员删除一栋楼里所有教室（但是不删楼）
+    @DeleteMapping("/building/rooms")
+    public Result deleteRoomsInBuilding(@RequestBody Building building){
+        if(buildingServiceImp.findByName(building.getFullName())==null){
+            //不存在
+            response.setStatus(WRONG_RES);
+            return Result.fail("不存在此教学楼，无法删除");
+        }
+        //删除对应的教室，但是不删除楼
+        buildingServiceImp.deleteAllRoomByName(building.getAbbrName());
+        return Result.succ("删除成功");
+    }
 
 
     //管理员改楼名
@@ -254,11 +254,11 @@ public class AffairController extends MainController{
         return Result.succ("修改选课权限成功");
     }
 
-//    //获得所有楼的信息（不含room）
-//    @GetMapping("/building")
-//    public Result getBuildingWithoutRoom(){
-//        List<Building> buildings = buildingServiceImp.getAllBuildings();
-//        return Result.succ("获取成功",buildings);
-//    }
+    //获得所有楼的信息（不含room）
+    @GetMapping("/building")
+    public Result getBuildingWithoutRoom(){
+        List<Building> buildings = buildingServiceImp.getAllBuildings();
+        return Result.succ("获取成功",buildings);
+    }
 
 }

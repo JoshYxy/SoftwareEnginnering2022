@@ -61,5 +61,14 @@ public class BuildingServiceImp implements BuildingService {
     public void deleteByName(String fullName){
         buildingDao.deleteByName(fullName);
     }
+
+    @Override
+    public void deleteAllRoomByName(String abbrName) {
+        buildingDao.deleteAllRoomByName(abbrName);
+    }
+
+    public List<Building> getAllBuildings() {
+        return buildingDao.getAllBuildings();
+    }
 }
 

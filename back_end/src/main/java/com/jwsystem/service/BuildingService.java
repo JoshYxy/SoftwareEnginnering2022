@@ -19,4 +19,6 @@ public interface BuildingService {
     void add(Building building);
 
     void deleteByName(String name);
+
+    void deleteAllRoomByName(String fullName);
 }

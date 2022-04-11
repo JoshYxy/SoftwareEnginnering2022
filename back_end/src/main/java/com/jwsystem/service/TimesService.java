@@ -18,4 +18,6 @@ public interface TimesService {
 
     //根据名字删除节数
     void deleteTimesByName(String name);
+
+    void deleteAll();
 }

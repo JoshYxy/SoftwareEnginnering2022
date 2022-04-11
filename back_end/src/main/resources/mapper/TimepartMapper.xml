@@ -49,7 +49,7 @@
         FROM timepart WHERE building = #{building} and room_num = #{room_num}
     </select>
 
-    <select id="getTeaClassTimeByTeaNum" resultMap="TimepartMapping">
+    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.Timepart">
         SELECT *
         FROM timepart WHERE teacher_num = #{teacher_num}
     </select>

@@ -21,4 +21,6 @@ public interface BuildingDao {
     void deleteByName(String fullName);
 
     Building findById(Integer id);
+
+    void deleteAllRoomByName(String abbrName);
 }

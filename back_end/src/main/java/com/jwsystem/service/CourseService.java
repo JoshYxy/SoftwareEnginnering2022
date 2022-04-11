@@ -28,4 +28,6 @@ public interface CourseService {
     void insertReqTimepart(Timepart timepart);
 
     List<Timepart> getAllTimeByRoom(String building, String roomNum);
+
+    List<Timepart> getAllTimeByTea(String number);
 }
