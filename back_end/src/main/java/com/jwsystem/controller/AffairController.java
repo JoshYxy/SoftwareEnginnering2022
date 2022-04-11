@@ -163,7 +163,7 @@ public class AffairController extends MainController{
             response.setStatus(WRONG_RES);
             return Result.fail("不存在该教室");
         }
-        classroomServiceImp.deleteById(classRoom.getRoomId());
+        classroomServiceImp.deleteByBuildingAndRoomNum(classRoom.getBuilding(),classRoom.getRoomNum());
         return Result.succ("删除成功");
     }
 
