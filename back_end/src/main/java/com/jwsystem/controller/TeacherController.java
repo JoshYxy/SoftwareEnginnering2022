@@ -78,15 +78,16 @@ public class TeacherController extends MainController{
             courseVOList.add(tempVO);
         }
 
-        //返回所有教室信息
-        //需要写buildingVO的部分
-        List<BuildingVO> classroom = buildingServiceImp.getAllRooms();
+//        //返回所有教室信息
+//        //需要写buildingVO的部分
+//        List<BuildingVO> classroom = buildingServiceImp.getAllRooms();
 
-        return Result.succ3(courseVOList,classroom,null);
+
+        return Result.succ3(courseVOList,teacher,null);
     }
 
     //根据老师token返回全部有课时间
-    @GetMapping("/teacher/time")
+    @GetMapping("/time")
     public Result getTime(){
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
         String number = getNumByToken();
@@ -153,12 +154,12 @@ public class TeacherController extends MainController{
                 requestId,
                 courseVO.getCourseName(),
                 courseVO.getCourseNum(),
-                courseVO.getCollegeName(),
                 courseVO.getClassHours(),
                 courseVO.getCredits(),
-                courseVO.getTeacherName(),
-                courseVO.getTeacherNum(),
                 courseVO.getCourseInfo(),
+                courseVO.getCollegeName(),
+                courseVO.getTeacherNum(),
+                courseVO.getTeacherName(),
                 courseVO.getCapacity());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里

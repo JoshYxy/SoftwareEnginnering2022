@@ -73,7 +73,7 @@ public class AffairController extends MainController{
     }
 
     //管理员获得某个老师所有上课时间
-    @GetMapping("/affair/teacher/time")
+    @GetMapping("/teacher/time")
     public Result getTeaTime(@RequestBody User user){
         User temp = teaServiceImp.getUserByNumber(user.getNumber());
         if(temp==null){

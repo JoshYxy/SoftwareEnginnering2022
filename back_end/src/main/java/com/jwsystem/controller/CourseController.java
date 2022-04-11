@@ -192,10 +192,24 @@ public class CourseController extends MainController{
     //管理员审核申请
     @PostMapping("/courseRequests")
     public Result examine(@RequestBody RequestResult requestResult){
+        //检查request是否存在
+        if(requestResult.getRequestId()==null){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("审核失败：未给出请求id");
+        }
+
+        Request r = courseRequestImp.selectRequestById(requestResult.getRequestId());
+        if(r==null){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("审核失败：该请求不存在");
+        }
+
+        String resultInfo = null;
+
         //如果申请通过
         if(requestResult.isRes()){
-            Request r = courseRequestImp.selectRequestById(requestResult.getRequestId());
             String type = r.getType();
+
 
             if(type.equals(ADD)){
                 //新增课程：先从req-coursepart和req-timepart里取出对应数据
@@ -216,27 +230,43 @@ public class CourseController extends MainController{
                 if(!res.getMsg().equals("新增课程成功")){
                     //插入失败
                     response.setStatus(WRONG_RES);
+                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：插入失败");
                 }
+                resultInfo="按照申请增加课程成功";
             }
             else if(type.equals(DELETE)){
                 Integer courseId = r.getCourseId();
+                if(courseId==null){
+                    response.setStatus(WRONG_DATA);
+                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
+                    return Result.fail("申请审核失败：该请求的课程id为空，数据错误！");
+                }
                 //删除coursepart表和coursetime表中courseId对应的相关的数据（设置成连带删除的）
                 //在Service里加入对courseId对应课程是否存在的判断
                 //返回bool，我好判断申请审核有没有成功
                 int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
                 if(res == 0){
                     response.setStatus(WRONG_RES);
+                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：删除失败");
                 }
 //                //用申请id删除掉申请对应的coursePart和TimePart（设置成连带删除）
 //                courseService.deleteCoursePartByRequestId(requestResult.getRequestId());
+                resultInfo="按照申请删除课程成功";
             }
             else if(type.equals(CHANGE)){
                 //修改：核心思想是根据courseId删掉现有的coursePart和所有的Timepart
                 // 然后把requestId对应的reqcoursePart和所有的reqTimepart包装成CourseVO
                 // 按照上述courseId插入到coursePart和timePart表里
+
+
                 Integer courseId = r.getCourseId();
+                //先保存当前数据库内课程信息，并且转化成CourseVO对象
+                Coursepart tempc = courseServiceImp.getCoursepartByCourseId(courseId);
+                List<Timepart> tempt = courseServiceImp.getAllTimepartByCourseId(courseId);
+                CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
+
                 //删除coursepart表和coursetime表中courseId对应的相关的数据（设置成连带删除的）
                 int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
                 if(res!=0){
@@ -247,24 +277,29 @@ public class CourseController extends MainController{
                     //把修改后的数据按照一样的courseId插入进去
                     Result res2 = addCourse(courseVO);
                     if(!res2.getMsg().equals("新增课程成功")){
-                        //插入数据失败
+                        //插入数据失败，恢复数据
+                        addCourse(tempVO);
                         response.setStatus(WRONG_RES);
+                        courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                         return Result.fail("申请审核失败：新增修改后信息失败");
                     }
                 }
                 else {
                     response.setStatus(WRONG_RES);
+                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：删除失败");
                 }
+                resultInfo="按照申请修改课程成功";
             }
             else{
                 response.setStatus(WRONG_DATA);
+                courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                 return Result.fail("无效的请求类型",requestResult);
             }
         }
         //设置对应的请求，examined为true，passed为requestResult.isRes()
         courseRequestImp.examinedById(requestResult.getRequestId(),true,requestResult.isRes());
-        return Result.succ("审核完毕");
+        return Result.succ("审核完毕，"+ resultInfo);
     }
 
     //管理员获得全部课程
