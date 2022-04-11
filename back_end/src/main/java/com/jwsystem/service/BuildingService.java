@@ -12,6 +12,8 @@ public interface BuildingService {
 
     Building findByName(String fullName);
 
+    Building findById(Integer id);
+
     void changeById(Building building);
 
     void add(Building building);

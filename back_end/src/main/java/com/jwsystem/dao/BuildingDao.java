@@ -19,4 +19,6 @@ public interface BuildingDao {
     void changeById(Integer id,@Param("full_name") String fullName,@Param("abbr_name")String abbrName);
     //删楼
     void deleteByName(String fullName);
+
+    Building findById(Integer id);
 }

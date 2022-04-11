@@ -12,6 +12,11 @@
         FROM building
         where full_name = #{full_name}
     </select>
+    <select id="findById" resultType="com.jwsystem.entity.Building">
+        SELECT *
+        FROM building
+        where id = #{id}
+    </select>
     <!-- 加楼 -->
     <insert id="add">
         INSERT INTO building ( full_name, abbr_name )

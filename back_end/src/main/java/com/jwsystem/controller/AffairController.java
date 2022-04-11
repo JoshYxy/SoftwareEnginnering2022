@@ -128,7 +128,7 @@ public class AffairController extends MainController{
     //管理员改楼名
     @PostMapping("/building")
     public Result changeBuilding(@RequestBody Building building){
-        if(buildingServiceImp.findByName(building.getFullName())==null){
+        if(buildingServiceImp.findById(building.getId())==null){
             //不存在
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法修改");
@@ -172,7 +172,7 @@ public class AffairController extends MainController{
         }
         //用id找到对应的教室，然后把名字改了
         classroomServiceImp.changeById(classRoom);
-        return Result.succ("添加成功");
+        return Result.succ("修改成功");     //修改成功
     }
 
     //选课权限开关

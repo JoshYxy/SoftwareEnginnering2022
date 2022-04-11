@@ -4,7 +4,6 @@ import com.jwsystem.dao.BuildingDao;
 import com.jwsystem.dao.ClassroomDao;
 import com.jwsystem.entity.Building;
 import com.jwsystem.entity.Classroom;
-import com.jwsystem.entity.Times;
 import com.jwsystem.service.BuildingService;
 import com.jwsystem.vo.BuildingVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +40,11 @@ public class BuildingServiceImp implements BuildingService {
     @Override
     public Building findByName(String fullName){
         return buildingDao.findByName(fullName);
+    }
+
+    @Override
+    public Building findById(Integer id){
+        return buildingDao.findById(id);
     }
 
     @Override
