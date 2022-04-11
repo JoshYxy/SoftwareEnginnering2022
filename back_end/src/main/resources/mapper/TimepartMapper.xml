@@ -51,7 +51,7 @@
     <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
         insert into timepart(
             id,
-            course_id as relationId,
+            course_id,
             teacher_num,
             building,
             room_num,
@@ -60,10 +60,10 @@
         )
         values(
                   #{id},
-                  #{course_id},
-                  #{teacher_num},
+                  #{relationId},
+                  #{teacherNum},
                   #{building},
-                  #{room_num},
+                  #{roomNum},
                   #{weekday},
                   #{section}
               )
@@ -72,7 +72,7 @@
     <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.Timepart">
         insert into timepart(
             id,
-            request_id as relationId,
+            request_id,
             teacher_num,
             building,
             room_num,
@@ -81,10 +81,10 @@
         )
         values(
                   #{id},
-                  #{request_id},
-                  #{teacher_num},
+                  #{relationId},
+                  #{teacherNum},
                   #{building},
-                  #{room_num},
+                  #{roomNum},
                   #{weekday},
                   #{section}
               )

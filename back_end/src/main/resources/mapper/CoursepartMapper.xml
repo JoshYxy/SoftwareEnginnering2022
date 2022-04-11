@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.CoursepartDao">
     <!-- 插入课程主体信息部分并返回自增主键 -->
-    <insert id="insertCoursepart" parameterType="com.jwsystem.entity.Coursepart" keyProperty="relationId" useGeneratedKeys="true">
+    <insert id="insertCoursepart" parameterType="com.jwsystem.entity.Coursepart" keyProperty="relationId" useGeneratedKeys="true" >
         insert into coursepart(
-            course_id as relation_id,
+            course_id,
             course_name,
             course_num,
             class_hours,
@@ -16,22 +16,22 @@
             capacity
         )
         values(
-                  #{course_id},
-                  #{course_name},
-                  #{course_num},
-                  #{class_hours},
+                  #{relationId},
+                  #{courseName},
+                  #{courseNum},
+                  #{classHours},
                   #{credits},
-                  #{course_info},
-                  #{college_name},
-                  #{teacher_num},
-                  #{teacher_name},
+                  #{courseInfo},
+                  #{collegeName},
+                  #{teacherNum},
+                  #{teacherName},
                   #{capacity}
               )
     </insert>
     <!-- 插入申请的课程主体信息部分 -->
     <insert id="insertReqCoursepart" parameterType="com.jwsystem.entity.Coursepart">
         insert into coursepart(
-            request_id as relation_id,
+            request_id,
             course_name,
             course_num,
             class_hours,
@@ -43,15 +43,15 @@
             capacity
         )
         values(
-                  #{course_id},
-                  #{course_name},
-                  #{course_num},
-                  #{class_hours},
+                  #{relationId},
+                  #{courseName},
+                  #{courseNum},
+                  #{classHours},
                   #{credits},
-                  #{course_info},
-                  #{college_name},
-                  #{teacher_num},
-                  #{teacher_name},
+                  #{courseInfo},
+                  #{collegeName},
+                  #{teacherNum},
+                  #{teacherName},
                   #{capacity}
               )
     </insert>
