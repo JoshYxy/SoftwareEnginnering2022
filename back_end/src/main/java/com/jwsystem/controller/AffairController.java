@@ -55,9 +55,14 @@ public class AffairController extends MainController{
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");
+            time[i] = new int[s.length];
             for(int cnt=0; cnt<s.length; cnt++){
                 time[i][cnt]=Integer.parseInt(s[cnt]);
             }
+        }
+
+        for(int i=0;i<7;i++){
+            if(time[i]==null) time[i] = new int[0];
         }
 
         return Result.succ(time);
