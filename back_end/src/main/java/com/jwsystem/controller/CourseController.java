@@ -349,6 +349,8 @@ public class CourseController extends MainController{
 
         //从CSV文件批量获取Course对象
         try{
+
+            int wrongCnt = 0;
             List<CourseDTO> courses = CSVUtils.getCourseByCsv(multipartFile);
             //循环完成批量插入（此时插入类型为Course，不是CourseVO）
             for (CourseDTO temp : courses) {
@@ -365,7 +367,8 @@ public class CourseController extends MainController{
                         temp.getCapacity());
                 //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
                 //返回插入后自增得到的课程id给我
-                int courseId = courseServiceImp.insertCoursepart(coursepart);
+                courseServiceImp.insertCoursepart(coursepart);
+                int courseId = coursepart.getRelationId();
 
                 Map<Integer,String> timeMap = new HashMap<>();
                 timeMap.put(0,temp.getSun());
@@ -380,7 +383,7 @@ public class CourseController extends MainController{
                 for(int i=0;i<7;i++){
                     //周i（从0到6，表示周天，周一到周六
 
-                    if(timeMap.get(i)!=null){
+                    if(timeMap.get(i)!=null && !timeMap.get(i).equals("NULL")){
 
                         //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
                         Timepart timePart = new Timepart(
@@ -406,13 +409,14 @@ public class CourseController extends MainController{
                         if(!res){
                             //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
                             courseServiceImp.deleteCoursepartByCourseId(courseId);
-                            response.setStatus(CONFLICT_TIME);
-                            return Result.fail("插入失败，时间冲突");
+                            wrongCnt++;
+                            break;
                         }
                     }
                 }
             }
-            return Result.succ("批量导入课程成功");
+            String s = "批量导入课程成功，共有"+wrongCnt+"条数据错误。";
+            return Result.succ(s);
         }
         catch (IndexOutOfBoundsException e ) {
             response.setStatus(WRONG_FILE);
