@@ -8,7 +8,7 @@
             :before-change="courseChange"/>
         <h2>教学时间设置</h2>
         <el-button @click="addCourse(-1)">增加第一节课</el-button>
-        <el-button type='primary' @click="submit">提交修改</el-button>
+        <el-button type='primary' @click="submitCourse">提交修改</el-button>
         <div class="course-container" v-for="(item, index) in startTime" :key="item.id">
             <span class="course-left">第{{index+1}}节课</span>
             <div class="course-right">
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 export default {
     data() {
@@ -126,11 +127,11 @@ export default {
                 },
             ],//存放所有的教学楼及教室号信息
             buildings: [
-                {name: '第三教学楼', aka: 'H3'},
-                {name: '第四教学楼', aka: 'H4'},
-                {name: '光华楼西辅楼', aka: 'HGX'},
-                {name: '第五教学楼', aka: 'H5'},
-                {name: '第六教学楼', aka: 'H6'},
+                {id:1,name: '第三教学楼', aka: 'H3'},
+                {id:2,name: '第四教学楼', aka: 'H4'},
+                {id:3,name: '光华楼西辅楼', aka: 'HGX'},
+                {id:4,name: '第五教学楼', aka: 'H5'},
+                {id:5,name: '第六教学楼', aka: 'H6'},
             ]
         }
     },
@@ -147,6 +148,7 @@ export default {
                 }
             )
                 .then(() => {
+                    axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:this.courseOpen}})
                     ElMessage({
                         type: 'success',
                         message: '修改完成',
@@ -159,23 +161,15 @@ export default {
             return flag
         },
         deleteCourse(index) {
-            // this.courses.splice(index,1)
             this.startTime.splice(index,1)
             this.endTime.splice(index,1)
         },
         addCourse(index) {
-            // this.courses.splice(index+1,0,{id:100, name:'dis'})
             this.startTime.splice(index+1,0,'')
             this.endTime.splice(index+1,0,'')
-            // this.courses.push({
-            //     id:this.courses.length+1,
-            //     name:'第'+(this.courses.length+1)+'节课'
-            // })
-            // console.log(this.courses)
         },
 
         addClassroom() {
-            //axios
             if(this.newRoom === '') {
                 alert('教室号不能为空')
                 return
@@ -188,24 +182,33 @@ export default {
                     this.newRoom = ''
                     return
                 }
-               
-                this.classroom[i].room.push(this.newRoom) 
-                this.classroom[i].room.sort((a, b) => {
-                    if(a.length < b.length) return -1
-                    else if(a.length > b.length) return 1
-                    else return a.localeCompare(b)   
-                }) //将教室号排序
+                axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                .then(res => {
+                    console.log(res)
+                    this.classroom[i].room.push(this.newRoom) 
+                    this.classroom[i].room.sort((a, b) => {
+                        if(a.length < b.length) return -1
+                        else if(a.length > b.length) return 1
+                        else return a.localeCompare(b)   
+                    }) //将教室号排序
+                })
+                
             } 
             else {
-                this.newClassroom.room=[]
-                this.newClassroom.room.push(this.newRoom)
-                this.classroom.push(this.newClassroom)
+                axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                .then(res => {
+                    console.log(res)
+                    this.newClassroom.room=[]
+                    this.newClassroom.room.push(this.newRoom)
+                    this.classroom.push(this.newClassroom)
+                })
+
             }
             this.newRoom = ''
         },
         checkDelete(index) {
             ElMessageBox.confirm(
-                '是否删除教学楼：' + this.classroom[index].name,
+                '是否删除教学楼‘' + this.classroom[index].name+'’内的全部教室',
                 'Warning',
                 {
                     confirmButtonText: '确认',
@@ -228,7 +231,7 @@ export default {
             })
         },
         deleteBuilding(index) {
-        //axios
+            axios.delete('http://localhost:8081/affair/building/rooms', {fullName: this.classroom[index].name, abbrName: this.classroom[index].aka})
             this.classroom.splice(index, 1)
         },
         openDelete(index) {
@@ -241,18 +244,22 @@ export default {
             console.log(this.checkGroup)
             
         },
-        submitDelete(index) {
+        async submitDelete(index) {
             this.onDelete[index] = false
             this.onDeleteAll = false
             for(let i = 0; i < this.checkGroup.length; i++) {
                 if(this.checkGroup[i].status) {
-                    this.classroom[index].room.splice(i, 1)
-                    this.checkGroup.splice(i, 1)
+                    await axios.delete('http://localhost:8081/affair/room', {building: this.classroom[index].aka, roomNum: this.classroom[index].room[i]})
+                    .then(res => {
+                        console.log(res)
+                        this.classroom[index].room.splice(i, 1)
+                        this.checkGroup.splice(i, 1)
+                    })
+
                     i=i-1
                 }
             }
             this.checkGroup = []
-            //axios
         },
         cancelDelete(index) {
             this.onDelete[index] = false
@@ -265,9 +272,56 @@ export default {
             console.log(this.newClassroom)
             console.log(this.classroom)
         },
-        submit() {
-            //axios
+        submitCourse() {
+            let times = []
+            for(let i = 0; i < this.startTime.length; i++) {
+                if(this.startTime[i] == '' || this.endTime[i] == '') {
+                    alert('请填写完所有上课时间后提交')
+                    return
+                }
+                times.push({name: '第'+i+'节', startTime: this.startTime[i], endTime: this.endTime[i]})
+            }
+            axios.post('http://localhost:8081/affair/times', times)
         }
+    },
+    async created() {
+         //获取选课状态
+        axios.get('http://localhost:8081/curriculaVariable')
+        .then(res => {
+            this.courseOpen = res.data.data
+        })
+        //获取所有教学楼
+        axios.get('http://localhost:8081/affair/building')
+        .then(res => {
+            this.buildings = res.data.data
+            for(let i = 0; i < this.buildings.length; i++) {
+                this.buildings[i] = JSON.parse(JSON.stringify(this.buildings[i]).replace(/fullName/g,"name"))
+                this.buildings[i] = JSON.parse(JSON.stringify(this.buildings[i]).replace(/abbrName/g,"aka"))
+            }
+        })
+        await axios.get('http://localhost:8081/affair')
+        .then(res => {
+            console.log(res)
+            //获取教室信息
+            let classrooms = res.data.data1
+            this.classroom = []
+            for(let i = 0; i < classrooms.length; i++) {
+                this.classroom.push({name:classrooms[i].fullName, aka:classrooms[i].abbrName, room:[]})
+                for(let j = 0; j < classrooms[i].room.length; j++) {
+                    this.classroom[i].room.push(classrooms[i].room[j].roomNum)
+                }
+            }
+            //获取上课时间信息
+            let classTime = res.data.data2
+            this.startTime = []
+            this.endTime = []
+            for(let i = 0; i < classTime.length; i++) {
+                this.startTime.push(classTime[i].startTime)
+                this.endTime.push(classTime[i].endTime)
+            }
+           
+            
+        })
     }
 }
 </script>

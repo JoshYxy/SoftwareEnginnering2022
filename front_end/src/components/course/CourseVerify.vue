@@ -36,7 +36,7 @@
 </template>
 
 <script>
-
+import axios from 'axios'
 export default {
     data() {
         return {
@@ -45,11 +45,12 @@ export default {
                 delete: '删除',
                 change: '修改',
             },
-            dialogTableVisible:[false],
+            dialogTableVisible:[false,false],
             pendingCourses:[
                 {
                     showStatus: '',
                     courseId: 1,
+                    requestId: 1,
                     courseName: '软件工程',
                     courseNum: 'SOFT220011',
                     teacherNum: '22000001',
@@ -79,6 +80,7 @@ export default {
                 {
                     showStatus: '',
                     courseId: 2,
+                    requestId: 2,
                     courseName: '软件',
                     courseNum: 'SOFT2132333',
                     teacherNum: '22000000',
@@ -118,18 +120,40 @@ export default {
                 return 'new-row';
         },
         approve(pending_course) {
-            pending_course.examined = true
-            pending_course.passed = true
+            axios.post('http://localhost:8081/course/courseRequests', {requestId: pending_course.requestId, res: true})
+            .then( res => {
+                console.log(res)
+                pending_course.examined = true
+                pending_course.passed = true
+            })
+            .catch(error => {
+                console.dir(error)
+                alert('申请中的上课时间与现存上课时间冲突，无法通过')
+            })
         },
         
         reject(pending_course) {
+            axios.post('http://localhost:8081/course/courseRequests', {requestId: pending_course.requestId, res: false})
             pending_course.examined = true
             pending_course.passed = false
         },
     },
     created() {
-        this.pendingCourses[0].showStatus = this.statusToShow[this.pendingCourses[0].type]
-        console.log(this.pendingCourses[0].type)
+        axios.get('http://localhost:8081/course/courseRequests')
+        .then(res => {
+            let requestData = res.data.data
+            this.pendingCourses = []
+            for(let i = 0; i < requestData.length; i++) {
+                this.pendingCourses.push(requestData[i].courseVO)
+                this.pendingCourses[i].type = requestData[i].type
+                this.pendingCourses[i].requestId = requestData[i].requestId
+                this.pendingCourses[i].examined = false
+                this.pendingCourses[i].passed = false
+                this.pendingCourses[i].showStatus = this.statusToShow[this.pendingCourses[i].type]
+            }
+        })
+        // this.pendingCourses[0].showStatus = this.statusToShow[this.pendingCourses[0].type]
+        // console.log(this.pendingCourses[0].type)
     }
 }
 </script>

@@ -55,14 +55,14 @@
                     <el-form-item label="课程简介" prop="courseInfo">
                         <el-input v-model="editCourse.courseInfo" type="textarea" />
                     </el-form-item>      
-                    <el-form-item label="开课院系" prop="collegeName">
-                        <el-select v-model="editCourse.collegeName" value-key="name" placeholder="学院">
-                            <el-option :key="college.id" :value="college.name" :label="college.name" v-for="college in collegeData" />
+                    <el-form-item label="开课院系" prop="college">
+                        <el-select v-model="editCourse.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
+                            <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
                         </el-select>
                     </el-form-item>
                     <el-form-item label="任课教师" prop="teacher">
                         <el-select v-model="editCourse.teacher" value-key="number" placeholder="教师" @change="updateTeacher(scope.row)">
-                            <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in teacherData" />
+                            <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in editCourse.college.teachers" />
                         </el-select>
                     </el-form-item>
                     <el-form-item label="上课教室" prop="selectRoom">
@@ -110,9 +110,10 @@
 <script>
 // import CourseTime from './CourseTime.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {validTimetable, validSelectRoom, validTeacher} from '../jsComponents/CheckRules'
+import {validTimetable, validSelectRoom, validTeacher, validCollege} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
 import global_ from '../jsComponents/global'
+import axios from 'axios'
 export default {
     data() {
         return {
@@ -124,6 +125,7 @@ export default {
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: ['blur','change']},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                college: [{validator: validCollege, trigger: ['blur','change']}], 
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
@@ -244,43 +246,20 @@ export default {
                 [],
                 [1,2,3]
             ],
-            collegeData: [
-                { 
-                id: 1,
-                name: '计算机科学技术学院', 
-                majors: [
-                    {id: 1, name: '大数据'},
-                    {id: 2, name: '信息安全'}
-                ]
-                },
-                { 
-                id: 1,
-                name: '生命科学学院', 
-                majors: [
-                    {id: 1, name: '生物'},
-                    {id: 2, name: '123'}
-                ]
-                },
-                { 
-                id: 1,
-                name: '软件工程学院', 
-                majors: [
-                    {id: 1, name: '软件工程'},
-                ]
-                },
-            ],
+
             teacherData: [
                 {
-                    name:'小王',
-                    number: 22200000
+                    collegeName:'计算机科学技术学院',
+                    teachers: [
+                        {name:'小王',number: 22200000}
+                    ]
                 },
                 {
-                    name:'小一',
-                    number: 22111100
-                },
-                {
-                    name:'小零',
-                    number: 20000000
+                    collegeName: '软件工程学院',
+                    teachers: [
+                        {name:'小一',number: 22111100},
+                        {name:'小零',number: 20000000},
+                    ]
                 }
             ],
             courses: [
@@ -295,7 +274,7 @@ export default {
                     courseTime:'',
                     capacity: '100',
                     collegeId: '',
-                    collegeName: '计算机与技术学院',
+                    collegeName: '计算机科学技术学院',
                     times: [
                         [],
                         [1,2,3,5,6,8,10,11,12],
@@ -317,8 +296,10 @@ export default {
                     classHours: '3',
                     credits: '5',
                     courseTime:'',
+                    teacherNum: 22111100,
+                    teacherName: '小一',
                     collegeId: '',
-                    collegeName: '计算机与技术学院',
+                    collegeName: '软件工程学院',
                     times: [
                         [],
                         [3,4],
@@ -337,7 +318,9 @@ export default {
                 selectRoom: [],
                 courseName: '',
                 courseNum: '',
+                courseId: null,
                 collegeName: '',
+                college: {collegeName: '',teachers:[]},
                 period: 0,
                 credits: 0,//学分
                 teacher: {name:'',number:''},
@@ -371,11 +354,19 @@ export default {
                 }
             )
                 .then(() => {
-                    data.type = 'deleted'
-                    ElMessage({
-                        type: 'success',
-                        message: '已删除',
+                    axios.delete('http://localhost:8081/course',{data:data})
+                    .then(res => {
+                        console.log(res)
+                        data.type = 'deleted'
+                        ElMessage({
+                            type: 'success',
+                            message: '已删除',
+                        }) 
+                    }).catch(error => {
+                        console.dir(error)
+                        alert('删除失败')
                     })
+
                 })
                 .catch(() => {
                     ElMessage({
@@ -384,9 +375,25 @@ export default {
                     })
                 })
         },
-        handleEdit(index, data) {
+        async handleEdit(index, data) {
+            await axios.get('http://localhost:8081/affair/teacher/time',
+                {   
+                    name: data.teacherName, 
+                    number: data.teacherNum
+                })
+            .then(res => {
+                this.unavalTeaTimes = res
+            })
+            await axios.get('http://localhost:8081/affair/building/room/time',
+                {   
+                    building: data.building, 
+                    roomNum: data.roomNum
+                })
+            .then(res => {
+                this.unavalRoomTimes = res
+            })
             //axios获取教室，教师不可用时间 data.teacher data.selectRoom
-            this.unavalTeaTimes = [[],[],[],[],[],[],[],[5,6,7,13]]
+            // this.unavalTeaTimes = [[],[],[],[],[],[],[],[5,6,7,13]]
             this.setAvalTime()
             //当前课程时间设置为可以选中
             for(let i = 0; i < data.times.length; i++) {
@@ -402,12 +409,19 @@ export default {
                 let [...arr] = data.times[i]
                 this.editCourse.selectTime.push(arr)
             }
+            this.editCourse.courseId = data.courseId
             this.editCourse.courseNum = data.courseNum
             this.editCourse.capacity = data.capacity
             this.editCourse.credits = data.credits
             this.editCourse.courseInfo = data.courseInfo
             this.editCourse.courseName = data.courseName
-            this.editCourse.collegeName = data.collegeName
+            // this.editCourse.collegeName = data.collegeName
+            for(let i = 0; i < this.teacherData.length; i++) {
+                if(data.collegeName == this.teacherData[i].collegeName) {
+                    this.editCourse.college = JSON.parse(JSON.stringify(this.teacherData[i]))
+                    break
+                }
+            }
             this.editCourse.teacher = {name: data.teacherName, number: data.teacherNum}
             this.editCourse.selectRoom = []
             this.editCourse.selectRoom[0] = this.abbrToBuilding[data.building] 
@@ -418,6 +432,7 @@ export default {
             
             this.$refs['editCourse'].validate(valid => {
                 if(valid){
+
                     this.courses[index].courseName = this.editCourse.courseName
                     this.courses[index].times = this.editCourse.selectTime
                     this.courses[index].courseNum = this.editCourse.courseNum
@@ -428,9 +443,20 @@ export default {
                     this.courses[index].roomNum = this.editCourse.selectRoom[1]
                     this.courses[index].teacherName = this.editCourse.teacher.name
                     this.courses[index].teacherNum = this.editCourse.teacher.number
-                    this.courses[index].collegeName = this.editCourse.collegeName
+                    this.courses[index].collegeName = this.editCourse.college.collegeName
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].type = 'changed'
+                    axios.post('http://localhost:8081/course', this.courses[index])
+                    .then(res => {
+                        ElMessage({
+                            type: 'success',
+                            message: '修改成功',
+                        })
+                        console.log(res)
+                    }).catch(error => {
+                        alert('修改失败')
+                        console.dir(error)
+                    })  
                     this.clearAvalTime()
                     this.editTableVisible[index] = false;
                 }
@@ -445,9 +471,20 @@ export default {
             // this.courses[0].type = 'changed'
             console.log(this.courses)
         },
-        updateTeacher(data) {
+        updateCollege() {
+            this.editCourse.teacher = {}
+        },
+        async updateTeacher(data) {
             //axios获取老师不可用时间 传输editCourse.teacherName,Num
-            this.unavalTeaTimes = [[],[],[],[],[],[],[5,6,7,13],[]]
+            await axios.get('http://localhost:8081/affair/teacher/time',
+                {   
+                    name: this.editCourse.teacher.name, 
+                    number: this.editCourse.teacher.number
+                })
+            .then(res => {
+                this.unavalTeaTimes = res
+            })
+            // this.unavalTeaTimes = [[],[],[],[],[],[],[5,6,7,13],[]]
             this.clearAvalTime()
             this.setAvalTime()
 
@@ -459,9 +496,17 @@ export default {
             }
             
         },
-        updateRoom(data) {
-            //axios获取教室不可用时间 传输editCourse.selectRoom
-            this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
+        async updateRoom(data) {
+            // axios获取教室不可用时间 传输editCourse.selectRoom
+            await axios.get('http://localhost:8081/affair/building/room/time',
+                {   
+                    building: this.buildingToAbbr[this.editCourse.selectRoom[0]], 
+                    roomNum: this.editCourse.selectRoom[1]
+                })
+            .then(res => {
+                this.unavalRoomTimes = res
+            })
+            // this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
             this.clearAvalTime()
             this.setAvalTime()
 
@@ -490,10 +535,28 @@ export default {
         },
         
     },
-    created() {
+    async created() {
+        await axios.get('http://localhost:8081/course/new')
+        .then(res => {
+            this.teacherData = res.data.data1
+            this.classroom = res.data.data2
+            for(let i = 0; i < this.classroom.length; i++) {
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
+            }
+            this.times = res.data.data3
+        })
+        await axios.get('http://localhost:8081/course')
+        .then(res => {
+            this.courses = res.data.data
+        })
+
         for(let course of this.courses) {
             course.courseTime = ''
             setCourseTime(course, course.times)
+            this.editTableVisible.push(false)
+            this.dialogTableVisible.push(false)
         }
         this.timeData = []
         for(let i = 0; i < 7; i++) {//创建选课时间数组

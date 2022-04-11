@@ -1,4 +1,6 @@
 <template>
+    <div v-if="!courseOpen"> <h2>选课时间未到</h2></div>
+    <div v-if="courseOpen">
     <h2>可选课程</h2>
     <el-button @click="test">test </el-button>
     <el-table class="class-table" :data="courses">
@@ -25,14 +27,17 @@
         </el-table-column>
 
     </el-table>  
+    </div>
 </template>
 
 <script>
 import {setCourseTime} from '../jsComponents/CourseSet'
+import axios from 'axios'
 export default {
     data() {
         return {
             dialogTableVisible:[false,false],
+            courseOpen: false,
             courses: [
                 {
                     courseId: 1,
@@ -81,11 +86,17 @@ export default {
             ],
         }
     },
-    methods: {
-
-    },
-    created() {
+    async created() {
+        axios.get('http://localhost:8081/curriculaVariable')
+        .then(res => {
+            this.courseOpen = res.data.data
+        })
+        await axios.get('http://localhost:8081/student/course')
+        .then(res => {
+            this.courses = res.data.data
+        })
         for(let course of this.courses) {
+            this.dialogTableVisible.push(false)
             course.courseTime = ''
             setCourseTime(course, course.times)
         }

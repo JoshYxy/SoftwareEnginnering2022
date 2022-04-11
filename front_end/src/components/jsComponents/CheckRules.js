@@ -68,3 +68,10 @@ export function validTeacher(rule, value, callback){
       callback()
     }
   }
+export function validCollege(rule, value, callback){
+    if (value == null || value.collegeName == null || value.collegeName == '') {
+      return callback(new Error('请选择开课院系'))
+    } else{
+      callback()
+    }
+  }

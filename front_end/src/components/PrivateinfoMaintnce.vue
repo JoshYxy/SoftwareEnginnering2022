@@ -115,7 +115,7 @@ export default {
         major: '',
         college: ''
       },
-      userData_b: {
+      userData_back: {
         number: 220001,
         role: 'student',
         name: '张晓王',

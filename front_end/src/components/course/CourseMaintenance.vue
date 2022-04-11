@@ -1,5 +1,26 @@
 <template>
-    <h2>课程信息</h2>
+    <h2>新增课程</h2>
+    <el-upload
+      class="upload-demo"
+      :action="Upload"
+      accept=".csv"
+      :limit="1"
+      :before-upload="onBeforeUpload"
+      :data="uploadData"
+    >
+      <el-button type="primary">
+        <el-icon style="vertical-align: middle;">
+          <upload />
+        </el-icon>
+        <span style="vertical-align: middle;"> 上传文件 </span>
+      </el-button>
+      <template #tip>
+        <div class="el-upload__tip">
+          单个csv文件
+        </div>
+      </template>
+    </el-upload>
+
     <div><el-button @click="test">
         测试
     </el-button></div>
@@ -18,15 +39,16 @@
         </el-form-item>
         <el-form-item label="课程简介" prop="courseInfo">
             <el-input v-model="courseData.courseInfo" type="textarea" />
-        </el-form-item>      
-        <el-form-item label="开课院系" prop="collegeName">
-            <el-select v-model="courseData.collegeName" value-key="name" placeholder="学院" @change="updateCollege">
-                <el-option :key="college.id" :value="college.name" :label="college.name" v-for="college in collegeData" />
+        </el-form-item>  
+    
+        <el-form-item label="开课院系" prop="college">
+            <el-select v-model="courseData.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
+                <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
             </el-select>
         </el-form-item>
         <el-form-item label="任课教师" prop="teacher">
             <el-select v-model="courseData.teacher" value-key="number" placeholder="教师" no-data-text="未选择开课院系或学院无教师" @change="updateTeacher">
-                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in avalTeacher" />
+                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in courseData.college.teachers" />
             </el-select>
         </el-form-item> 
         <el-form-item label="上课教室" prop="selectRoom">
@@ -73,13 +95,17 @@
 <script>
 /* eslint-disable */
 import CourseTime from './CourseTime.vue'
-import {validTimetable, validSelectRoom, validTeacher} from '../jsComponents/CheckRules'
+import {Check,Upload} from "@element-plus/icons";
+import {validTimetable, validSelectRoom, validTeacher, validCollege} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
 import axios from 'axios'
 import global_ from '../jsComponents/global'
+import {ElMessage} from 'element-plus'
 export default {
     components: {
-        CourseTime
+        CourseTime,
+        Check,
+        Upload
     },
     data() {
         return {
@@ -154,31 +180,6 @@ export default {
                 [],
                 [1,2,3]
             ],
-            collegeData: [
-                { 
-                id: 1,
-                name: '计算机科学技术学院', 
-                majors: [
-                    {id: 1, name: '大数据'},
-                    {id: 2, name: '信息安全'}
-                ]
-                },
-                { 
-                id: 1,
-                name: '生命科学学院', 
-                majors: [
-                    {id: 1, name: '生物'},
-                    {id: 2, name: '123'}
-                ]
-                },
-                { 
-                id: 1,
-                name: '软件工程学院', 
-                majors: [
-                    {id: 1, name: '软件工程'},
-                ]
-                },
-            ],
             teacherData: [
                 {
                     collegeName:'计算机科学技术学院',
@@ -197,10 +198,11 @@ export default {
             avalTeacher: [],
             courseData: {
                 selectTime:[[]],
+                times:[[]],
                 selectRoom: '',
                 courseName: '',
                 courseNum: '',
-                college: '',
+                college: {collegeName: '', teachers: []},
                 period: 0,
                 credits: 0,//学分
                 teacher: {name:'',number:''},
@@ -211,7 +213,7 @@ export default {
                 position: '',
                 capacity: 0,
                 building: '',
-                room: '',
+                roomNum: '',
             },
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: 'blur'}],
@@ -221,7 +223,7 @@ export default {
                 courseInfo: [{required: true, message: '请输入课程介绍', trigger: 'blur'}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
-                collegeName: [{required: true, message: '请选择开课院系', trigger: 'blur'}], 
+                college: [{validator: validCollege, trigger: ['blur','change']}],
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
@@ -247,21 +249,19 @@ export default {
             console.log(this.selectTime)
             // console.log(this.selectRoom)
         },
-        updateCollege(value) {
-            this.avalTeacher = []
+        updateCollege() {
             this.courseData.teacher = {}
-            this.courseData.teacher['number'] = null
-            this.courseData.teacher['name'] = ''
-            for(let i = 0; i < this.teacherData.length; i++){
-                if(this.teacherData[i].collegeName == value) {
-                    this.avalTeacher = this.teacherData[i].teachers
-                    console.log(this.avalTeacher)
-                    break
-                }
-            }
         },
-        updateTeacher(value) {
+        async updateTeacher(value) {
             //axios获取教师不可用时间
+            await axios.get('http://localhost:8081/affair/teacher/time',
+                {   
+                    name: value.name, 
+                    number: value.number
+                })
+            .then(res => {
+                this.unavalTeaTimes = res
+            })
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
                     if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
@@ -271,9 +271,16 @@ export default {
                 }
             } 
         },
-        updateRoom(value) {
+        async updateRoom(value) {
             //axios获取教室不可用时间
-            // this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
+            await axios.get('http://localhost:8081/affair/building/room/time',
+                {   
+                    building: this.buildingToAbbr[value[0]], 
+                    roomNum: value[1]
+                })
+            .then(res => {
+                this.unavalRoomTimes = res
+            })
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
                     if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
@@ -284,26 +291,82 @@ export default {
             } 
         },
         submit() {
-            this.$refs['courseData'].validate(valid => {
+            this.$refs['courseData'].validate(async valid => {
                 if(valid){
                     this.courseData.teacherName = this.courseData.teacher.name
                     this.courseData.teacherNum = this.courseData.teacher.number
                     this.courseData.building = this.buildingToAbbr[this.courseData.selectRoom[0]]
-                    this.courseData.room = this.courseData.selectRoom[1]
+                    this.courseData.roomNum = this.courseData.selectRoom[1]
+                    this.courseData.times = this.courseData.selectTime
+                    this.courseData.collegeName = this.courseData.college.collegeName
                     setCourseTime(this.courseData, this.courseData.selectTime)
-                    axios.post()
+                    await axios.post('http://localhost:8081/course/new',this.courseData)
+                    .then(res => {
+                        console.log(res)
+                        ElMessage({
+                            type: 'success',
+                            message: '新增成功',
+                        })
+                    }).catch(error => {
+                        alert("新增失败")
+                        console.dir(error);
+                        });
                     //axios 后重新更新unavalTime
                     //axios 获取教师，教室不可用时间
-                    console.log(this.courseData)
-                    console.log(this.selectRoom)
-                    console.log(this.courseData.selectTime)
+                    await axios.get('http://localhost:8081/affair/building/room/time',
+                        {   
+                            building: this.courseData.building, 
+                            roomNum: this.courseData.roomNum
+                        })
+                    .then(res => {
+                        this.unavalRoomTimes = res
+                    })
+                    await axios.get('http://localhost:8081/affair/teacher/time',
+                        {   
+                            name: this.courseData.teacherName, 
+                            number: this.courseData.teacherNum
+                        })
+                    .then(res => {
+                        this.unavalTeaTimes = res
+                    })
+
+                    // console.log(this.courseData)
+                    // console.log(this.selectRoom)
+                    // console.log(this.courseData.selectTime)
                 }
             })
+        },
+        onBeforeUpload(file) {
+            const isCSV = file.type === 'application/vnd.ms-excel'
+            if (!isCSV) {
+                this.$message.error('上传文件只能是.csv格式!');
+            }
+            return isCSV;
+        },
+        Upload(file) {
+            let param = new FormData(); 
+            param.append('file',file)
+            axios.post("http://localhost:8081/course/csv",param)
+                .then(function(){
+                alert('批量导入信息完成，无导入失败')                  
+                }).catch(error => {
+                alert(error.response.message)
+                })
         }
     },
-    created() {
+    async created() {
+        await axios.get('http://localhost:8081/course/new')
+        .then(res => {
+            this.teacherData = res.data.data1
+            this.classroom = res.data.data2
+            for(let i = 0; i < this.classroom.length; i++) {
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
+            }
+            this.times = res.data.data3
+        })
         this.timeData = []
-
         for(let i = 0; i < 7; i++) {//创建选课时间数组
             this.timeData.push({id:0, name:'', times:[]})
             this.timeData[i].id = i;
