@@ -75,7 +75,7 @@
 import CourseTime from './CourseTime.vue'
 import {validTimetable, validSelectRoom, validTeacher} from '../jsComponents/CheckRules'
 import {setCourseTime} from '../jsComponents/CourseSet'
-
+import axios from 'axios'
 import global_ from '../jsComponents/global'
 export default {
     components: {
@@ -273,6 +273,7 @@ export default {
         },
         updateRoom(value) {
             //axios获取教室不可用时间
+            // this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
                     if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
@@ -290,6 +291,9 @@ export default {
                     this.courseData.building = this.buildingToAbbr[this.courseData.selectRoom[0]]
                     this.courseData.room = this.courseData.selectRoom[1]
                     setCourseTime(this.courseData, this.courseData.selectTime)
+                    axios.post()
+                    //axios 后重新更新unavalTime
+                    //axios 获取教师，教室不可用时间
                     console.log(this.courseData)
                     console.log(this.selectRoom)
                     console.log(this.courseData.selectTime)

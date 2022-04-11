@@ -43,7 +43,7 @@
                             <el-input type="text" name="courseName" v-model="editCourse.courseName"/>
                         </el-form-item>
                         <el-form-item label="上课教室" prop="selectRoom">
-                            <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>     
+                            <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom(scope.row)" filterable clearable/>     
                             <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
                         </el-form-item>
                         
@@ -100,7 +100,7 @@
                 <el-input v-model="newCourse.courseInfo" type="textarea" />
             </el-form-item>      
             <el-form-item label="上课教室" prop="selectRoom">
-                <el-cascader :props="roomProps" :options="classroom" v-model="newCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>
+                <el-cascader :props="roomProps" :options="classroom" v-model="newCourse.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
                 <span style="padding-left:20px">*切换教室后请重新选择课程时间</span>
             </el-form-item>
             <el-form-item label="上课时间" prop="selectTime">
@@ -265,6 +265,17 @@ export default {
                 [],
                 []
             ],
+            timeData:[//响应式更新必备，不可删除
+            ],
+            unavalRoomTimes: [
+                [],
+                [1,2,3,5],
+                [3],
+                [3,8],
+                [],
+                [],
+                [1,2,3]
+            ],
             courses: [
                 {
                     courseId: 1,
@@ -353,6 +364,7 @@ export default {
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
             this.newCourse['selectRoom']= []
+            // this.unavalRoomTimes = [[],[],[],[],[],[],[]]
             this.setAvalTime()
             this.newTableVisible = true
             // this.newCourse = {}
@@ -382,22 +394,31 @@ export default {
                 })
         },
         handleEdit(index, data) {
-            //axios获取教室
+            //axios获取教室不可用时间 (data.building data.roomNum)
             //设定不能选择的时间
-            for(let i = 0; i < 7; i++) {
+            this.setAvalTime()
+            //课程目前时间设置为可以选中
+            for(let i = 0; i < data.times.length; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1 && data.times[i].indexOf(j) < 0)
-                        this.timeData[i].times[j-1].disable = true
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
                 }
             }
-            
-            this.editCourse.selectTime = data.times
+            //数组深拷贝
+            this.editCourse.selectTime = []
+            for(let i = 0; i < data.times.length; i++)
+            {
+                let [...arr] = data.times[i]
+                this.editCourse.selectTime.push(arr)
+            }
+            // this.editCourse.selectTime = data.times
+
             this.editCourse.courseName = data.courseName
             this.editCourse.selectRoom = []
             this.editCourse.selectRoom[0] = this.abbrToBuilding[data.building] 
             this.editCourse.selectRoom[1] = data.roomNum
             this.editTableVisible[index] = true;
-            console.log(this.editCourse.selectTime)
+
         },
         submitEdit(index) {
             this.$refs['editCourse'].validate(valid => {
@@ -449,10 +470,26 @@ export default {
             // this.courses[0].type = 'change'
             console.log(this.courses)
         },
+        /* eslint-disable */
+        updateRoom(data) {//editCourse中覆写了函数，使其传入的是scope.row,默认为修改后的值value
+            //axios获取教室不可用时间 传输editCourse.selectRoom
+            this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
+            this.clearAvalTime()
+            this.setAvalTime()
+            console.log(data)
+            if(typeof data == 'Object') {
+                for(let i = 0; i < data.times.length; i++) {
+                    for(let j = 1; j <= this.times.length; j++) {
+                        if(data.times[i].indexOf(j) > -1)
+                            this.timeData[i].times[j-1].disable = false
+                    }
+                }
+            }
+        },
         setAvalTime() {
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1)
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1)
                         this.timeData[i].times[j - 1].disable = true
                 }
             } 
@@ -480,6 +517,9 @@ export default {
                 this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
             }
         }
+        //设置已有课时间为不可选择时间
+        //axios获取教师不可用时间
+        this.setAvalTime()
         // console.log(this.timeData)
     }
 }

@@ -61,12 +61,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="任课教师" prop="teacher">
-                        <el-select v-model="editCourse.teacher" value-key="number" placeholder="教师">
+                        <el-select v-model="editCourse.teacher" value-key="number" placeholder="教师" @change="updateTeacher(scope.row)">
                             <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in teacherData" />
                         </el-select>
                     </el-form-item>
                     <el-form-item label="上课教室" prop="selectRoom">
-                        <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" filterable clearable/>     
+                        <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom(scope.row)" filterable clearable/>     
                         <span style="padding-left:20px">*切换教室后需重新选择课程时间</span>
                     </el-form-item>
                     <el-form-item label="上课时间" prop="selectTime">
@@ -224,6 +224,26 @@ export default {
                     endTime:'11:20'
                 },                   
             ],
+            timeData:[//响应式更新必备，不可删除
+            ],
+            unavalTeaTimes: [
+                [],
+                [1,2,3,5,6,8,10,11,12],
+                [3],
+                [3,8],
+                [],
+                [],
+                []
+            ],
+            unavalRoomTimes: [
+                [],
+                [1,2,3,5],
+                [3],
+                [3,8],
+                [],
+                [],
+                [1,2,3]
+            ],
             collegeData: [
                 { 
                 id: 1,
@@ -365,8 +385,23 @@ export default {
                 })
         },
         handleEdit(index, data) {
-            //axios获取教室
-            this.editCourse.selectTime = data.times
+            //axios获取教室，教师不可用时间 data.teacher data.selectRoom
+            this.unavalTeaTimes = [[],[],[],[],[],[],[],[5,6,7,13]]
+            this.setAvalTime()
+            //当前课程时间设置为可以选中
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
+            //数组深拷贝
+            this.editCourse.selectTime = []
+            for(let i = 0; i < data.times.length; i++)
+            {
+                let [...arr] = data.times[i]
+                this.editCourse.selectTime.push(arr)
+            }
             this.editCourse.courseNum = data.courseNum
             this.editCourse.capacity = data.capacity
             this.editCourse.credits = data.credits
@@ -396,18 +431,64 @@ export default {
                     this.courses[index].collegeName = this.editCourse.collegeName
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].type = 'changed'
+                    this.clearAvalTime()
                     this.editTableVisible[index] = false;
                 }
             })
 
         },
         cancelEdit(index) {
+            this.clearAvalTime()
             this.editTableVisible[index] = false;
         },
         test() {
             // this.courses[0].type = 'changed'
             console.log(this.courses)
-        }
+        },
+        updateTeacher(data) {
+            //axios获取老师不可用时间 传输editCourse.teacherName,Num
+            this.unavalTeaTimes = [[],[],[],[],[],[],[5,6,7,13],[]]
+            this.clearAvalTime()
+            this.setAvalTime()
+
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
+            
+        },
+        updateRoom(data) {
+            //axios获取教室不可用时间 传输editCourse.selectRoom
+            this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
+            this.clearAvalTime()
+            this.setAvalTime()
+
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
+
+        },
+        setAvalTime() {
+            for(let i = 0; i < 7; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1)
+                        this.timeData[i].times[j - 1].disable = true
+                }
+            } 
+        },
+        clearAvalTime() {
+            for(let i = 0; i < 7; i++) {
+                for(let j = 0; j < this.times.length; j++) {
+                    this.timeData[i].times[j].disable = false
+                }
+            }   
+        },
+        
     },
     created() {
         for(let course of this.courses) {
