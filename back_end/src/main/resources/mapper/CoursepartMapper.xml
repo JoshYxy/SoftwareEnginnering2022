@@ -100,7 +100,7 @@
         FROM req_coursepart where request_id = #{request_id}
     </select>
 
-    <select id="getCoursepartByCourseId" resultMap="ReqCoursepartMapping">
+    <select id="getCoursepartByCourseId" resultMap="CoursepartMapping">
         SELECT *
         FROM coursepart where course_id = #{relationId}
     </select>

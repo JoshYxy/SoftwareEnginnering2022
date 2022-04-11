@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 11/04/2022 14:48:02
+ Date: 11/04/2022 18:23:01
 */
 
 SET NAMES utf8mb4;
@@ -67,6 +67,7 @@ CREATE TABLE `classroom`  (
   `room_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`room_id`) USING BTREE,
   INDEX `fk_class_building`(`building`) USING BTREE,
+  INDEX `room_num`(`room_num`) USING BTREE,
   CONSTRAINT `fk_class_building` FOREIGN KEY (`building`) REFERENCES `building` (`abbr_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
@@ -76,6 +77,11 @@ CREATE TABLE `classroom`  (
 INSERT INTO `classroom` VALUES (1, 'H2', '110');
 INSERT INTO `classroom` VALUES (2, 'H3', '106');
 INSERT INTO `classroom` VALUES (3, 'H3', '108');
+INSERT INTO `classroom` VALUES (4, 'H2', '106');
+INSERT INTO `classroom` VALUES (5, 'H2', '104');
+INSERT INTO `classroom` VALUES (6, 'H2', '108');
+INSERT INTO `classroom` VALUES (7, 'H3', '206');
+INSERT INTO `classroom` VALUES (8, 'HGX', '408');
 
 -- ----------------------------
 -- Table structure for college
@@ -123,7 +129,7 @@ CREATE TABLE `coursepart`  (
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (33, '软件工程', 'SOFT130006.01', '软件学院', '20', '4', '彭小新', '20000002', '软件工程很重要', '100');
+INSERT INTO `coursepart` VALUES (37, '软件工程', 'SOFT130006.01', '20', '4', '软件工程很重要', '软件学院', '20000002', '彭小新', '100');
 
 -- ----------------------------
 -- Table structure for major
@@ -155,7 +161,7 @@ CREATE TABLE `req_coursepart`  (
   `request_id` int(0) NOT NULL AUTO_INCREMENT,
   `course_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `course_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `class_hours` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `class_hours` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `credits` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `course_info` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `college_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -163,12 +169,18 @@ CREATE TABLE `req_coursepart`  (
   `teacher_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `capacity` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   UNIQUE INDEX `course_id`(`request_id`) USING BTREE,
-  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `fk_req_teacher_num`(`teacher_num`) USING BTREE,
+  INDEX `fk_req_teacher_name`(`teacher_name`) USING BTREE,
+  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_teacher_num` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_teacher_name` FOREIGN KEY (`teacher_name`) REFERENCES `teacher` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of req_coursepart
 -- ----------------------------
+INSERT INTO `req_coursepart` VALUES (1, NULL, NULL, NULL, NULL, NULL, NULL, '20000001', NULL, NULL);
+INSERT INTO `req_coursepart` VALUES (2, NULL, NULL, NULL, NULL, NULL, NULL, '20000002', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for req_timepart
@@ -190,6 +202,8 @@ CREATE TABLE `req_timepart`  (
 -- ----------------------------
 -- Records of req_timepart
 -- ----------------------------
+INSERT INTO `req_timepart` VALUES (1, 1, NULL, 'HGX', 108, 4, '2 3 4');
+INSERT INTO `req_timepart` VALUES (2, 2, NULL, 'H3', 104, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for request
@@ -204,14 +218,20 @@ CREATE TABLE `request`  (
   `room_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `examined` tinyint(1) NULL DEFAULT 0,
   `passed` tinyint(1) NULL DEFAULT 0,
-  PRIMARY KEY (`request_id`) USING BTREE
+  PRIMARY KEY (`request_id`) USING BTREE,
+  INDEX `fk_tea_num_request`(`teacher_num`) USING BTREE,
+  INDEX `fk_building_req`(`building`) USING BTREE,
+  INDEX `fk_room_req`(`room_name`) USING BTREE,
+  CONSTRAINT `fk_tea_num_request` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_building_req` FOREIGN KEY (`building`) REFERENCES `classroom` (`building`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_room_req` FOREIGN KEY (`room_name`) REFERENCES `classroom` (`room_num`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of request
 -- ----------------------------
-INSERT INTO `request` VALUES (1, 'add', NULL, '20000001', NULL, NULL, 0, 0);
-INSERT INTO `request` VALUES (2, 'delete', NULL, NULL, NULL, NULL, 1, 1);
+INSERT INTO `request` VALUES (1, 'add', NULL, '20000001', 'HGX', '108', 0, 0);
+INSERT INTO `request` VALUES (2, 'delete', NULL, '20000002', 'H3', '104', 1, 1);
 
 -- ----------------------------
 -- Table structure for student
@@ -298,7 +318,7 @@ CREATE TABLE `timepart`  (
 -- ----------------------------
 -- Records of timepart
 -- ----------------------------
-INSERT INTO `timepart` VALUES (9, 33, 20000002, 'H3', 109, 2, '3 4 5');
+INSERT INTO `timepart` VALUES (13, 37, 20000002, 'H3', 109, 0, '1 2 3');
 
 -- ----------------------------
 -- Table structure for times
@@ -315,8 +335,9 @@ CREATE TABLE `times`  (
 -- ----------------------------
 -- Records of times
 -- ----------------------------
-INSERT INTO `times` VALUES (1, '第一节', '8：00', '8：40');
+INSERT INTO `times` VALUES (1, '第一节', '8:00', '8:40');
 INSERT INTO `times` VALUES (2, '第二节', '8:55', '9:40');
 INSERT INTO `times` VALUES (3, '第三节', '9:55', '10:40');
+INSERT INTO `times` VALUES (4, '第四节', '10:50', '11:35');
 
 SET FOREIGN_KEY_CHECKS = 1;

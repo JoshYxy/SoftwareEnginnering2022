@@ -78,12 +78,12 @@ public class CourseController extends MainController{
                 courseVO.getCourseId(),
                 courseVO.getCourseName(),
                 courseVO.getCourseNum(),
-                courseVO.getCollegeName(),
                 courseVO.getClassHours(),
                 courseVO.getCredits(),
-                courseVO.getTeacherName(),
-                courseVO.getTeacherNum(),
                 courseVO.getCourseInfo(),
+                courseVO.getCollegeName(),
+                courseVO.getTeacherNum(),
+                courseVO.getTeacherName(),
                 courseVO.getCapacity());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //返回插入后自增得到的课程id给我
@@ -289,9 +289,9 @@ public class CourseController extends MainController{
 
     //管理员删除现有课程
     @DeleteMapping("")
-    public Result deleteCourse(@RequestBody CourseVO courseVO ){
+    public Result deleteCourse(@RequestBody int courseId ){
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
-        int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());
+        int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
         if(res == 0){
             response.setStatus(WRONG_RES);
             return Result.fail("删除失败，课程id无效");
@@ -356,12 +356,12 @@ public class CourseController extends MainController{
                         null,
                         temp.getCourseName(),
                         temp.getCourseNum(),
-                        temp.getCollegeName(),
                         temp.getClassHours(),
                         temp.getCredits(),
-                        temp.getTeacherName(),
-                        temp.getTeacherNum(),
                         temp.getCourseInfo(),
+                        temp.getCollegeName(),
+                        temp.getTeacherNum(),
+                        temp.getTeacherName(),
                         temp.getCapacity());
                 //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
                 //返回插入后自增得到的课程id给我
