@@ -17,7 +17,7 @@ public class Result implements Serializable {
         return succ("请求成功",data);
     }
 
-    public static Result succ(Object data1,Object data2,Object data3){
+    public static Result succ3(Object data1,Object data2,Object data3){
             Result r = new Result();
             r.setData1(data1);
             r.setData2(data2);

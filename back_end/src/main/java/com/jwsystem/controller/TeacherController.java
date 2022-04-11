@@ -82,8 +82,42 @@ public class TeacherController extends MainController{
         //需要写buildingVO的部分
         List<BuildingVO> classroom = buildingServiceImp.getAllRooms();
 
-        return Result.succ(courseVOList,classroom,null);
+        return Result.succ3(courseVOList,classroom,null);
     }
+
+//    //根据老师token返回全部有课时间
+//    @GetMapping("/teacher/time")
+//    public Result getTime(){
+//        //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
+//        String number = getNumByToken();
+//        //检查教师是否存在
+//        Teacher teacher = teaService.selectTeaByNum(number);
+//
+//        if(teacher == null){
+//            response.setStatus(NO_USER);
+//            return Result.fail("教师不存在");
+//        }
+//
+//        List<Timepart> timepartList = courseServiceImp.getAllTimeByTea(number);
+//
+//        int[][] time = new int[7][];
+//        for (Timepart t:
+//                timepartList) {
+//            int i = t.getWeekday();
+//            //转字符串为int数组
+//            String[] s = t.getSection().split(" ");
+//            time[i] = new int[s.length];
+//            for(int cnt=0; cnt<s.length; cnt++){
+//                time[i][cnt]=Integer.parseInt(s[cnt]);
+//            }
+//        }
+//
+//        for(int i=0;i<7;i++){
+//            if(time[i]==null) time[i] = new int[0];
+//        }
+//
+//        return Result.succ(time);
+//    }
 
     //教师提交课程维护申请
     @PostMapping("/courseRequest")

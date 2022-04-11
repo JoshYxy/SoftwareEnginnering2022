@@ -66,7 +66,7 @@ public class CourseController extends MainController{
         //上课时间信息
         List<Times> times = timesServiceImp.getAllTimes();
 
-        return Result.succ(teacherDataList,buildingVOList,times);
+        return Result.succ3(teacherDataList,buildingVOList,times);
     }
 
     //新增课程
