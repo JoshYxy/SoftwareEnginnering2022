@@ -21,7 +21,8 @@
         SELECT *
         FROM timepart WHERE request_id = #{request_id}
     </select>
-    <resultMap id="ReqTimepartMapping" type="Timepart">
+
+    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.Timepart">
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->
@@ -46,6 +47,11 @@
     <select id="getAllTimeByRoom" resultMap="TimepartMapping">
         SELECT *
         FROM timepart WHERE building = #{building} and room_num = #{room_num}
+    </select>
+
+    <select id="getTeaClassTimeByTeaNum" resultMap="TimepartMapping">
+        SELECT *
+        FROM timepart WHERE teacher_num = #{teacher_num}
     </select>
 
     <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">

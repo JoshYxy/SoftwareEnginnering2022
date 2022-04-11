@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 10/04/2022 23:36:38
+ Date: 11/04/2022 14:48:02
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `admin`  (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('admin', '1', '111', 0);
+INSERT INTO `admin` VALUES ('admin', '1', '111', 1);
 
 -- ----------------------------
 -- Table structure for building
@@ -75,6 +75,7 @@ CREATE TABLE `classroom`  (
 -- ----------------------------
 INSERT INTO `classroom` VALUES (1, 'H2', '110');
 INSERT INTO `classroom` VALUES (2, 'H3', '106');
+INSERT INTO `classroom` VALUES (3, 'H3', '108');
 
 -- ----------------------------
 -- Table structure for college
@@ -96,6 +97,7 @@ INSERT INTO `college` VALUES (2, '物理学院');
 INSERT INTO `college` VALUES (3, '管理学院');
 INSERT INTO `college` VALUES (4, '经济学院');
 INSERT INTO `college` VALUES (5, '计算机科学与技术学院');
+INSERT INTO `college` VALUES (6, '软件学院');
 
 -- ----------------------------
 -- Table structure for coursepart
@@ -105,7 +107,7 @@ CREATE TABLE `coursepart`  (
   `course_id` int(0) NOT NULL AUTO_INCREMENT,
   `course_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `course_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `class_hours` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `class_hours` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `credits` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `course_info` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `college_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -116,13 +118,12 @@ CREATE TABLE `coursepart`  (
   UNIQUE INDEX `course_id`(`course_id`) USING BTREE,
   INDEX `fk_teacher_num`(`teacher_num`) USING BTREE,
   CONSTRAINT `fk_teacher_num` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (1, '计算机组成与体系结构', 'COMP130190.01', '40', '4', '', '5', '20000002', '1', NULL);
-INSERT INTO `coursepart` VALUES (2, '离散数学', 'COMP130190.02', '32', '4', '', '5', '20000002', '1', NULL);
+INSERT INTO `coursepart` VALUES (33, '软件工程', 'SOFT130006.01', '软件学院', '20', '4', '彭小新', '20000002', '软件工程很重要', '100');
 
 -- ----------------------------
 -- Table structure for major
@@ -143,7 +144,7 @@ CREATE TABLE `major`  (
 -- ----------------------------
 INSERT INTO `major` VALUES (1, '保密技术', '计算机科学与技术学院');
 INSERT INTO `major` VALUES (2, '计算机科学与技术', '计算机科学与技术学院');
-INSERT INTO `major` VALUES (3, '软件工程', '计算机科学与技术学院');
+INSERT INTO `major` VALUES (3, '软件工程', '软件学院');
 INSERT INTO `major` VALUES (4, '经济学', '经济学院');
 
 -- ----------------------------
@@ -204,7 +205,7 @@ CREATE TABLE `request`  (
   `examined` tinyint(1) NULL DEFAULT 0,
   `passed` tinyint(1) NULL DEFAULT 0,
   PRIMARY KEY (`request_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of request
@@ -237,10 +238,10 @@ CREATE TABLE `student`  (
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', '软件工程', '计算机科学与技术学院');
+INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', '软件工程', '软件学院');
 INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', '计算机科学与技术', '计算机科学与技术学院');
-INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', NULL, 'studying', '软件工程', '计算机科学与技术学院');
-INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', '软件工程', '计算机科学与技术学院');
+INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', NULL, 'studying', '软件工程', '软件学院');
+INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', '软件工程', '软件学院');
 INSERT INTO `student` VALUES ('student', '220005', '421798200207253765', '旺仔', '123456', '', '', 'studying', '保密技术', '计算机科学与技术学院');
 INSERT INTO `student` VALUES ('student', '220006', '421798200207253764', '旺仔', '123456', '', '', 'studying', '保密技术', '计算机科学与技术学院');
 
@@ -270,8 +271,8 @@ CREATE TABLE `teacher`  (
 -- ----------------------------
 -- Records of teacher
 -- ----------------------------
-INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '朱东东', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', '计算机科学与技术', '计算机科学与技术学院');
-INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '彭小新', '123456', '18958772236', 'pxx@163.com', 'working', '计算机科学与技术', '计算机科学与技术学院');
+INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '朱东东', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', '计算机科学与技术', '软件学院');
+INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '彭小新', '123456', '18958772236', 'pxx@163.com', 'working', '计算机科学与技术', '软件学院');
 INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '马丁', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', '计算机科学与技术', '计算机科学与技术学院');
 INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '朱东', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', '计算机科学与技术', '计算机科学与技术学院');
 INSERT INTO `teacher` VALUES ('teacher', '20000006', '211298200110034567', '三胖', '123456', '', '', 'working', '经济学', '经济学院');
@@ -282,7 +283,7 @@ INSERT INTO `teacher` VALUES ('teacher', '20000009', '410622197912093493', '东�
 -- ----------------------------
 DROP TABLE IF EXISTS `timepart`;
 CREATE TABLE `timepart`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `course_id` int(0) NULL DEFAULT NULL,
   `teacher_num` int(0) NULL DEFAULT NULL,
   `building` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -290,14 +291,14 @@ CREATE TABLE `timepart`  (
   `weekday` int(0) NULL DEFAULT NULL,
   `section` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_course_id`(`course_id`) USING BTREE,
-  CONSTRAINT `fk_course_id` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `fk_course_id_timepart`(`course_id`) USING BTREE,
+  CONSTRAINT `fk_course_id_timepart` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of timepart
 -- ----------------------------
-INSERT INTO `timepart` VALUES (1, 1, 20000002, 'H3', 106, 2, '1 2 3');
+INSERT INTO `timepart` VALUES (9, 33, 20000002, 'H3', 109, 2, '3 4 5');
 
 -- ----------------------------
 -- Table structure for times
@@ -309,12 +310,12 @@ CREATE TABLE `times`  (
   `start_time` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `end_time` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of times
 -- ----------------------------
-INSERT INTO `times` VALUES (1, '第一节', '8:00', '8:45');
+INSERT INTO `times` VALUES (1, '第一节', '8：00', '8：40');
 INSERT INTO `times` VALUES (2, '第二节', '8:55', '9:40');
 INSERT INTO `times` VALUES (3, '第三节', '9:55', '10:40');
 

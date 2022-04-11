@@ -71,9 +71,9 @@ public class CourseController extends MainController{
 
     //新增课程
     @PostMapping("/new")
-    public Result addCourse(CourseVO courseVO){
+    public Result addCourse(@RequestBody CourseVO courseVO){
         //courseVO 截成两段
-
+        System.out.println(courseVO.getCourseId());
         Coursepart coursePart = new Coursepart(
                 courseVO.getCourseId(),
                 courseVO.getCourseName(),
@@ -88,8 +88,9 @@ public class CourseController extends MainController{
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //返回插入后自增得到的课程id给我
         //存到coursePart表里
-        int courseId = courseServiceImp.insertCoursepart(coursePart);
-
+        courseServiceImp.insertCoursepart(coursePart);
+        int courseId = coursePart.getRelationId();
+      //          System.out.println("courseId="+courseId);
         try{
             for(int i=0;i<7;i++){
                 //周i（从0到6，表示周天，周一到周六
@@ -283,6 +284,8 @@ public class CourseController extends MainController{
             courses.add(tempVO);
         }
         return Result.succ("获取课程信息成功",courses);
+        //return Result.succ("获取课程信息成功",coursepartList);
+
     }
 
     //管理员删除现有课程

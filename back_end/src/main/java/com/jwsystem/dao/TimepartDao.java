@@ -8,11 +8,12 @@ import java.util.List;
 
 @Mapper
 public interface TimepartDao {
-    List<Timepart> getAllTimepart(Integer collegeId);
+    List<Timepart> getAllTimepart(Integer courseId);
     List<Timepart> getAllReqTimepartByRequestId(Integer requestId);
     List<String> selectSectionByTea(@Param("teacher_num") String teacherNum, Integer weekday);
     List<String> selectSectionByRoom(@Param("room_num")String roomNum,Integer weekday);
     void insertTimepart(Timepart timepart);
     void insertReqTimepart(Timepart timepart);
     List<Timepart> getAllTimeByRoom(String building, @Param("room_num") String roomNum);
+    List<Timepart> getTeaClassTimeByTeaNum(Integer teacherNum);
 }
