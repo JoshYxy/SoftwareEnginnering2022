@@ -100,6 +100,11 @@
         FROM req_coursepart where request_id = #{request_id}
     </select>
 
+    <select id="getCoursepartByCourseId" resultMap="ReqCoursepartMapping">
+        SELECT *
+        FROM coursepart where course_id = #{relationId}
+    </select>
+
     <resultMap id="ReqCoursepartMapping" type="com.jwsystem.entity.Coursepart">
         <!-- id属性来映射主键字段 -->
         <id column="request_id" property="relationId"/>

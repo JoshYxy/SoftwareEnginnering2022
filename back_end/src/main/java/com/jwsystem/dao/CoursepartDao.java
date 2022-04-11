@@ -24,6 +24,9 @@ public interface CoursepartDao {
     List<Coursepart> getAllCoursepartByTeacherNum(String collegeName);
 
     Coursepart getReqCoursepartByRequestId(int requestId);
+
+    Coursepart getCoursepartByCourseId(int courseId);
+
     //删除 Coursepart
     int deleteCoursepartByCourseId(int courseId);
 

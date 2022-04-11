@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface CourseService {
 
+    Coursepart getCoursepartByCourseId(Integer courseId);
+
     List<Coursepart> getAllCoursepart();
 
     List<Timepart> getAllTimepartByCourseId(Integer courseId);

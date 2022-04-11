@@ -19,7 +19,7 @@
 
     <select id="getAllReqTimepartByRequestId" resultMap="ReqTimepartMapping">
         SELECT *
-        FROM timepart WHERE request_id = #{request_id}
+        FROM req_timepart WHERE request_id = #{request_id}
     </select>
 
     <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.Timepart">

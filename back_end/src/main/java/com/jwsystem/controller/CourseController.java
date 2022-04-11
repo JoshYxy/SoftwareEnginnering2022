@@ -289,9 +289,9 @@ public class CourseController extends MainController{
 
     //管理员删除现有课程
     @DeleteMapping("")
-    public Result deleteCourse(@RequestBody int courseId ){
+    public Result deleteCourse(@RequestBody CourseVO courseVO ){
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
-        int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
+        int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());
         if(res == 0){
             response.setStatus(WRONG_RES);
             return Result.fail("删除失败，课程id无效");
@@ -303,17 +303,30 @@ public class CourseController extends MainController{
     @PostMapping("")
     public Result changeCourse(@RequestBody CourseVO courseVO){
         //核心思想：把原有的都删了，把传来的插入
+
+        //先保存当前数据库内课程信息，并且转化成CourseVO对象
+        Coursepart tempc = courseServiceImp.getCoursepartByCourseId(courseVO.getCourseId());
+        List<Timepart> tempt = courseServiceImp.getAllTimepartByCourseId(courseVO.getCourseId());
+        CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
+//        tempVO.setCourseId(courseVO.getCourseId());
+
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
         int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());
 
         if(res != 0){
             //删除成功，将传来的插入
             //传来的courseVO自带courseId
-            addCourse(courseVO);
+            Result r = addCourse(courseVO);
+            if(!r.getMsg().equals("新增课程成功")){
+                //插入修改后信息失败，复原原来的信息
+                addCourse(tempVO);
+                response.setStatus(WRONG_RES);
+                return Result.fail("修改信息失败！插入修改后信息失败！");
+            }
         }else{
             //删除失败
             response.setStatus(WRONG_RES);
-            return Result.fail("修改信息失败！");
+            return Result.fail("修改信息失败！删除原本信息失败！");
         }
         return Result.succ("修改课程信息成功");
     }
@@ -334,7 +347,7 @@ public class CourseController extends MainController{
 
         System.out.println("接收文件成功");
 
-        //从CSV文件批量获取User对象
+        //从CSV文件批量获取Course对象
         try{
             List<CourseDTO> courses = CSVUtils.getCourseByCsv(multipartFile);
             //循环完成批量插入（此时插入类型为Course，不是CourseVO）

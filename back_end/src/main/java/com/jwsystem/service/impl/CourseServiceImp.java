@@ -19,6 +19,11 @@ public class CourseServiceImp implements CourseService {
     TimepartDao timepartDao;
 
     @Override
+    public Coursepart getCoursepartByCourseId(Integer courseId) {
+        return coursepartDao.getCoursepartByCourseId(courseId);
+    }
+
+    @Override
     public List<Coursepart> getAllCoursepart(){
         return coursepartDao.getCoursepartInfos();
     }
