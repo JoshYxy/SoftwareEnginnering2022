@@ -10,7 +10,7 @@ public interface ClassroomService {
 
     Classroom findById(Integer roomId);
 
-    void deleteById(Integer roomId);
+    void deleteByBuildingAndRoomNum(String building, String roomNum);
 
     void changeById(Classroom classRoom);
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface TimepartDao {
     List<Timepart> getAllTimepart(Integer courseId);
-    List<Timepart> getAllReqTimepartByRequestId(Integer requestId);
+    List<Timepart> getAllReqTimepartByRequestId(int requestId);
     List<String> selectSectionByTea(@Param("teacher_num") String teacherNum, Integer weekday);
     List<String> selectSectionByRoom(@Param("room_num")String roomNum,Integer weekday);
     void insertTimepart(Timepart timepart);

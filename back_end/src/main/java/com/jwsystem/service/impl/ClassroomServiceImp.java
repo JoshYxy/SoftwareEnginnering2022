@@ -28,8 +28,8 @@ public class ClassroomServiceImp implements ClassroomService {
 
 
     @Override
-    public void deleteById(Integer roomId) {
-        classroomDao.deleteById(roomId);
+    public void deleteByBuildingAndRoomNum(String building,String roomNum) {
+        classroomDao.deleteByBuildingAndRoomNum(building,roomNum);
     }
 
     @Override

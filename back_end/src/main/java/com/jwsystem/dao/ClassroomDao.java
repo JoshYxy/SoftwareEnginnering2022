@@ -12,7 +12,7 @@ public interface ClassroomDao {
 
     void changeById(@Param("room_id")Integer roomId, String building,@Param("room_num") String roomNum);
 
-    void deleteById(Integer roomId);
+    void deleteByBuildingAndRoomNum(String building,@Param("room_num")String roomNum);
 
     //得到所有教室信息
     List<Classroom> getClassroomsByBuilding(String building);

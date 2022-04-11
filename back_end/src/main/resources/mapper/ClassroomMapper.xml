@@ -12,8 +12,8 @@
         WHERE room_id = #{room_id};
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM classroom WHERE room_id = #{room_id}
+    <delete id="deleteByBuildingAndRoomNum">
+        DELETE FROM classroom WHERE building = #{building} and room_num = #{room_num}
     </delete>
 
     <select id="findByNumAndBuilding" resultType="com.jwsystem.entity.Classroom">
