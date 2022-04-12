@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 12/04/2022 17:59:48
+ Date: 12/04/2022 23:17:30
 */
 
 SET NAMES utf8mb4;
@@ -90,7 +90,7 @@ INSERT INTO `classroom` VALUES (9, 'HGX', '102');
 -- ----------------------------
 DROP TABLE IF EXISTS `college`;
 CREATE TABLE `college`  (
-  `college_id` int(0) NOT NULL,
+  `college_id` int(0) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '学院名',
   PRIMARY KEY (`college_id`) USING BTREE,
   UNIQUE INDEX `uk_college_name`(`name`) USING BTREE,

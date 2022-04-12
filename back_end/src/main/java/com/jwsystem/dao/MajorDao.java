@@ -11,7 +11,7 @@ import java.util.Map;
 @Mapper
 public interface MajorDao {
     //新增专业
-    int insertMajor(String name, String collegeName);
+    int insertMajor(String name, @Param("college_name")String collegeName);
     //根据id查询某专业是否存在
     Major findMajorById(Integer majorId);
     //根据name查询某专业是否存在

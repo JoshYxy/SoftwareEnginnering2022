@@ -18,7 +18,7 @@ public interface CollegeDao {
     //根据name查询某学院是否存在
     College findCollegeByName(String name);
     //根据id修改某学院名
-    College updateCollegeNameById(@Param("college_id") Integer collegeId,String name);
+    int updateCollegeNameById(@Param("college_id") Integer collegeId,String name);
     // 删除学院
     int deleteCollege(String name);
     //得到所有学院名字
