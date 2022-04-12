@@ -66,7 +66,7 @@ export default {
       axios.post('http://localhost:8081/admin/edu/college/new',{name: data.name})
         .then(res => {
           console.log(res)
-          data.id = res.data.data
+          data.id = res.data.data1
           this.collegeData.push(data)
           this.openAlter(node, data)
         }).catch(error => {
@@ -83,7 +83,7 @@ export default {
       axios.post('http://localhost:8081/admin/edu/major/new',{collegeName: data.name, name: newChild.name})
         .then(res => {
           console.log(res)
-          newChild.id = res.data.data
+          newChild.id = res.data.data1
           data.majors.push(newChild)
           this.openAlter(node, newChild)
           this.collegeData = [...this.collegeData]//更新数据，刷新页面
@@ -194,7 +194,7 @@ export default {
   async created() {
     await axios.get("http://localhost:8081/admin/edu")
       .then(res => {
-        this.collegeData = res.data.data
+        this.collegeData = res.data.data1
         for(let i in this.collegeData) {//替换变量名,对应后端数据
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))

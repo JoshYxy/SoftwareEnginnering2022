@@ -1,20 +1,20 @@
 <template>
     <h2>我的课程</h2>
-    <el-button @click="test">test </el-button>
+    <!-- <el-button @click="test">test </el-button> -->
     <el-button @click="handleNew">申请新增 </el-button>
-    <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName">
-        <el-table-column fixed prop="courseName" label="课程名" width="120" />
-        <el-table-column fixed prop="courseNum" label="课程编号" width="120" />
-        <el-table-column prop="collegeName" label="开课院系" width="180" />
+    <el-table class="tea-course-table" ref="course-table" :data="courses" :row-class-name="tableRowClassName">
+        <el-table-column fixed prop="courseName" label="课程名" width="150" />
+        <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
+        
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
-        <el-table-column prop="building,roomNum" label="上课地点" width="140" >
+        <el-table-column prop="building,roomNum" label="上课地点" width="100" >
             <template #default="scope">
                 {{scope.row.building}}{{scope.row.roomNum}}
             </template>
         </el-table-column>
         <el-table-column prop="courseTime" label="上课时间" width="180" />
-        <el-table-column prop="capacity" label="选课容量" width="150" />
+        <el-table-column prop="capacity" label="选课容量" width="80" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
             <template #default="scope">
                 <el-button type="text" @click="dialogTableVisible[scope.$index] = true">查看详情</el-button>
@@ -31,6 +31,7 @@
                 v-model="editTableVisible[scope.$index]" 
                 title="修改课程" 
                 :append-to-body="true" 
+                width="70%"
                 >
                 <el-form 
                     class="course-teacher"
@@ -82,7 +83,7 @@
         </template>
         </el-table-column>
     </el-table>  
-    <el-dialog  v-model="newTableVisible"  title="新增课程" :append-to-body="true">
+    <el-dialog width="70%" v-model="newTableVisible"  title="新增课程" :append-to-body="true">
         <el-form :model="newCourse" :rules="rules" hide-required-asterisk ref="newCourse" class="course-teacher">
             <el-form-item label="课程名称" prop="courseName">
                 <el-input v-model="newCourse.courseName" />
@@ -160,10 +161,11 @@ export default {
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
             },
             periods: global_.periods,
+            operateStatus: '',//操作状态new代表在新增，change代表在修改
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
-            editTableVisible:[false,false],//传入时数量与课程数需一直
-            dialogTableVisible:[false,false],
+            editTableVisible:[false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
+            dialogTableVisible:[false,false,false,false,false,false,false,false,],
             newTableVisible: false,
             selectTime:[[]],
             roomProps: {
@@ -192,7 +194,7 @@ export default {
             teacher: {
                 name: '',
                 number: null,
-                collegeName: ''
+                college: ''
             },
             times: [
                 {
@@ -263,9 +265,9 @@ export default {
             ],
             unavalTeaTimes: [
                 [],
-                [1,2,3,5,6,8,10,11,12],
-                [3],
-                [3,8],
+                [],
+                [],
+                [],
                 [],
                 [],
                 []
@@ -274,12 +276,12 @@ export default {
             ],
             unavalRoomTimes: [
                 [],
-                [1,2,3,5],
-                [3],
-                [3,8],
                 [],
                 [],
-                [1,2,3]
+                [],
+                [],
+                [],
+                []
             ],
             courses: [
                 {
@@ -332,7 +334,7 @@ export default {
                 }
             ],
             editCourse: {
-                selectTime:[[]],
+                selectTime:[[],[],[],[],[],[],[]],
                 index: '',
                 selectRoom: [],
                 courseName: '',
@@ -340,7 +342,7 @@ export default {
                 // times: '',
             },
             newCourse: {
-                selectTime:[[]],
+                selectTime:[[],[],[],[],[],[],[]],
                 selectRoom: [],
                 courseName: '',
                 courseNum: '',
@@ -369,6 +371,7 @@ export default {
             return 'normal-row';
         },
         handleNew() {
+            this.operateStatus = 'new'
             for(let i in this.newCourse)
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
@@ -389,7 +392,7 @@ export default {
                 }
             )
                 .then(() => {
-                    axios.post('http://localhost:8081/teacher/courseRequest',{CourseVO:data, type:'delete'})
+                    axios.post('http://localhost:8081/teacher/courseRequest',{courseVO:data, type:'delete', requestId: null})
                     .then(res => {
                         console.log(res)
                         data.type = 'delete'
@@ -411,15 +414,16 @@ export default {
                 })
         },
         async handleEdit(index, data) {
+            this.operateStatus = 'change'
             //axios获取教室不可用时间 (data.building data.roomNum)
             //设定不能选择的时间
-            await axios.get('http://localhost:8081/affair/building/room/time',
+            await axios.put('http://localhost:8081/affair/building/room/time',
                 {   
                     building: data.building, 
                     roomNum: data.roomNum
                 })
             .then(res => {
-                this.unavalRoomTimes = res
+                this.unavalRoomTimes = res.data.data1
             })
             this.setAvalTime()
             //课程目前时间设置为可以选中
@@ -430,6 +434,7 @@ export default {
                 }
             }
             //数组深拷贝
+            // console.log(data.times)
             this.editCourse.selectTime = []
             for(let i = 0; i < data.times.length; i++)
             {
@@ -449,13 +454,14 @@ export default {
             this.$refs['editCourse'].validate(valid => {
                 if(valid){
                     let courseToSubmit = {}
-                    courseToSubmit = this.courses[index]
+                    courseToSubmit = JSON.parse(JSON.stringify(this.courses[index]))
                     courseToSubmit['courseName'] = this.editCourse.courseName
                     courseToSubmit['times'] = this.editCourse.selectTime
                     courseToSubmit['building'] = this.buildingToAbbr[this.editCourse.selectRoom[0]]
                     courseToSubmit['roomNum'] = this.editCourse.selectRoom[1]
                     setCourseTime(courseToSubmit, this.editCourse.selectTime)
-                    axios.post('http://localhost:8081/teacher/courseRequest',{CourseVO:courseToSubmit, type:'change'})
+                    console.log(courseToSubmit)
+                    axios.post('http://localhost:8081/teacher/courseRequest',{courseVO:courseToSubmit, type:'change',})
                     .then(res => {
                         console.log(res)
                         this.courses[index].type = 'change'
@@ -493,8 +499,8 @@ export default {
                     this.newCourse.roomNum = this.newCourse.selectRoom[1]
                     this.newCourse['teacherName'] = this.teacher.name
                     this.newCourse['teacherNum'] = this.teacher.number
-                    this.newCourse['collegeName'] = this.teacher.collegeName
-                    axios.post('http://localhost:8081/teacher/courseRequest',{CourseVO:this.newCourse, type:'add'})
+                    this.newCourse['collegeName'] = this.teacher.college
+                    axios.post('http://localhost:8081/teacher/courseRequest',{courseVO:this.newCourse, type:'add'})
                     .then(res => {
                         console.log(res)
                         this.courses.push(JSON.parse(JSON.stringify(this.newCourse)))
@@ -530,35 +536,44 @@ export default {
         /* eslint-disable */
         async updateRoom(data) {//editCourse中覆写了函数，使其传入的是scope.row,默认为修改后的值value
             //axios获取教室不可用时间 传输editCourse.selectRoom
-            if(typeof data == 'Object') {//修改课程中
-                await axios.get('http://localhost:8081/affair/building/room/time',
+           console.log(data)
+            if(typeof data[0] != 'string') {//修改课程中 
+                // if(data.selectRoom == null || data.selectRoom.length < 2) return 
+                await axios.put('http://localhost:8081/affair/building/room/time',
                     {   
-                        building: this.buildingToAbbr[data.selectRoom[0]], 
-                        roomNum: data.selectRoom[1]
+                        building: this.buildingToAbbr[this.editCourse.selectRoom[0]], 
+                        roomNum: this.editCourse.selectRoom[1]
                     })
                 .then(res => {
-                    this.unavalRoomTimes = res
+                    this.unavalRoomTimes = res.data.data1
                 })
             }
             else {//新增课程中
-                await axios.get('http://localhost:8081/affair/building/room/time',
+                if(data == null || data.length < 2) return 
+                await axios.put('http://localhost:8081/affair/building/room/time',
                     {   
                         building: this.buildingToAbbr[data[0]], 
                         roomNum: data[1]
                     })
                 .then(res => {
-                    this.unavalRoomTimes = res
+                    this.unavalRoomTimes = res.data.data1
                 })           
             }
             // this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
             this.clearAvalTime()
             this.setAvalTime()
-            console.log(data)
-            if(typeof data == 'Object') {
+            console.log(typeof data[0])//修改课程申请
+            if(typeof data[0] != 'string') {
+                // console.log(1)
                 for(let i = 0; i < data.times.length; i++) {
                     for(let j = 1; j <= this.times.length; j++) {
-                        if(data.times[i].indexOf(j) > -1)
+                        if(data.times[i].indexOf(j) > -1){
                             this.timeData[i].times[j-1].disable = false
+                            let p = this.editCourse.selectTime[i].indexOf(j)
+                            if(p < 0) {
+                                this.editCourse.selectTime[i].push(j)
+                            }
+                        }
                     }
                 }
             }
@@ -566,8 +581,21 @@ export default {
         setAvalTime() {
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1)
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1) {
                         this.timeData[i].times[j - 1].disable = true
+                        if(this.operateStatus == 'new') {//根据操作选择删除不可选数据的操作
+                            let p = this.newCourse.selectTime[i].indexOf(j)
+                            if(p > -1) {
+                                this.newCourse.selectTime[i].splice(p,1)
+                            }
+                        }
+                        if(this.operateStatus == 'change') {
+                            let p = this.editCourse.selectTime[i].indexOf(j)
+                            if(p > -1) {
+                                this.editCourse.selectTime[i].splice(p,1)
+                            }
+                        }
+                    }
                 }
             } 
         },
@@ -596,15 +624,16 @@ export default {
         .then(res => {
             this.courses = res.data.data1
             this.teacher = res.data.data2
+            console.log(this.teacher)
         })
         //有课时间获取
-        await axios.get('http://localhost:8081/affair/teacher/time',
+        await axios.put('http://localhost:8081/affair/teacher/time',
             {   
-                name: this.courseData.teacherName, 
-                number: this.courseData.teacherNum
+                name: this.teacher.name, 
+                number: this.teacher.number
             })
         .then(res => {
-            this.unavalTeaTimes = res.data.times
+            this.unavalTeaTimes = res.data.data1
         })
 
         for(let course of this.courses) {
@@ -625,15 +654,23 @@ export default {
         }
         //设置已有课时间为不可选择时间
         //axios获取教师不可用时间
-        this.setAvalTime()
-        // console.log(this.timeData)
+        // this.setAvalTime()
+        for(let i = 0; i < 7; i++) {
+            for(let j = 1; j <= this.times.length; j++) {
+                if(this.unavalTeaTimes[i].indexOf(j) > -1)
+                    this.timeData[i].times[j - 1].disable = true
+            }
+        } 
+        
+        // console.log(this.courses)
     }
 }
 </script>
 
 <style>
-.el-dialog {
-    width: 70%;
+.tea-course-table .el-table__header {
+    display: inline-block;
+    vertical-align: middle;
 }
 .el-table .deleting-row {
   --el-table-tr-bg-color: var(--el-color-danger-light-7);

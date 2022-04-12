@@ -53,9 +53,9 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
-.el-table__header col[name="gutter"] {
+/* .el-table__header col[name="gutter"] {
   display: table-cell !important;
-}
+} */
 .el-descriptions__title{
   font-size: 20px;
 }

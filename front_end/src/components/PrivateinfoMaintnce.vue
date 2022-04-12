@@ -165,7 +165,7 @@ export default {
   created() {
     axios.get('http://localhost:8081/user/info')
           .then(res => {
-            this.userData = res.data.data
+            this.userData = res.data.data1
             console.log(this.userData)
   
           }).catch(error => {

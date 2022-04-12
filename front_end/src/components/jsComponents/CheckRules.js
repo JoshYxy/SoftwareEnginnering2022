@@ -44,7 +44,7 @@ export function validEmail(rule, value, callback){
 export function validTimetable(rule, value, callback){
     var flag = false
     for(let i = 0; i < value.length; i++){
-      if(value[i].length > 0){
+      if(value[i] != null && value[i].length > 0){
         flag = true
       }
     }
@@ -55,7 +55,7 @@ export function validTimetable(rule, value, callback){
     }
   }
 export function validSelectRoom(rule, value, callback){
-    if (value == null || value[0] == null || value[0] == '') {
+    if (value == null || value[0] == null || value[0] == '' || value[1] == null || value[1] == '') {
       return callback(new Error('请选择上课教室'))
     } else{
       callback()

@@ -3,11 +3,12 @@
     <h1>信息录入</h1>
     <el-upload
       class="upload-demo"
-      :action="Upload"
+      action="#"
+      :http-request="Upload"
       accept=".csv"
       :limit="1"
       :before-upload="onBeforeUpload"
-      :data="uploadData"
+     
     >
       <el-button type="primary">
         <el-icon style="vertical-align: middle;">
@@ -244,29 +245,30 @@ export default {
       })
     },
     onBeforeUpload(file) {
-      const isCSV = file.type === 'application/vnd.ms-excel'
-
+      const isCSV = (file.type === 'application/vnd.ms-excel' || file.type === 'text/csv')
+      // console.log(file.type)
       if (!isCSV) {
         this.$message.error('上传文件只能是.csv格式!');
       }
     
       return isCSV;
     },
-    Upload(file) {
-      let param = new FormData(); 
-      param.append('file',file)
-      axios.post("http://localhost:8081/admin/users",param)
+    Upload(param) {
+      let para = new FormData(); 
+      para.append('file',param.file)
+      axios.post("http://localhost:8081/admin/users",para,{headers: {'Content-Type': 'multipart/form-data'}})
         .then(function(){
           alert('批量导入信息完成，无导入失败')                  
         }).catch(error => {
-          alert(error.response.message)
+          console.dir(error)
+          alert(error.response.data.msg)
         })
     }
   },
   async created() {
     await axios.get("http://localhost:8081/admin/edu")
       .then(res => {
-        this.collegeData = res.data.data
+        this.collegeData = res.data.data1
         for(let i in this.collegeData) {//替换变量名,对应后端数据
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))

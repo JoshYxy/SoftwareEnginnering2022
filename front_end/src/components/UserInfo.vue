@@ -133,8 +133,8 @@ export default {
       //获取用户信息
     await axios.get('http://localhost:8081/admin/users')
       .then(res => {
-                console.log(res)
-        this.userData = res.data.data
+        console.log(res)
+        this.userData = res.data.data1
       }).catch(error => {
         alert("服务器访问失败")
         console.dir(error);
@@ -144,7 +144,7 @@ export default {
     await axios.get("http://localhost:8081/admin/edu")
       .then(res => {
 
-        this.collegeData = res.data.data
+        this.collegeData = res.data.data1
         for(let i in this.collegeData) {//替换变量名,对应后端数据
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
           this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
@@ -162,7 +162,7 @@ export default {
           this.userData[i].college_ = j
       }
     }
-    // console.log(this.userData)
+    console.log(this.userData)
   }
 }
 </script>

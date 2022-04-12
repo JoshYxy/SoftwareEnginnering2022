@@ -71,7 +71,7 @@ const routes = [
         path: 'privateinfo',
         name: 'privateinfo',
         component: PrivateinfoMaintnce,
-        meta: { role: ['admin','student','teacher'], nav_name: '个人信息' }
+        meta: { role: ['student','teacher'], nav_name: '个人信息' }
       },
       {
         path: 'course',
@@ -89,7 +89,7 @@ const routes = [
         path: 'teacher/course',
         name: 'teacherCourse',
         component: TeacherCourse,
-        meta: { role: ['admin', 'teacher'], nav_name: '课程管理'}
+        meta: { role: ['teacher'], nav_name: '课程管理'}
       },
       {
         path: 'admin/course',
@@ -101,7 +101,7 @@ const routes = [
         path: 'student/course',
         name: 'studentCourse',
         component: StudentCourse,
-        meta: { role: ['admin','student'], nav_name: '我的课程'}
+        meta: { role: ['student'], nav_name: '我的课程'}
       },
       {
         path: 'admin/course/verify',

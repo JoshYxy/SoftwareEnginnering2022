@@ -37,6 +37,7 @@
 
 <script>
 import axios from 'axios'
+import {setCourseTime} from '../jsComponents/CourseSet'
 export default {
     data() {
         return {
@@ -45,7 +46,7 @@ export default {
                 delete: '删除',
                 change: '修改',
             },
-            dialogTableVisible:[false,false],
+            dialogTableVisible:[false,false,false,false,false,false,false,false],
             pendingCourses:[
                 {
                     showStatus: '',
@@ -141,10 +142,12 @@ export default {
     created() {
         axios.get('http://localhost:8081/course/courseRequests')
         .then(res => {
-            let requestData = res.data.data
+            let requestData = res.data.data1
+            console.log(res)
             this.pendingCourses = []
             for(let i = 0; i < requestData.length; i++) {
                 this.pendingCourses.push(requestData[i].courseVO)
+                setCourseTime( this.pendingCourses[i],this.pendingCourses[i].times)
                 this.pendingCourses[i].type = requestData[i].type
                 this.pendingCourses[i].requestId = requestData[i].requestId
                 this.pendingCourses[i].examined = false

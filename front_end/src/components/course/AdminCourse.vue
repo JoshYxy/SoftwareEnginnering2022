@@ -1,15 +1,15 @@
 <template>
     <h2>所有课程</h2>
     <el-button @click="test">test </el-button>
-    <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName">
-        <el-table-column fixed prop="courseName" label="课程名" width="120" />
-        <el-table-column fixed prop="courseNum" label="课程编号" width="120" />
+    <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName" max-height="500px">
+        <el-table-column fixed prop="courseName" label="课程名" width="150" />
+        <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
-        <el-table-column prop="building,roomNum" label="上课地点" width="140" >
+        <el-table-column prop="building,roomNum" label="上课地点" width="80" >
             <template #default="scope">
                 {{scope.row.building}}{{scope.row.roomNum}}
             </template>
@@ -29,6 +29,7 @@
             <el-button v-if="scope.row.type != 'deleted'" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
             <el-button v-if="scope.row.type != 'deleted'" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             <el-dialog 
+                width="70%"
                 v-model="editTableVisible[scope.$index]" 
                 title="修改课程" 
                 :append-to-body="true" 
@@ -133,8 +134,8 @@ export default {
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
-            editTableVisible:[false,false],//传入时数量与课程数需一直
-            dialogTableVisible:[false,false],
+            editTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
+            dialogTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             selectTime:[[]],
             roomProps: {
                 children: 'room',
@@ -230,21 +231,21 @@ export default {
             ],
             unavalTeaTimes: [
                 [],
-                [1,2,3,5,6,8,10,11,12],
-                [3],
-                [3,8],
+                [],
+                [],
+                [],
                 [],
                 [],
                 []
             ],
             unavalRoomTimes: [
                 [],
-                [1,2,3,5],
-                [3],
-                [3,8],
                 [],
                 [],
-                [1,2,3]
+                [],
+                [],
+                [],
+                []
             ],
 
             teacherData: [
@@ -314,7 +315,7 @@ export default {
                 }
             ],
             editCourse: {
-                selectTime:[[]],
+                selectTime:[[],[],[],[],[],[],[]],
                 selectRoom: [],
                 courseName: '',
                 courseNum: '',
@@ -376,24 +377,28 @@ export default {
                 })
         },
         async handleEdit(index, data) {
-            await axios.get('http://localhost:8081/affair/teacher/time',
-                {   
+            await axios.put('http://localhost:8081/affair/teacher/time',
+                {  
                     name: data.teacherName, 
                     number: data.teacherNum
                 })
             .then(res => {
-                this.unavalTeaTimes = res
+                this.unavalTeaTimes = res.data.data1
             })
-            await axios.get('http://localhost:8081/affair/building/room/time',
+            .catch(err => {
+                console.dir(err)
+            })
+            await axios.put('http://localhost:8081/affair/building/room/time',
                 {   
                     building: data.building, 
                     roomNum: data.roomNum
                 })
             .then(res => {
-                this.unavalRoomTimes = res
+                this.unavalRoomTimes = res.data.data1
             })
             //axios获取教室，教师不可用时间 data.teacher data.selectRoom
             // this.unavalTeaTimes = [[],[],[],[],[],[],[],[5,6,7,13]]
+            
             this.setAvalTime()
             //当前课程时间设置为可以选中
             for(let i = 0; i < data.times.length; i++) {
@@ -476,13 +481,13 @@ export default {
         },
         async updateTeacher(data) {
             //axios获取老师不可用时间 传输editCourse.teacherName,Num
-            await axios.get('http://localhost:8081/affair/teacher/time',
+            await axios.put('http://localhost:8081/affair/teacher/time',
                 {   
                     name: this.editCourse.teacher.name, 
                     number: this.editCourse.teacher.number
                 })
             .then(res => {
-                this.unavalTeaTimes = res
+                this.unavalTeaTimes = res.data.data1
             })
             // this.unavalTeaTimes = [[],[],[],[],[],[],[5,6,7,13],[]]
             this.clearAvalTime()
@@ -490,21 +495,27 @@ export default {
 
             for(let i = 0; i < data.times.length; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(data.times[i].indexOf(j) > -1)
+                    if(data.times[i].indexOf(j) > -1) {
                         this.timeData[i].times[j-1].disable = false
+                        let p = this.editCourse.selectTime[i].indexOf(j)
+                        if(p < 0) {
+                            this.editCourse.selectTime[i].push(j)
+                        }
+                    }
                 }
             }
-            
+            // console.log(this.editCourse.selectTime)
         },
         async updateRoom(data) {
             // axios获取教室不可用时间 传输editCourse.selectRoom
-            await axios.get('http://localhost:8081/affair/building/room/time',
+            if(this.editCourse.selectRoom == null ||this.editCourse.selectRoom.length < 2) return 
+            await axios.put('http://localhost:8081/affair/building/room/time',
                 {   
                     building: this.buildingToAbbr[this.editCourse.selectRoom[0]], 
                     roomNum: this.editCourse.selectRoom[1]
                 })
             .then(res => {
-                this.unavalRoomTimes = res
+                this.unavalRoomTimes = res.data.data1
             })
             // this.unavalRoomTimes = [[1,2],[],[],[],[],[],[],[]]
             this.clearAvalTime()
@@ -512,17 +523,28 @@ export default {
 
             for(let i = 0; i < data.times.length; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(data.times[i].indexOf(j) > -1)
+                    if(data.times[i].indexOf(j) > -1){
                         this.timeData[i].times[j-1].disable = false
+                        let p = this.editCourse.selectTime[i].indexOf(j)
+                        if(p < 0) {
+                            this.editCourse.selectTime[i].push(j)
+                        }
+                    }
                 }
             }
-
+            //  console.log(this.editCourse.selectTime)
         },
         setAvalTime() {
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1)
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1  || this.unavalRoomTimes[i].indexOf(j) > -1){
                         this.timeData[i].times[j - 1].disable = true
+                        let p = this.editCourse.selectTime[i].indexOf(j)
+                        if(p > -1) {
+                            this.editCourse.selectTime[i].splice(p,1)
+                        }
+                    }
+                        
                 }
             } 
         },
@@ -549,14 +571,17 @@ export default {
         })
         await axios.get('http://localhost:8081/course')
         .then(res => {
-            this.courses = res.data.data
+            for(let i = 0; i < res.data.data1.length; i++){
+            this.editTableVisible.push(false)
+            this.dialogTableVisible.push(false)
+            }
+            this.courses = res.data.data1
         })
 
         for(let course of this.courses) {
             course.courseTime = ''
             setCourseTime(course, course.times)
-            this.editTableVisible.push(false)
-            this.dialogTableVisible.push(false)
+
         }
         this.timeData = []
         for(let i = 0; i < 7; i++) {//创建选课时间数组
@@ -568,15 +593,13 @@ export default {
                 this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
             }
         }
-        // console.log(this.timeData)
+        // console.log(this.editTableVisible)
+        // console.log(this.dialogTableVisible)
     }
 }
 </script>
 
 <style>
-.el-dialog {
-    width: 70%;
-}
 .el-table .deleting-row {
   --el-table-tr-bg-color: var(--el-color-danger-light-7);
 }

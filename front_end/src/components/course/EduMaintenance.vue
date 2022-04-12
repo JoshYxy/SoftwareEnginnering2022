@@ -64,7 +64,7 @@
                 <template #header>
                 <div class="card-header">
                     <span>{{building.name}}</span>
-                    <el-button class="button" type="text" v-if="!onDeleteAll" @click="checkDelete(index)">删除该教学楼</el-button>
+                    <el-button class="button" type="text" v-if="!onDeleteAll" @click="checkDelete(index)">清空教学楼内教室</el-button>
                 </div>
                 </template>
                 <el-scrollbar height="200px" class="card-item-container"> 
@@ -102,8 +102,8 @@ export default {
             onDeleteAll: false,//是否有card进入删除状态
             onDelete: [false],//特定card是否进入删除教室状态
             checkGroup: [],
-            startTime:['08:00','10:00'],
-            endTime:['08:40','11:00'],
+            startTime:[],
+            endTime:[],
             newRoom:'',//存放input输入的教室号
             newClassroom: {
                 name: '',
@@ -111,20 +111,7 @@ export default {
                 room: [],
             },//存档select选择的教学楼
             classroom: [
-                {
-                    name: '第三教学楼',
-                    aka: 'H3',
-                    room: [
-                        '301','402'
-                    ]
-                },
-                {
-                    name: '光华楼西辅楼',
-                    aka: 'HGX',
-                    room: [
-                        '201','502'
-                    ]
-                },
+    
             ],//存放所有的教学楼及教室号信息
             buildings: [
                 {id:1,name: '第三教学楼', aka: 'H3'},
@@ -148,7 +135,7 @@ export default {
                 }
             )
                 .then(() => {
-                    axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:this.courseOpen}})
+                    axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:!this.courseOpen}})
                     ElMessage({
                         type: 'success',
                         message: '修改完成',
@@ -169,9 +156,13 @@ export default {
             this.endTime.splice(index+1,0,'')
         },
 
-        addClassroom() {
+        async addClassroom() {
             if(this.newRoom === '') {
                 alert('教室号不能为空')
+                return
+            }
+            if(this.newClassroom.name == '') {
+                alert('教学楼不能为空')
                 return
             }
             var i;
@@ -182,7 +173,7 @@ export default {
                     this.newRoom = ''
                     return
                 }
-                axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
                 .then(res => {
                     console.log(res)
                     this.classroom[i].room.push(this.newRoom) 
@@ -195,7 +186,7 @@ export default {
                 
             } 
             else {
-                axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
                 .then(res => {
                     console.log(res)
                     this.newClassroom.room=[]
@@ -231,7 +222,7 @@ export default {
             })
         },
         deleteBuilding(index) {
-            axios.delete('http://localhost:8081/affair/building/rooms', {fullName: this.classroom[index].name, abbrName: this.classroom[index].aka})
+            axios.delete('http://localhost:8081/affair/building/rooms', {data:{fullName: this.classroom[index].name, abbrName: this.classroom[index].aka}})
             this.classroom.splice(index, 1)
         },
         openDelete(index) {
@@ -249,13 +240,15 @@ export default {
             this.onDeleteAll = false
             for(let i = 0; i < this.checkGroup.length; i++) {
                 if(this.checkGroup[i].status) {
-                    await axios.delete('http://localhost:8081/affair/room', {building: this.classroom[index].aka, roomNum: this.classroom[index].room[i]})
+                    await axios.delete('http://localhost:8081/affair/room', {data:{building: this.classroom[index].aka, roomNum: this.classroom[index].room[i]}})
                     .then(res => {
                         console.log(res)
                         this.classroom[index].room.splice(i, 1)
                         this.checkGroup.splice(i, 1)
                     })
-
+                    .catch(err => {
+                        console.dir(err)
+                    })
                     i=i-1
                 }
             }
@@ -279,21 +272,31 @@ export default {
                     alert('请填写完所有上课时间后提交')
                     return
                 }
-                times.push({name: '第'+i+'节', startTime: this.startTime[i], endTime: this.endTime[i]})
+                times.push({name: '第'+parseInt(i+1)+'节', startTime: this.startTime[i], endTime: this.endTime[i]})
             }
             axios.post('http://localhost:8081/affair/times', times)
+            .then(res => {
+                console.log(res)
+                ElMessage({
+                    type: 'success',
+                    message: '提交成功',
+                })
+            })
         }
     },
     async created() {
          //获取选课状态
-        axios.get('http://localhost:8081/curriculaVariable')
+        axios.get('http://localhost:8081/affair/curriculaVariable')
         .then(res => {
-            this.courseOpen = res.data.data
+            this.courseOpen = res.data.data1
+        })
+        .catch(error => {
+            console.dir(error)
         })
         //获取所有教学楼
         axios.get('http://localhost:8081/affair/building')
         .then(res => {
-            this.buildings = res.data.data
+            this.buildings = res.data.data1
             for(let i = 0; i < this.buildings.length; i++) {
                 this.buildings[i] = JSON.parse(JSON.stringify(this.buildings[i]).replace(/fullName/g,"name"))
                 this.buildings[i] = JSON.parse(JSON.stringify(this.buildings[i]).replace(/abbrName/g,"aka"))

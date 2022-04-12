@@ -2,11 +2,11 @@
     <h2>新增课程</h2>
     <el-upload
       class="upload-demo"
-      :action="Upload"
+      action="#"
+      :http-request="Upload"
       accept=".csv"
       :limit="1"
       :before-upload="onBeforeUpload"
-      :data="uploadData"
     >
       <el-button type="primary">
         <el-icon style="vertical-align: middle;">
@@ -57,7 +57,7 @@
         <el-form-item label="上课时间" prop="selectTime">            
             <div class="time-container">
                 <div class="left-part">
-                    <div class="test" v-for="day in times" :key="day.id">{{day.startTime}}-{{day.endTime}}</div>
+                    <div class="line" v-for="day in times" :key="day.id">{{day.startTime}}-{{day.endTime}}</div>
                 </div>
                 <div class="right-part">
                     <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
@@ -164,21 +164,21 @@ export default {
             ],
             unavalTeaTimes: [
                 [],
-                [1,2,3,5,6,8,10,11,12],
-                [3],
-                [3,8],
+                [],
+                [],
+                [],
                 [],
                 [],
                 []
             ],
             unavalRoomTimes: [
                 [],
-                [1,2,3,5],
-                [3],
-                [3,8],
                 [],
                 [],
-                [1,2,3]
+                [],
+                [],
+                [],
+                []
             ],
             teacherData: [
                 {
@@ -197,7 +197,7 @@ export default {
             ],
             avalTeacher: [],
             courseData: {
-                selectTime:[[]],
+                selectTime:[[],[],[],[],[],[],[]],
                 times:[[]],
                 selectRoom: '',
                 courseName: '',
@@ -230,20 +230,20 @@ export default {
             }
         }
     },
-    watch: {
-        times:{
-            handler() {
-                for(let i = 0; i < 7; i++) {
-                    this.timeData[i].id = i;
-                    this.timeData[i].name = '周'+ i
-                    this.timeData[i].times = []
-                    for(let j in this.times) {
-                        this.timeData[i].times.push({name:this.times[j].name, disable:false})
-                    }
-                }
-            }
-        },
-    },
+    // watch: {
+    //     times:{
+    //         handler() {
+    //             for(let i = 0; i < 7; i++) {
+    //                 this.timeData[i]['id'] = i;
+    //                 this.timeData[i].name = '周'+ i
+    //                 this.timeData[i].times = []
+    //                 for(let j in this.times) {
+    //                     this.timeData[i].times.push({name:this.times[j].name, disable:false})
+    //                 }
+    //             }
+    //         }
+    //     },
+    // },
     methods: {
         test() {
             console.log(this.selectTime)
@@ -254,41 +254,56 @@ export default {
         },
         async updateTeacher(value) {
             //axios获取教师不可用时间
-            await axios.get('http://localhost:8081/affair/teacher/time',
+            await axios.put('http://localhost:8081/affair/teacher/time',
                 {   
                     name: value.name, 
                     number: value.number
                 })
             .then(res => {
-                this.unavalTeaTimes = res
+                this.unavalTeaTimes = res.data.data1
             })
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1) {
                         this.timeData[i].times[j-1].disable = true
+                        let p = this.courseData.selectTime[i].indexOf(j)
+                        if(p > -1) {
+                            this.courseData.selectTime[i].splice(p,1)
+                        }
+                    }
                     else
                         this.timeData[i].times[j-1].disable = false
                 }
             } 
+            console.log(this.courseData.selectTime)
         },
         async updateRoom(value) {
             //axios获取教室不可用时间
-            await axios.get('http://localhost:8081/affair/building/room/time',
+            if(value == null || value.length < 2) return 
+            await axios.put('http://localhost:8081/affair/building/room/time',
                 {   
                     building: this.buildingToAbbr[value[0]], 
                     roomNum: value[1]
                 })
             .then(res => {
-                this.unavalRoomTimes = res
+                // console.log(res)
+                this.unavalRoomTimes = res.data.data1
             })
+            
             for(let i = 0; i < 7; i++) {
                 for(let j = 1; j <= this.times.length; j++) {
-                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1)
+                    if(this.unavalTeaTimes[i].indexOf(j) > -1 || this.unavalRoomTimes[i].indexOf(j) > -1) {
                         this.timeData[i].times[j - 1].disable = true
+                        let p = this.courseData.selectTime[i].indexOf(j)
+                        if(p > -1) {
+                            this.courseData.selectTime[i].splice(p,1)
+                        }
+                    }
                     else
                         this.timeData[i].times[j - 1].disable = false
                 }
             } 
+            
         },
         submit() {
             this.$refs['courseData'].validate(async valid => {
@@ -311,9 +326,10 @@ export default {
                         alert("新增失败")
                         console.dir(error);
                         });
+                    console.log(this.courseData)
                     //axios 后重新更新unavalTime
                     //axios 获取教师，教室不可用时间
-                    await axios.get('http://localhost:8081/affair/building/room/time',
+                    await axios.put('http://localhost:8081/affair/building/room/time',
                         {   
                             building: this.courseData.building, 
                             roomNum: this.courseData.roomNum
@@ -321,7 +337,7 @@ export default {
                     .then(res => {
                         this.unavalRoomTimes = res
                     })
-                    await axios.get('http://localhost:8081/affair/teacher/time',
+                    await axios.put('http://localhost:8081/affair/teacher/time',
                         {   
                             name: this.courseData.teacherName, 
                             number: this.courseData.teacherNum
@@ -337,22 +353,34 @@ export default {
             })
         },
         onBeforeUpload(file) {
-            const isCSV = file.type === 'application/vnd.ms-excel'
+             const isCSV = (file.type === 'application/vnd.ms-excel' || file.type === 'text/csv')
+            // console.log(file.type)
             if (!isCSV) {
                 this.$message.error('上传文件只能是.csv格式!');
             }
             return isCSV;
         },
-        Upload(file) {
-            let param = new FormData(); 
-            param.append('file',file)
-            axios.post("http://localhost:8081/course/csv",param)
+        Upload(param) {
+            let para = new FormData(); 
+            para.append('file',param.file)
+            axios.post("http://localhost:8081/course/csv",para,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(function(){
                 alert('批量导入信息完成，无导入失败')                  
                 }).catch(error => {
-                alert(error.response.message)
+                console.dir(error)
+                alert(error.response.data.msg)
                 })
         }
+        // Upload(param) {
+        //     var para = new FormData();
+        //     para.append('file',param.file)
+        //     axios.post("http://localhost:8081/course/csv",para,{headers: {'Content-Type': 'multipart/form-data'}})
+        //         .then(function(){
+        //         alert('批量导入信息完成，无导入失败')                  
+        //         }).catch(error => {
+        //         alert(error.response.data.msg)
+        //         })
+        // },
     },
     async created() {
         await axios.get('http://localhost:8081/course/new')
@@ -365,6 +393,8 @@ export default {
                 this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
             }
             this.times = res.data.data3
+        }).catch(error => {
+            console.dir(error)
         })
         this.timeData = []
         for(let i = 0; i < 7; i++) {//创建选课时间数组
@@ -405,8 +435,12 @@ export default {
     text-align: right;
     margin-left:80px;
     padding-right: 20px;
-
+    padding-top: 32px;
     min-width: 100px;
+}
+
+.new-course-admin .left-part .line {
+    height:32px;
 }
 .new-course-admin .right-part {
     /* display: flex;
