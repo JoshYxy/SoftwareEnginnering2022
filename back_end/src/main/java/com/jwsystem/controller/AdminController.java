@@ -1,19 +1,20 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.vo.CollegeVO;
 import com.jwsystem.dto.User;
+import com.jwsystem.entity.College;
+import com.jwsystem.entity.Major;
+import com.jwsystem.entity.Student;
+import com.jwsystem.entity.Teacher;
 import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
-import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
-import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.CollegeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -22,17 +23,9 @@ import static com.jwsystem.dto.User.*;
 @RestController
 @RequestMapping("/admin")
 public class AdminController extends MainController{
-    @Autowired
-    private HttpServletRequest request;
 
     @Autowired
     private HttpServletResponse response;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
-    private CSVUtils csvUtils;
 
     @Autowired
     private EduServiceImp eduServiceImp;
@@ -42,17 +35,6 @@ public class AdminController extends MainController{
 
     @Autowired
     private StuServiceImp stuServiceImp;
-
-//    @Autowired
-//    private CourseService courseService;
-//
-//    @Autowired
-//    private CourseRequestService courseRequestService;
-//
-//    @Autowired
-//    private AdminService adminService;
-
-
 
 
     /*

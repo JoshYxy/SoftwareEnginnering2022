@@ -6,7 +6,6 @@ import com.jwsystem.entity.Building;
 import com.jwsystem.entity.Classroom;
 import com.jwsystem.entity.Timepart;
 import com.jwsystem.entity.Times;
-import com.jwsystem.service.AdminService;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.vo.BuildingVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class AffairController extends MainController{
     }
 
     //管理员获得某间教室的所有上课时间信息
-    @GetMapping("/building/room/time")
+    @PutMapping("/building/room/time")
     public Result getRoomTime(@RequestBody Classroom classRoom){
         List<Timepart> timepartList = courseServiceImp.getAllTimeByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
         int[][] time = new int[7][];
@@ -98,7 +97,7 @@ public class AffairController extends MainController{
     }
 
     //管理员获得某个老师所有上课时间
-    @GetMapping("/teacher/time")
+    @PutMapping("/teacher/time")
     public Result getTeaTime(@RequestBody User user){
         User temp = teaServiceImp.getUserByNumber(user.getNumber());
         if(temp==null){
@@ -170,7 +169,7 @@ public class AffairController extends MainController{
              times) {
             timesServiceImp.addTimes(t);
         }
-//
+
         return Result.succ("修改成功");
     }
 

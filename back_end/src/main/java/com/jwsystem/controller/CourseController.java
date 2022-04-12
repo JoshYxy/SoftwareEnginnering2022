@@ -2,21 +2,22 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.CourseDTO;
+import com.jwsystem.entity.Coursepart;
+import com.jwsystem.entity.Request;
+import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.Times;
 import com.jwsystem.service.impl.*;
-import com.jwsystem.vo.CourseRequest;
-import com.jwsystem.entity.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.CourseUtil;
-import com.jwsystem.util.JwtUtils;
 import com.jwsystem.util.RequestResult;
 import com.jwsystem.vo.BuildingVO;
+import com.jwsystem.vo.CourseRequest;
 import com.jwsystem.vo.CourseVO;
 import com.jwsystem.vo.TeacherData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -28,13 +29,7 @@ import static com.jwsystem.vo.CourseRequest.*;
 public class CourseController extends MainController{
 
     @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
     private HttpServletResponse response;
-
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @Autowired
     CourseUtil courseUtil;
@@ -123,14 +118,6 @@ public class CourseController extends MainController{
                     );
 
                     //在插入的时候根据老师和教室判断有没有时间冲突
-                    /*
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                     */
                     boolean res = courseServiceImp.insertTimepart(timepart);
                     if(!res){
                         //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
@@ -149,12 +136,14 @@ public class CourseController extends MainController{
     }
 
 
+
+
+
     /*
 
             课程申请部分
 
      */
-
 
 
     //管理员获得所有未审核的申请
@@ -218,14 +207,6 @@ public class CourseController extends MainController{
                 CourseVO courseVO = courseUtil.transToVO(req_cp,req_tp);
                 courseVO.setCourseId(r.getCourseId());
 
-//                //用申请id删除掉申请对应的coursePart和TimePart（设置成连带删除）
-//                courseService.deleteCoursePartByRequestId(requestResult.getRequestId());
-
-                /*
-                        我觉得可以不删了，因为request本身的数据还在，他对应的req-coursepart和req-timepart也留下来吧，反正对真正的课程没有影响
-                 */
-
-
                 Result res = addCourse(courseVO);
                 if(!res.getMsg().equals("新增课程成功")){
                     //插入失败
@@ -251,8 +232,6 @@ public class CourseController extends MainController{
                     courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：删除失败");
                 }
-//                //用申请id删除掉申请对应的coursePart和TimePart（设置成连带删除）
-//                courseService.deleteCoursePartByRequestId(requestResult.getRequestId());
                 resultInfo="按照申请删除课程成功";
             }
             else if(type.equals(CHANGE)){
@@ -343,7 +322,6 @@ public class CourseController extends MainController{
         Coursepart tempc = courseServiceImp.getCoursepartByCourseId(courseVO.getCourseId());
         List<Timepart> tempt = courseServiceImp.getAllTimepartByCourseId(courseVO.getCourseId());
         CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
-//        tempVO.setCourseId(courseVO.getCourseId());
 
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
         int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());
@@ -432,14 +410,6 @@ public class CourseController extends MainController{
                         );
 
                         //在插入的时候根据老师和教室判断有没有时间冲突
-                    /*
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                    判断有没有时间冲突
-                     */
                         boolean res = courseServiceImp.insertTimepart(timePart);
                         if(!res){
                             //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）

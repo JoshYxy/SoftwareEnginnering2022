@@ -1,8 +1,6 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.entity.Student;
 import com.jwsystem.entity.Teacher;
-import com.jwsystem.service.StuService;
 import com.jwsystem.service.TeaService;
 import com.jwsystem.util.JwtUtils;
 import io.jsonwebtoken.Claims;

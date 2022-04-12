@@ -1,22 +1,24 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.service.impl.CourseRequestImp;
-import com.jwsystem.vo.CourseRequest;
-import com.jwsystem.entity.*;
+import com.jwsystem.entity.Coursepart;
+import com.jwsystem.entity.Request;
+import com.jwsystem.entity.Teacher;
+import com.jwsystem.entity.Timepart;
 import com.jwsystem.service.TeaService;
-import com.jwsystem.service.impl.BuildingServiceImp;
+import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CourseUtil;
-import com.jwsystem.util.JwtUtils;
-import com.jwsystem.vo.BuildingVO;
+import com.jwsystem.vo.CourseRequest;
 import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 //教师相关操作
 @RestController
@@ -24,13 +26,7 @@ import java.util.*;
 public class TeacherController extends MainController{
 
     @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
     private HttpServletResponse response;
-
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @Autowired
     private CourseUtil courseUtil;
@@ -44,8 +40,6 @@ public class TeacherController extends MainController{
     @Autowired
     private CourseRequestImp courseRequestImp;
 
-    @Autowired
-    private BuildingServiceImp buildingServiceImp;
 
     //教师获得自己开设的课程信息
     @GetMapping("/course")
@@ -75,11 +69,6 @@ public class TeacherController extends MainController{
 
             courseVOList.add(tempVO);
         }
-
-//        //返回所有教室信息
-//        //需要写buildingVO的部分
-//        List<BuildingVO> classroom = buildingServiceImp.getAllRooms();
-
 
         return Result.succ3(courseVOList,teacher,null);
     }
@@ -157,15 +146,7 @@ public class TeacherController extends MainController{
         );
 
         //把申请插入申请表，返回requestId给我
-        courseRequestImp.insertRequest(
-//                courseRequest.getRequestId(),
-//                courseRequest.getType(),
-//                courseRequest.getCourseVO().getCourseId(),
-//                courseRequest.getCourseVO().getTeacherNum(),
-//                courseRequest.isExamined(),
-//                courseRequest.isPassed()
-                request
-        );
+        courseRequestImp.insertRequest(request);
         int requestId = request.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
@@ -219,14 +200,6 @@ public class TeacherController extends MainController{
                    //因为是申请的课程信息，就不用判断是否冲突了
                     //存到req-timePart表里
                     courseServiceImp.insertReqTimepart(timePart);
-//                    if(res == false){
-//                        //插入冲突，删除coursepart表和coursetime表中这次插入相关的数据（设置成连带删除的）
-//                        courseService.deleteCoursePartByRequestId(requestId);
-//                        //删除本条申请
-//                        courseRequestService.deleteById(requestId);
-//                        response.setStatus(CONFLICT_TIME);
-//                        return Result.fail("插入失败，时间冲突");
-//                    }
                 }
             }
         } catch (IndexOutOfBoundsException e ){

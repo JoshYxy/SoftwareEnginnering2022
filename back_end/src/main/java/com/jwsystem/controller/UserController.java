@@ -9,28 +9,21 @@ import com.jwsystem.util.JwtUtils;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.jwsystem.util.CSVUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.jwsystem.dto.User.*;
+import static com.jwsystem.dto.User.STUDYING;
+import static com.jwsystem.dto.User.WORKING;
 
 @RestController
 @RequestMapping("/user")
 public class UserController extends MainController{
 
     @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
     private HttpServletResponse response;
 
     @Autowired
     private JwtUtils jwtUtils;
-
-    @Autowired
-    private CSVUtils csvUtils;
 
     @Autowired
     StuServiceImp stuServiceImp;
