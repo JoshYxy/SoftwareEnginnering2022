@@ -14,7 +14,7 @@ public class adminInterceptor implements HandlerInterceptor {
     @Autowired
     JwtUtils jwtUtils;
 
-    static String adminNum = "1";
+    public static String adminNum = "1";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

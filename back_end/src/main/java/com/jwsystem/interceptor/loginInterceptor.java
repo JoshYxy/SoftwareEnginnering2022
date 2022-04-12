@@ -1,6 +1,7 @@
 package com.jwsystem.interceptor;
 
 import com.jwsystem.dto.User;
+import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
@@ -13,10 +14,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.jwsystem.controller.UserController.EXPIRED;
-import static com.jwsystem.controller.UserController.TEACHER_NUM_LENGTH;
+import static com.jwsystem.controller.UserController.*;
 import static com.jwsystem.dto.User.GRADUATED;
 import static com.jwsystem.dto.User.QUIT;
+import static com.jwsystem.interceptor.adminInterceptor.adminNum;
 
 //登陆状态拦截器
 public class loginInterceptor implements HandlerInterceptor {
@@ -29,6 +30,9 @@ public class loginInterceptor implements HandlerInterceptor {
 
     @Autowired
     TeaServiceImp teaServiceImp;
+
+    @Autowired
+    AdminServiceImp adminServiceImp;
 
     //在执行被拦截器拦截的路径前执行，返回true则放行
     @Override
@@ -57,18 +61,27 @@ public class loginInterceptor implements HandlerInterceptor {
         }
 
         String number = claims.getSubject();
+
         User user;
-        if(number.length()<TEACHER_NUM_LENGTH){
-            //学生
-            user = stuServiceImp.getUserByNumber(number);
-        } else {
+        if(number.length()==TEACHER_NUM_LENGTH){
             //老师
             user = teaServiceImp.getUserByNumber(number);
+
+        } else if(number.length()==STUDENT_NUM_LENGTH){
+            //学生
+            user = stuServiceImp.getUserByNumber(number);
+        } else if(number.equals(adminNum)){
+            user = adminServiceImp.getUserByNumber(number);
+        } else{
+            System.out.println("用户身份有误！不属于教师、学生或管理员");
+            return false;
         }
 
-        if(user.getStatus().equals(GRADUATED) || user.getStatus().equals(QUIT)){
-            System.out.println("用户状态非法");
-            return false;
+        if(!number.equals(adminNum)){
+            if(user.getStatus().equals(GRADUATED) || user.getStatus().equals(QUIT)){
+                System.out.println("用户状态非法");
+                return false;
+            }
         }
 
         System.out.println("已登录");
