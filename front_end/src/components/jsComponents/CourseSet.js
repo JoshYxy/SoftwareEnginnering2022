@@ -22,7 +22,7 @@ export function setCourseTime(data, e) {
                 while(k < j.length){
                     data.classHours++
                     if(k == 0) data.courseTime += j[k]
-                    else if(!k || parseInt(j[k]) != parseInt(j[k - 1]) + 1){
+                    else if(parseInt(j[k]) != parseInt(j[k - 1]) + 1){
                         if(flag) data.courseTime += '-'+j[k-1]+','+j[k]
                         else data.courseTime += ',' + j[k]
                         flag = false
