@@ -376,7 +376,7 @@ export default {
                 this.newCourse[i] = ''
             this.newCourse['selectTime'] = [[],[],[],[],[],[],[]]
             this.newCourse['selectRoom']= []
-            // this.unavalRoomTimes = [[],[],[],[],[],[],[]]
+            this.unavalRoomTimes = [[],[],[],[],[],[],[]]
             this.setAvalTime()
             this.newTableVisible = true
             // this.newCourse = {}
@@ -536,9 +536,13 @@ export default {
         /* eslint-disable */
         async updateRoom(data) {//editCourse中覆写了函数，使其传入的是scope.row,默认为修改后的值value
             //axios获取教室不可用时间 传输editCourse.selectRoom
-           console.log(data)
-            if(typeof data[0] != 'string') {//修改课程中 
-                // if(data.selectRoom == null || data.selectRoom.length < 2) return 
+        //    console.log(data)
+        //    if(data == null) {
+        //        console.log(1)
+        //        return
+        //    }
+            if(this.operateStatus == 'change') {//修改课程中 
+                if(this.editCourse.selectRoom == null || this.editCourse.selectRoom.length < 2) return 
                 await axios.put('http://localhost:8081/affair/building/room/time',
                     {   
                         building: this.buildingToAbbr[this.editCourse.selectRoom[0]], 
