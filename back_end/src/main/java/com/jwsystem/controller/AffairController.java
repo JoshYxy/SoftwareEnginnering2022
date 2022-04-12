@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -59,9 +61,32 @@ public class AffairController extends MainController{
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");
-            time[i] = new int[s.length];
-            for(int cnt=0; cnt<s.length; cnt++){
-                time[i][cnt]=Integer.parseInt(s[cnt]);
+            if(time[i]==null){
+                //首次录入该天的上课时间数据，新建一个数组
+                time[i] = new int[s.length];
+                for(int cnt=0; cnt<s.length; cnt++){
+                    time[i][cnt]=Integer.parseInt(s[cnt]);
+                }
+            }
+            else{
+                //多次录入，需要将数组进行从小到大拼接
+                int l = time[i].length + s.length;
+                int[] temp = new int[l];
+                List<Integer> tempList = new ArrayList<>();
+                for(int cnt=0;cnt<time[i].length;cnt++){
+                    tempList.add(time[i][cnt]);
+                }
+
+                for (String value : s) {
+                    tempList.add(Integer.parseInt(value));
+                }
+                Collections.sort(tempList);
+
+                for(int cnt=0;cnt<l;cnt++){
+                    temp[cnt] = tempList.get(cnt);
+                }
+
+                time[i]=temp;
             }
         }
 
@@ -89,9 +114,32 @@ public class AffairController extends MainController{
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");
-            time[i] = new int[s.length];
-            for(int cnt=0; cnt<s.length; cnt++){
-                time[i][cnt]=Integer.parseInt(s[cnt]);
+            if(time[i]==null){
+                //首次录入该天的上课时间数据，新建一个数组
+                time[i] = new int[s.length];
+                for(int cnt=0; cnt<s.length; cnt++){
+                    time[i][cnt]=Integer.parseInt(s[cnt]);
+                }
+            }
+            else{
+                //多次录入，需要将数组进行从小到大拼接
+                int l = time[i].length + s.length;
+                int[] tempArr = new int[l];
+                List<Integer> tempList = new ArrayList<>();
+                for(int cnt=0;cnt<time[i].length;cnt++){
+                    tempList.add(time[i][cnt]);
+                }
+
+                for (String value : s) {
+                    tempList.add(Integer.parseInt(value));
+                }
+                Collections.sort(tempList);
+
+                for(int cnt=0;cnt<l;cnt++){
+                    tempArr[cnt] = tempList.get(cnt);
+                }
+
+                time[i]=tempArr;
             }
         }
 

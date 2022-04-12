@@ -324,9 +324,9 @@ public class CourseController extends MainController{
 
     //管理员删除现有课程
     @DeleteMapping("")
-    public Result deleteCourse(@RequestBody int courseId ){
+    public Result deleteCourse(@RequestBody CourseVO courseVO ){
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
-        int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
+        int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());
         if(res == 0){
             response.setStatus(WRONG_RES);
             return Result.fail("删除失败，课程id无效");
