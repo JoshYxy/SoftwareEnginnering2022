@@ -24,7 +24,7 @@
     </insert>
     <!--改楼名-->
     <update id="changeById">
-        UPDATE building SET full_name = #{full_name},abr_name = #{abbr_name}
+        UPDATE building SET full_name = #{full_name},abbr_name = #{abbr_name}
         where id = #{id}
     </update>
     <!--删楼-->

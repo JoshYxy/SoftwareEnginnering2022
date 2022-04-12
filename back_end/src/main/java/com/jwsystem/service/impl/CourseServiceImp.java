@@ -54,7 +54,7 @@ public class CourseServiceImp implements CourseService {
         }
         //教室时间冲突
         //根据roomnum 和 weekday 找出一个section string 数组 比对有没有
-        List<String> sectionListByRoom = timepartDao.selectSectionByRoom(timepart.getRoomNum(),timepart.getWeekday());
+        List<String> sectionListByRoom = timepartDao.selectSectionByRoom(timepart.getRoomNum(),timepart.getWeekday(),timepart.getBuilding());
         for(String sections : sectionListByRoom) {
             for (String s : sectionArray) {
                 int result = sections.indexOf(s);//在sections中c查找sectionArray中元素的位置，找不到则返回-1
@@ -69,6 +69,11 @@ public class CourseServiceImp implements CourseService {
     @Override
     public int deleteCoursepartByCourseId(int courseId){
         return coursepartDao.deleteCoursepartByCourseId(courseId);
+    }
+
+    @Override
+    public int deleteReqCourseByRequestId(int requestId) {
+        return coursepartDao.deleteReqCourseByRequestId(requestId);
     }
 
     @Override
@@ -100,6 +105,18 @@ public class CourseServiceImp implements CourseService {
     public List<Timepart> getAllTimeByTea(String number) {
         return timepartDao.getAllTimeByTeacherNum(number);
     }
+
+    //根据楼在timepart和req_timepart里对应的所有的course_id和request_id
+    @Override
+    public List<Integer> getCourseIdByBuilding(String building) {
+        return timepartDao.getCourseIdByBuilding(building);
+    }
+    @Override
+    public List<Integer> getRequestIdByBuilding(String building) {
+        return timepartDao.getRequestIdByBuilding(building);
+    }
+
+
 }
 
 

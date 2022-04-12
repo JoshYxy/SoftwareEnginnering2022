@@ -20,4 +20,5 @@ public interface TimesDao {
     void deleteTimesByName(String name);
 
     void deleteAll();
+
 }

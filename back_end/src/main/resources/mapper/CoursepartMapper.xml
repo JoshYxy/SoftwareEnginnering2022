@@ -124,4 +124,7 @@
     <delete id="deleteCoursepartByCourseId">
         DELETE FROM coursepart WHERE course_id = #{course_id}
     </delete>
+    <delete id="deleteReqCourseByRequestId">
+        DELETE FROM req_coursepart WHERE request_id = #{request_id}
+    </delete>
 </mapper>

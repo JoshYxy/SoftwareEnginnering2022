@@ -12,7 +12,7 @@ public class ClassroomServiceImp implements ClassroomService {
     ClassroomDao classroomDao;
 
     @Override
-    public Classroom findByNumAndBuilding(String roomNum, String building) {
+    public Classroom findByBuildingAndNum(String building, String roomNum) {
         return classroomDao.findByNumAndBuilding(roomNum,building);
     }
 

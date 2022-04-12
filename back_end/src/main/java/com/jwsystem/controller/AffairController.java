@@ -171,6 +171,16 @@ public class AffairController extends MainController{
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法删除");
         }
+        //找到这栋楼在timepart和req_timepart里对应的所有的course_id和request_id
+        List<Integer> courseIdList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
+        List<Integer> requestIdList = courseServiceImp.getRequestIdByBuilding(building.getAbbrName());
+        //根据coourse_id和request_id在coursepart和req_coursepart里面删除
+        for(Integer c:courseIdList) {
+            courseServiceImp.deleteCoursepartByCourseId(c);
+        }
+        for(Integer c:requestIdList) {
+            courseServiceImp.deleteReqCourseByRequestId(c);
+        }
         //连带删除对应的教室
         buildingServiceImp.deleteByName(building.getFullName());
         return Result.succ("删除成功");
@@ -183,6 +193,16 @@ public class AffairController extends MainController{
             //不存在
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法删除");
+        }
+        //找到这栋楼在timepart和req_timepart里对应的所有的course_id和request_id
+        List<Integer> courseIdList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
+        List<Integer> requestIdList = courseServiceImp.getRequestIdByBuilding(building.getAbbrName());
+        //根据coourse_id和request_id在coursepart和req_coursepart里面删除
+        for(Integer c:courseIdList) {
+            courseServiceImp.deleteCoursepartByCourseId(c);
+        }
+        for(Integer c:requestIdList) {
+            courseServiceImp.deleteReqCourseByRequestId(c);
         }
         //删除对应的教室，但是不删除楼
         buildingServiceImp.deleteAllRoomByName(building.getAbbrName());
@@ -206,7 +226,7 @@ public class AffairController extends MainController{
     //管理员增加教室
     @PostMapping("/room/new")
     public Result addRoom(@RequestBody Classroom classRoom){
-        if(classroomServiceImp.findByNumAndBuilding(classRoom.getRoomNum(),classRoom.getBuilding())!=null){
+        if(classroomServiceImp.findByBuildingAndNum(classRoom.getBuilding(),classRoom.getRoomNum())!=null){
             //存在同名教室
             response.setStatus(WRONG_RES);
             return Result.fail("已存在同名教室，无法添加");
@@ -218,7 +238,7 @@ public class AffairController extends MainController{
     //管理员删教室
     @DeleteMapping("/room")
     public Result deleteRoom(@RequestBody Classroom classRoom){
-        if(classroomServiceImp.findByNumAndBuilding(classRoom.getBuilding(),classRoom.getRoomNum())==null){
+        if(classroomServiceImp.findByBuildingAndNum(classRoom.getBuilding(),classRoom.getRoomNum())==null){
             //不存在
             response.setStatus(WRONG_RES);
             return Result.fail("不存在该教室");

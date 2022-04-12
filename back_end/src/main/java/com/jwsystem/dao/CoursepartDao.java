@@ -30,4 +30,5 @@ public interface CoursepartDao {
     //删除 Coursepart
     int deleteCoursepartByCourseId(int courseId);
 
+    int deleteReqCourseByRequestId(int requestId);
 }

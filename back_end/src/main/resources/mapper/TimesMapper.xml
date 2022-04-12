@@ -20,6 +20,7 @@
         SELECT *
         FROM times
     </select>
+
     <select id="findTimesByName" resultType="com.jwsystem.entity.Times">
         SELECT *
         FROM times

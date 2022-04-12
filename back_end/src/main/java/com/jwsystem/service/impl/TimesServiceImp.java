@@ -15,30 +15,30 @@ public class TimesServiceImp implements TimesService {
 
     //得到所有上课时间信息
     @Override
-    public List<Times> getAllTimes(){
+    public List<Times> getAllTimes() {
         return timesDao.getAllTimes();
     }
 
     @Override
-    public Times findTimesByName(String name){
+    public Times findTimesByName(String name) {
         return timesDao.findTimesByName(name);
     }
 
     //修改某节课开始结束时间
     @Override
-    public void changeTimesByName(String name, String startTime, String endTime){
-        timesDao.changeTimesByName(name,startTime,endTime);
+    public void changeTimesByName(String name, String startTime, String endTime) {
+        timesDao.changeTimesByName(name, startTime, endTime);
     }
 
     //增加节数
     @Override
-    public void addTimes(Times times){
-        timesDao.addTimes(times.getName(),times.getStartTime(),times.getEndTime());
+    public void addTimes(Times times) {
+        timesDao.addTimes(times.getName(), times.getStartTime(), times.getEndTime());
     }
 
     //根据名字删除节数
     @Override
-    public void deleteTimesByName(String name){
+    public void deleteTimesByName(String name) {
         timesDao.deleteTimesByName(name);
     }
 
@@ -46,4 +46,6 @@ public class TimesServiceImp implements TimesService {
     public void deleteAll() {
         timesDao.deleteAll();
     }
+
+
 }

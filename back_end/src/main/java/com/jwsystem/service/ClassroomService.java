@@ -4,7 +4,7 @@ import com.jwsystem.entity.Classroom;
 
 public interface ClassroomService {
 
-    Classroom findByNumAndBuilding(String roomNum, String building);
+    Classroom findByBuildingAndNum(String building, String roomNum);
 
     void add(Classroom classRoom);
 

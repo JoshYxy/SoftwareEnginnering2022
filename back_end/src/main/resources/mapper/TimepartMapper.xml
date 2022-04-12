@@ -41,7 +41,7 @@
 
     <select id="selectSectionByRoom" resultType="string">
         SELECT section
-        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday}
+        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
     </select>
 
     <select id="getAllTimeByRoom" resultMap="TimepartMapping">
@@ -52,6 +52,16 @@
     <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.Timepart">
         SELECT *
         FROM timepart WHERE teacher_num = #{teacher_num}
+    </select>
+
+    <select id="getCourseIdByBuilding" resultType="java.lang.Integer">
+        SELECT course_id
+        FROM timepart WHERE building = #{building}
+    </select>
+
+    <select id="getRequestIdByBuilding" resultType="java.lang.Integer">
+        SELECT request_id
+        FROM req_timepart WHERE building = #{building}
     </select>
 
     <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
