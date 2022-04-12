@@ -6,30 +6,43 @@
         prop="number"
         :rules="[{ required: true, message: '用户名不能为空'}]"
       >
-        <el-input
-          name="number"
-          v-model="loginData.number"
-          ref="number"
-          placeholder="学号/工号"
-          type="text"
-          maxlength="40"
-        />
+        <el-input 
+          prefix-icon="Avatar" 
+          name="number" 
+          v-model="loginData.number" 
+          ref="number" 
+          placeholder="学号/工号" 
+          type="text" 
+          maxlength="40">
+          <template #prefix>
+            <el-icon class="el-icon_a"><avatar /></el-icon>
+          </template>
+        </el-input>
       </el-form-item> 
       <el-form-item
         prop="password"
         :rules="[{ required: true, message: '密码不能为空'}]"
       >
         <el-input
+          prefix-icon="Key" 
           name="password"
           v-model="loginData.password"
           placeholder="密码"
           type="password"
           maxlength="40"
           @keydown.enter="submit"
-        />
+          >
+          <template #prefix>
+            <el-icon class="el-icon_k"><key /></el-icon>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit">登录</el-button>
+        <el-button type="primary" @click="submit">
+          <el-icon :size="20">
+            <circle-check />
+          </el-icon>
+        </el-button>
       </el-form-item>
     </el-form>
     
@@ -38,9 +51,15 @@
 
 <script>
 import { mapMutations } from 'vuex';
+import {CircleCheck,Avatar,Key} from "@element-plus/icons";
 import axios from 'axios'
 export default {
   name: 'UserLogin',
+    components:{
+    Avatar,
+    CircleCheck,
+    Key
+  },
   data() {
     return {
       userToken: '',
@@ -102,19 +121,25 @@ h3 {
 .login-container {
   border-radius: 15px;
   background-clip: padding-box;
-  margin: 90px auto;
+  margin: 120px 150px auto auto;
   width: 350px;
   padding: 35px 35px 15px 35px;
   background-color: transparent;
-  /* background: #fff; */
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #cac6c6;
 }
 
 .login-title {
-  margin: 0px auto 40px auto;
+  margin: 0 auto 40px auto;
   text-align: center;
   color: #505458;
 }
 
+.el-icon_a {
+  margin-top: 10px;
+}
+
+.el-icon_k {
+  margin-top: 10px;
+}
 </style>
