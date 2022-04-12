@@ -2,6 +2,8 @@ package com.jwsystem.service;
 
 import com.jwsystem.entity.Classroom;
 
+import java.util.List;
+
 public interface ClassroomService {
 
     Classroom findByBuildingAndNum(String building, String roomNum);
@@ -13,4 +15,5 @@ public interface ClassroomService {
     void deleteByBuildingAndRoomNum(String building, String roomNum);
 
     void changeById(Classroom classRoom);
+
 }

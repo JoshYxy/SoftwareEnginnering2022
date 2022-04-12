@@ -13,4 +13,5 @@ public interface RequestDao {
     Request selectRequestById(int requestId);
     int insertRequest(Request request);
     void examinedById(@Param("request_id") int requestId, boolean examined, boolean passed);
+    void deleteReqByRequestId(int requestId);
 }

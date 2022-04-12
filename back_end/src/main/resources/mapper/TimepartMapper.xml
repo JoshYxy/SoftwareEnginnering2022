@@ -64,6 +64,16 @@
         FROM req_timepart WHERE building = #{building}
     </select>
 
+    <select id="getCourseIdByRoom" resultType="java.lang.Integer">
+        SELECT course_id
+        FROM timepart WHERE building = #{building} and room_num = #{room_num}
+    </select>
+
+    <select id="getRequestIdByRoom" resultType="java.lang.Integer">
+        SELECT request_id
+        FROM req_timepart WHERE building = #{building} and room_num = #{room_num}
+    </select>
+
     <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
         insert into timepart(
             id,

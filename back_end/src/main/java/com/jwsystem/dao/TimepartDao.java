@@ -18,4 +18,6 @@ public interface TimepartDao {
     List<Timepart> getAllTimeByTeacherNum(String number);
     List<Integer> getCourseIdByBuilding(String building);
     List<Integer> getRequestIdByBuilding(String building);
+    List<Integer> getCourseIdByRoom(String building,  @Param("room_num")String roomNum);
+    List<Integer> getRequestIdByRoom(String building,  @Param("room_num")String roomNum);
 }

@@ -1,6 +1,7 @@
 package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.CoursepartDao;
+import com.jwsystem.dao.RequestDao;
 import com.jwsystem.dao.TimepartDao;
 import com.jwsystem.entity.Coursepart;
 import com.jwsystem.entity.Timepart;
@@ -17,6 +18,9 @@ public class CourseServiceImp implements CourseService {
 
     @Autowired
     TimepartDao timepartDao;
+
+    @Autowired
+    RequestDao requestDao;
 
     @Override
     public Coursepart getCoursepartByCourseId(Integer courseId) {
@@ -72,11 +76,6 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public int deleteReqCourseByRequestId(int requestId) {
-        return coursepartDao.deleteReqCourseByRequestId(requestId);
-    }
-
-    @Override
     public List<Coursepart> getCoursepartByCollege(String collegeName) {
         return coursepartDao.getCoursepartByCollege(collegeName);
     }
@@ -116,7 +115,20 @@ public class CourseServiceImp implements CourseService {
         return timepartDao.getRequestIdByBuilding(building);
     }
 
+    @Override
+    public List<Integer> getCourseIdByRoom(String building, String roomNum){
+        return timepartDao.getCourseIdByRoom(building,roomNum);
+    }
 
+    @Override
+    public List<Integer> getRequestIdByRoom(String building, String roomNum) {
+        return timepartDao.getRequestIdByRoom(building,roomNum);
+    }
+
+    @Override
+    public void deleteReqByRequestId(Integer c) {
+        requestDao.deleteReqByRequestId(c);
+    }
 }
 
 

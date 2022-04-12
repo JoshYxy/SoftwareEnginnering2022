@@ -6,6 +6,9 @@
         SET examined = #{examined}, passed = #{passed}
         WHERE request_id = #{request_id}
     </update>
+    <delete id="deleteReqByRequestId">
+        DELETE FROM request WHERE request_id = #{request_id}
+    </delete>
     <!-- 得到所有未被审核的申请 -->
     <select id="getAllRequests" resultType="com.jwsystem.entity.Request">
         SELECT *

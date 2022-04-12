@@ -227,7 +227,7 @@ public class AffairController extends MainController{
             courseServiceImp.deleteCoursepartByCourseId(c);
         }
         for(Integer c:requestIdList) {
-            courseServiceImp.deleteReqCourseByRequestId(c);
+            courseServiceImp.deleteReqByRequestId(c);
         }
         //连带删除对应的教室
         buildingServiceImp.deleteByName(building.getFullName());
@@ -250,7 +250,7 @@ public class AffairController extends MainController{
             courseServiceImp.deleteCoursepartByCourseId(c);
         }
         for(Integer c:requestIdList) {
-            courseServiceImp.deleteReqCourseByRequestId(c);
+            courseServiceImp.deleteReqByRequestId(c);
         }
         //删除对应的教室，但是不删除楼
         buildingServiceImp.deleteAllRoomByName(building.getAbbrName());
@@ -290,6 +290,16 @@ public class AffairController extends MainController{
             //不存在
             response.setStatus(WRONG_RES);
             return Result.fail("不存在该教室");
+        }
+        //找到这间教室在timepart和req_timepart里对应的所有的course_id和request_id
+        List<Integer> courseIdList = courseServiceImp.getCourseIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+        List<Integer> requestIdList = courseServiceImp.getRequestIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+        //根据course_id和request_id在coursepart(连带timepart)和request里面删除
+        for(Integer c:courseIdList) {
+            courseServiceImp.deleteCoursepartByCourseId(c);
+        }
+        for(Integer c:requestIdList) {
+            courseServiceImp.deleteReqByRequestId(c);
         }
         classroomServiceImp.deleteByBuildingAndRoomNum(classRoom.getBuilding(),classRoom.getRoomNum());
         return Result.succ("删除成功");

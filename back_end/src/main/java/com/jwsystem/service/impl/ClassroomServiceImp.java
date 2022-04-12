@@ -6,6 +6,8 @@ import com.jwsystem.service.ClassroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ClassroomServiceImp implements ClassroomService {
     @Autowired
@@ -29,11 +31,13 @@ public class ClassroomServiceImp implements ClassroomService {
 
     @Override
     public void deleteByBuildingAndRoomNum(String building,String roomNum) {
-        classroomDao.deleteByBuildingAndRoomNum(building,roomNum);
+        Classroom c = classroomDao.findByNumAndBuilding(roomNum,building);
+        classroomDao.deleteByRoomId(c.getRoomId());
     }
 
     @Override
     public void changeById(Classroom classRoom) {
         classroomDao.changeById(classRoom.getRoomId(),classRoom.getBuilding(),classRoom.getRoomNum());
     }
+
 }

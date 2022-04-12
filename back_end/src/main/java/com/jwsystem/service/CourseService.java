@@ -19,8 +19,6 @@ public interface CourseService {
 
     int deleteCoursepartByCourseId(int courseId);
 
-    int deleteReqCourseByRequestId(int requestId);
-
     List<Coursepart> getCoursepartByCollege(String collegeName);
 
     List<Coursepart> getAllCoursepartByTeacherNum(String teacherNum);
@@ -37,4 +35,10 @@ public interface CourseService {
     List<Integer> getCourseIdByBuilding(String building);
 
     List<Integer> getRequestIdByBuilding(String building);
+
+    List<Integer> getCourseIdByRoom(String building, String roomNum);
+
+    List<Integer> getRequestIdByRoom(String building, String roomNum);
+
+    void deleteReqByRequestId(Integer c);
 }
