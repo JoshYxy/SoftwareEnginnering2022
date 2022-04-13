@@ -34,10 +34,18 @@ public class loginInterceptor implements HandlerInterceptor {
     @Autowired
     AdminServiceImp adminServiceImp;
 
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     //在执行被拦截器拦截的路径前执行，返回true则放行
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("loginInterceptor");
+        if("OPTIONS".equals(httpServletRequest.getMethod().toUpperCase())) {
+            System.out.println("Method:OPTIONS");
+            return true;
+        }
+
         String token = request.getHeader("token");
 
         if(StringUtils.isNullOrEmpty(token)){

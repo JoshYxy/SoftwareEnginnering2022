@@ -49,20 +49,6 @@ public class CourseController extends MainController{
     @Autowired
     private CourseRequestImp courseRequestImp;
 
-    //新增课程获得必要信息
-    @GetMapping("/new")
-    public Result getInfo(){
-        //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
-        List<TeacherData> teacherDataList = teaServiceImp.getAllTeachersWithCollege();
-
-        //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
-        List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
-
-        //上课时间信息
-        List<Times> times = timesServiceImp.getAllTimes();
-
-        return Result.succ3(teacherDataList,buildingVOList,times);
-    }
 
     //新增课程
     @PostMapping("/new")
@@ -211,7 +197,6 @@ public class CourseController extends MainController{
                 if(!res.getMsg().equals("新增课程成功")){
                     //插入失败
                     response.setStatus(WRONG_RES);
-                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：插入失败");
                 }
                 resultInfo="按照申请增加课程成功";
@@ -220,7 +205,6 @@ public class CourseController extends MainController{
                 Integer courseId = r.getCourseId();
                 if(courseId==null){
                     response.setStatus(WRONG_DATA);
-                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：该请求的课程id为空，数据错误！");
                 }
                 //删除coursepart表和coursetime表中courseId对应的相关的数据（设置成连带删除的）
@@ -229,7 +213,6 @@ public class CourseController extends MainController{
                 int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
                 if(res == 0){
                     response.setStatus(WRONG_RES);
-                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：删除失败");
                 }
                 resultInfo="按照申请删除课程成功";
@@ -259,20 +242,17 @@ public class CourseController extends MainController{
                         //插入数据失败，恢复数据
                         addCourse(tempVO);
                         response.setStatus(WRONG_RES);
-                        courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                         return Result.fail("申请审核失败：新增修改后信息失败");
                     }
                 }
                 else {
                     response.setStatus(WRONG_RES);
-                    courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                     return Result.fail("申请审核失败：删除失败");
                 }
                 resultInfo="按照申请修改课程成功";
             }
             else{
                 response.setStatus(WRONG_DATA);
-                courseRequestImp.examinedById(requestResult.getRequestId(),true,false);
                 return Result.fail("无效的请求类型",requestResult);
             }
         }
@@ -420,8 +400,12 @@ public class CourseController extends MainController{
                     }
                 }
             }
-            String s = "批量导入课程成功，共有"+wrongCnt+"条数据错误。";
-            return Result.succ(s);
+            if(wrongCnt!=0){
+                response.setStatus(WRONG_RES);
+                String s = "批量导入课程成功，共有"+wrongCnt+"条数据错误。";
+                return Result.fail(s,wrongCnt);
+            }
+            return Result.succ("批量导入课程成功");
         }
         catch (IndexOutOfBoundsException e ) {
             response.setStatus(WRONG_FILE);

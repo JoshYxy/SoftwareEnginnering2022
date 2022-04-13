@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更" />
+    <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/config/SpringbootConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/config/SpringbootConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/AffairController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/AffairController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CourseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CourseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/dao/MajorDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/dao/MajorDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/adminInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/adminInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/loginInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/loginInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/studentInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/studentInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/teacherInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/interceptor/teacherInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/EduServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/EduServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/MajorMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/MajorMapper.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -210,6 +223,8 @@
       <workItem from="1649820407053" duration="155000" />
       <workItem from="1649820569341" duration="168000" />
       <workItem from="1649820768812" duration="391000" />
+      <workItem from="1649824489636" duration="120000" />
+      <workItem from="1649830418674" duration="6106000" />
     </task>
     <servers />
   </component>
