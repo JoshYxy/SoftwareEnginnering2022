@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/Library/Java/JavaVirtualMachines/corretto-11.0.14.1/Contents/Home/lib/src.zip!/java.base/jdk/internal/misc/Unsafe.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.3.16/spring-web-5.3.16.jar!/org/springframework/web/method/support/InvocableHandlerMethod.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.3.16/spring-webmvc-5.3.16.jar!/org/springframework/web/servlet/HandlerExecutionChain.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.3.16/spring-webmvc-5.3.16.jar!/org/springframework/web/servlet/FrameworkServlet.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/9.0.58/tomcat-embed-core-9.0.58.jar!/org/apache/catalina/connector/RequestFacade.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.3.16/spring-webmvc-5.3.16.jar!/org/springframework/web/servlet/DispatcherServlet.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/9.0.58/tomcat-embed-core-9.0.58.jar!/org/apache/catalina/core/ApplicationFilterChain.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+        <option name="userSettingsFile" value="$PROJECT_DIR$/../../../apache-maven-3.8.4/conf/settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="26VBnankjMrXLdt5kxOJEWqT21I" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="database.data.extractors.current.export.id" value="Comma-separated (CSV)_id" />
+    <property name="database.data.extractors.current.id" value="Comma-separated (CSV)_id" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="project.structure.last.edited" value="项目" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.JwSystemApplication">
+    <configuration name="JwSystemApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="back_end" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.jwsystem.JwSystemApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JwSystemApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="jwsystem" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.jwsystem.JwSystemApplication" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="" />
+      <created>1647499045360</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1647499045360</updated>
+      <workItem from="1647499048679" duration="4951000" />
+      <workItem from="1647506901327" duration="3877000" />
+      <workItem from="1647520235929" duration="3342000" />
+      <workItem from="1647523790165" duration="6436000" />
+      <workItem from="1647575489859" duration="4135000" />
+      <workItem from="1647582204153" duration="671000" />
+      <workItem from="1647584563138" duration="46000" />
+      <workItem from="1647584619539" duration="38000" />
+      <workItem from="1647584710496" duration="276000" />
+      <workItem from="1647585190413" duration="1414000" />
+      <workItem from="1647586713766" duration="4286000" />
+      <workItem from="1647593402414" duration="3542000" />
+      <workItem from="1647606472115" duration="6218000" />
+      <workItem from="1647614701681" duration="752000" />
+      <workItem from="1647693014682" duration="518000" />
+      <workItem from="1647694466488" duration="107000" />
+      <workItem from="1647694840372" duration="143000" />
+      <workItem from="1647695005482" duration="71000" />
+      <workItem from="1647697115505" duration="117000" />
+      <workItem from="1647752949418" duration="3121000" />
+      <workItem from="1647758767061" duration="2763000" />
+      <workItem from="1647765816146" duration="597000" />
+      <workItem from="1648301662072" duration="1146000" />
+      <workItem from="1648371023815" duration="1143000" />
+      <workItem from="1648441535508" duration="29404000" />
+      <workItem from="1648610055494" duration="4403000" />
+      <workItem from="1648643173232" duration="2660000" />
+      <workItem from="1648696539500" duration="13726000" />
+      <workItem from="1648741059516" duration="880000" />
+      <workItem from="1648781874716" duration="2000" />
+      <workItem from="1648782027342" duration="663000" />
+      <workItem from="1648793653497" duration="8708000" />
+      <workItem from="1648814100071" duration="2000" />
+      <workItem from="1648814812788" duration="136000" />
+      <workItem from="1648814961350" duration="234000" />
+      <workItem from="1648815911013" duration="463000" />
+      <workItem from="1648817822861" duration="268000" />
+      <workItem from="1648819111640" duration="130000" />
+      <workItem from="1648819260691" duration="28000" />
+      <workItem from="1648819571400" duration="2851000" />
+      <workItem from="1648825550622" duration="157000" />
+      <workItem from="1648869643245" duration="162000" />
+      <workItem from="1648869981977" duration="9296000" />
+      <workItem from="1648984541631" duration="10124000" />
+      <workItem from="1648996771842" duration="111000" />
+      <workItem from="1648999860052" duration="573000" />
+      <workItem from="1649045800619" duration="2833000" />
+      <workItem from="1649060615361" duration="177000" />
+      <workItem from="1649127064275" duration="141000" />
+      <workItem from="1649127356519" duration="3294000" />
+      <workItem from="1649131023193" duration="1103000" />
+      <workItem from="1649140419737" duration="363000" />
+      <workItem from="1649142464698" duration="1546000" />
+      <workItem from="1649166457002" duration="252000" />
+      <workItem from="1649404877421" duration="315000" />
+      <workItem from="1649405620379" duration="4198000" />
+      <workItem from="1649410787236" duration="39677000" />
+      <workItem from="1649559258039" duration="2864000" />
+      <workItem from="1649562579690" duration="1660000" />
+      <workItem from="1649564491942" duration="739000" />
+      <workItem from="1649574659682" duration="126000" />
+      <workItem from="1649593176002" duration="697000" />
+      <workItem from="1649595860879" duration="1015000" />
+      <workItem from="1649597057044" duration="2485000" />
+      <workItem from="1649645375328" duration="145000" />
+      <workItem from="1649645609487" duration="10092000" />
+      <workItem from="1649660817355" duration="210000" />
+      <workItem from="1649661140751" duration="5066000" />
+      <workItem from="1649666441208" duration="2077000" />
+      <workItem from="1649673275410" duration="163000" />
+      <workItem from="1649673507229" duration="2762000" />
+      <workItem from="1649676364104" duration="8651000" />
+      <workItem from="1649685799365" duration="1081000" />
+      <workItem from="1649687900403" duration="780000" />
+      <workItem from="1649688729853" duration="7765000" />
+      <workItem from="1649729368334" duration="9469000" />
+      <workItem from="1649741320029" duration="1192000" />
+      <workItem from="1649743915089" duration="2642000" />
+      <workItem from="1649746623734" duration="385000" />
+      <workItem from="1649747438494" duration="6339000" />
+      <workItem from="1649757116668" duration="1321000" />
+      <workItem from="1649758831065" duration="739000" />
+      <workItem from="1649760283345" duration="48000" />
+      <workItem from="1649763063927" duration="2313000" />
+      <workItem from="1649778267085" duration="79000" />
+      <workItem from="1649778355665" duration="77000" />
+      <workItem from="1649778447367" duration="173000" />
+      <workItem from="1649778630256" duration="689000" />
+      <workItem from="1649782061401" duration="136000" />
+      <workItem from="1649782248561" duration="121000" />
+      <workItem from="1649782516605" duration="183000" />
+      <workItem from="1649782794450" duration="199000" />
+      <workItem from="1649783002850" duration="269000" />
+      <workItem from="1649783422400" duration="124000" />
+      <workItem from="1649817942428" duration="83000" />
+      <workItem from="1649820294549" duration="105000" />
+      <workItem from="1649820407053" duration="155000" />
+      <workItem from="1649820569341" duration="168000" />
+      <workItem from="1649820768812" duration="391000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.beans.factory.UnsatisfiedDependencyException" package="org.springframework.beans.factory" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/back_end_w$JwSystemApplication.ic" NAME="JwSystemApplication 覆盖结果" MODIFIED="1647503846171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>

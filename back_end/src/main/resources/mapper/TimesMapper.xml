@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.TimesDao">
+    <insert id="addTimes">
+        INSERT INTO times ( name, start_time, end_time )
+        VALUES (#{name},#{start_time},#{end_time})
+    </insert>
+    <update id="changeTimesByName">
+        UPDATE times SET start_time=#{start_time},end_time=#{end_time}
+        where name = #{name}
+    </update>
+    <delete id="deleteTimesByName">
+        DELETE FROM times WHERE name = #{name}
+    </delete>
+    <delete id="deleteAll">
+        DELETE FROM times
+    </delete>
+    <!-- 得到所有楼宇信息 -->
+    <select id="getAllTimes" resultType="com.jwsystem.entity.Times">
+        SELECT *
+        FROM times
+    </select>
+
+    <select id="findTimesByName" resultType="com.jwsystem.entity.Times">
+        SELECT *
+        FROM times
+        where name = #{name}
+    </select>
+
+</mapper>

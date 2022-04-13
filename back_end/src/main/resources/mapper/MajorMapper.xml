@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.MajorDao">
+    <!-- 新增专业 -->
+    <insert id="insertMajor">
+        INSERT INTO major ( name, college_name )
+        VALUES (#{name},#{college_name})
+    </insert>
+    <!-- 根据学院name查询该学院下的所有专业 -->
+    <select id="findMajorByCollegeName" resultType="map">
+        SELECT major_id,name
+        FROM MAJOR WHERE college_name = #{college_name}
+    </select>
+    <!--根据id查询某专业是否存在 -->
+    <select id="findMajorById" resultType="com.jwsystem.entity.Major">
+        SELECT *
+        FROM MAJOR WHERE major_id = #{major_id}
+    </select>
+    <!--根据name查询某专业是否存在 -->
+    <select id="findMajorByName" resultType="com.jwsystem.entity.Major">
+        SELECT *
+        FROM MAJOR WHERE name = #{name}
+    </select>
+    <!-- 根据id修改某专业名 -->
+    <update id="updateMajorNameById">
+        UPDATE MAJOR SET name = #{name} , college_name = #{college_name}
+        where major_id = #{major_id}
+    </update>
+    <select id="findCollegeByMajorName" resultType="String">
+        SELECT college_name
+        FROM MAJOR WHERE name = #{name}
+    </select>
+    <!-- 删除专业 -->
+    <delete id="deleteMajor">
+        DELETE FROM Major WHERE name = #{name}
+    </delete>
+</mapper>
