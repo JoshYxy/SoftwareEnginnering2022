@@ -139,6 +139,6 @@
         FROM
             teacher
         WHERE
-            college = #{college}
+            college = #{college} and status = "working"
     </select>
 </mapper>
