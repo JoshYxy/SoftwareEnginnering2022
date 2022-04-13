@@ -1,0 +1,47 @@
+package com.jwsystem.interceptor;
+
+import com.jwsystem.entity.Teacher;
+import com.jwsystem.service.TeaService;
+import com.jwsystem.util.JwtUtils;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class teacherInterceptor implements HandlerInterceptor {
+    @Autowired
+    JwtUtils jwtUtils;
+
+    @Autowired
+    TeaService teaService;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("teacherInterceptor");
+        String token = request.getHeader("token");
+        Claims claims = jwtUtils.getCliamByToken(token);
+        String number = claims.getSubject();
+        Teacher teacher = teaService.selectTeaByNum(number);
+
+        if(teacher==null){
+            System.out.println("非教师账号!");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return false;
+        }
+        System.out.println("已验证教师身份");
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+    }
+}

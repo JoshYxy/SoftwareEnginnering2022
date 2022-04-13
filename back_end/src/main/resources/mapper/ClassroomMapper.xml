@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.ClassroomDao">
+    <insert id="add">
+        INSERT INTO classroom ( building, room_num )
+        VALUES (#{building},#{room_num})
+    </insert>
+
+    <update id="changeById">
+        UPDATE classroom
+        SET building = #{building}, room_num = #{room_num}
+        WHERE room_id = #{room_id};
+    </update>
+
+    <delete id="deleteByRoomId">
+        DELETE FROM classroom WHERE room_id = #{room_id}
+    </delete>
+
+    <select id="findByNumAndBuilding" resultType="com.jwsystem.entity.Classroom">
+        SELECT *
+        FROM classroom
+        where room_num=#{room_num} and building = #{building}
+    </select>
+
+    <select id="findById" resultType="com.jwsystem.entity.Classroom">
+        SELECT *
+        FROM classroom
+        where room_id = #{room_id}
+    </select>
+
+    <select id="getClassroomsByBuilding" resultType="com.jwsystem.entity.Classroom">
+        SELECT *
+        FROM classroom
+        where building = #{building}
+    </select>
+
+
+</mapper>
