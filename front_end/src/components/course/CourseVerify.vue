@@ -3,8 +3,8 @@
     <el-table class="class-table" :data="pendingCourses" :row-class-name="tableRowClassName">
         <el-table-column fixed prop="teacherName" label="申请人" width="80" />
         <el-table-column fixed prop="showStatus" label="申请类型" width="80" />
-        <el-table-column prop="courseName" label="课程名" width="120" />
-        <el-table-column prop="courseNum" label="课程编号" width="120" />
+        <el-table-column prop="courseName" label="课程名" width="140" />
+        <el-table-column prop="courseNum" label="课程编号" width="150" />
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />

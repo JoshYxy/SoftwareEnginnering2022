@@ -14,11 +14,20 @@ public class adminInterceptor implements HandlerInterceptor {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     public static String adminNum = "1";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("adminInterceptor");
+        //拦截器取到请求先进行判断，如果是OPTIONS请求，则放行
+        if("OPTIONS".equals(httpServletRequest.getMethod().toUpperCase())) {
+            System.out.println("Method:OPTIONS");
+            return true;
+        }
+
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();

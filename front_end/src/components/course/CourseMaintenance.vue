@@ -335,7 +335,7 @@ export default {
                             roomNum: this.courseData.roomNum
                         })
                     .then(res => {
-                        this.unavalRoomTimes = res
+                        this.unavalRoomTimes = res.data.data1
                     })
                     await axios.put('http://localhost:8081/affair/teacher/time',
                         {   
@@ -343,7 +343,7 @@ export default {
                             number: this.courseData.teacherNum
                         })
                     .then(res => {
-                        this.unavalTeaTimes = res
+                        this.unavalTeaTimes = res.data.data1
                     })
 
                     // console.log(this.courseData)

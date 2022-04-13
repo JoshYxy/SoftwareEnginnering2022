@@ -1,6 +1,6 @@
 <template>
     <h2>所有课程</h2>
-    <el-button @click="test">test </el-button>
+    <!-- <el-button @click="test">test </el-button> -->
     <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName" max-height="500px">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />

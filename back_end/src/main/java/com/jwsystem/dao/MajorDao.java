@@ -17,7 +17,7 @@ public interface MajorDao {
     //根据name查询某专业是否存在
     Major findMajorByName(String name);
     //根据id修改某专业名
-    int updateMajorNameById(@Param("major_id") Integer majorId,String name,@Param("college_name") String collegeName);
+    int updateMajorNameById(@Param("major_id") Integer majorId,String name);
     // 删除专业
     int deleteMajor(String name);
     //判断学院专业对应

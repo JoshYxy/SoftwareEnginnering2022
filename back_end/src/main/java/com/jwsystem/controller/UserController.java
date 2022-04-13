@@ -2,15 +2,18 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.User;
-import com.jwsystem.service.impl.AdminServiceImp;
-import com.jwsystem.service.impl.StuServiceImp;
-import com.jwsystem.service.impl.TeaServiceImp;
+import com.jwsystem.entity.Times;
+import com.jwsystem.service.impl.*;
 import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.BuildingVO;
+import com.jwsystem.vo.TeacherData;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 import static com.jwsystem.dto.User.STUDYING;
 import static com.jwsystem.dto.User.WORKING;
@@ -32,7 +35,13 @@ public class UserController extends MainController{
     private AdminServiceImp adminServiceImp;
 
     @Autowired
-    TeaServiceImp teaServiceImp;
+    private TeaServiceImp teaServiceImp;
+
+    @Autowired
+    private BuildingServiceImp buildingServiceImp;
+
+    @Autowired
+    private TimesServiceImp timesServiceImp;
 
     public static int TEACHER_NUM_LENGTH = 8;
     public static int STUDENT_NUM_LENGTH = 6;
@@ -162,5 +171,26 @@ public class UserController extends MainController{
         return Result.succ("用户信息修改成功！");
     }
 
+    //获得选课权限
+    @GetMapping("/curriculaVariable")
+    public Result getCurrVariable(){
+        boolean curr = adminServiceImp.getCurr();
+        return Result.succ("获取选课状态成功",curr);
+    }
+
+    //新增课程获得必要信息
+    @GetMapping("/course/new")
+    public Result getCourseInfo(){
+        //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
+        List<TeacherData> teacherDataList = teaServiceImp.getAllTeachersWithCollege();
+
+        //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
+        List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
+
+        //上课时间信息
+        List<Times> times = timesServiceImp.getAllTimes();
+
+        return Result.succ3(teacherDataList,buildingVOList,times);
+    }
 
 }

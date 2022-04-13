@@ -83,7 +83,7 @@ public class EduServiceImp implements EduService {
 
     @Override
     public void updateMajor(Major major) {
-        majorDao.updateMajorNameById(major.getMajorId(), major.getName(), major.getCollegeName());
+        majorDao.updateMajorNameById(major.getMajorId(), major.getName());
     }
 
     @Override

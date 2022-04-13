@@ -18,9 +18,17 @@ public class teacherInterceptor implements HandlerInterceptor {
     @Autowired
     TeaService teaService;
 
+    @Autowired
+    HttpServletRequest httpServletRequest;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         System.out.println("teacherInterceptor");
+        if("OPTIONS".equals(httpServletRequest.getMethod().toUpperCase())) {
+            System.out.println("Method:OPTIONS");
+            return true;
+        }
+
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();
