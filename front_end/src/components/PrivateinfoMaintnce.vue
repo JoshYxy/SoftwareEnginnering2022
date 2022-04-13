@@ -44,10 +44,10 @@
           hide-required-asterisk
           >
             <el-form-item prop="password" label="新密码">
-                <el-input type="text" name="password" v-model="userPassword.password"/>
+                <el-input type="password" name="password" v-model="userPassword.password"/>
             </el-form-item>
             <el-form-item prop="checkPassword" label="确认密码">
-                <el-input type="text" name="password" v-model="userPassword.checkPassword"/>
+                <el-input type="password" name="password" v-model="userPassword.checkPassword"/>
             </el-form-item>
         </el-form>
         <template #footer>

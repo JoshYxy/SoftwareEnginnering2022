@@ -286,7 +286,7 @@ export default {
     },
     async created() {
          //获取选课状态
-        axios.get('http://localhost:8081/affair/curriculaVariable')
+        axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
             this.courseOpen = res.data.data1
         })

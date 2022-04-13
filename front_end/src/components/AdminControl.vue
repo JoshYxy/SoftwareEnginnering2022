@@ -128,29 +128,29 @@ export default {
   data(){
     return {
       collegeData: [
-        { 
-          id: 1,
-          name: '计算机科学技术学院', 
-          majors: [
-              {id: 1, name: '大数据'},
-              {id: 2, name: '信息安全'}
-          ]
-        },
-        { 
-          id: 1,
-          name: '生命科学学院', 
-          majors: [
-              {id: 1, name: '生物'},
-              {id: 2, name: '123'}
-          ]
-        },
-        { 
-          id: 1,
-          name: '软件工程学院', 
-          majors: [
-              {id: 1, name: '软件工程'},
-          ]
-        },
+        // { 
+        //   id: 1,
+        //   name: '计算机科学技术学院', 
+        //   majors: [
+        //       {id: 1, name: '大数据'},
+        //       {id: 2, name: '信息安全'}
+        //   ]
+        // },
+        // { 
+        //   id: 1,
+        //   name: '生命科学学院', 
+        //   majors: [
+        //       {id: 1, name: '生物'},
+        //       {id: 2, name: '123'}
+        //   ]
+        // },
+        // { 
+        //   id: 1,
+        //   name: '软件工程学院', 
+        //   majors: [
+        //       {id: 1, name: '软件工程'},
+        //   ]
+        // },
       ],
       majorData: [
       ],
@@ -279,6 +279,7 @@ export default {
         alert('获取服务器信息失败')
         console.dir(error);
       });
+    console.log(this.collegeData)
   }
 }
 

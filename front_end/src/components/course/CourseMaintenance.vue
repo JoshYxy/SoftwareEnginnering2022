@@ -21,9 +21,9 @@
       </template>
     </el-upload>
 
-    <div><el-button @click="test">
+    <!-- <div><el-button @click="test">
         测试
-    </el-button></div>
+    </el-button></div> -->
     <el-form class="new-course-admin" :model="courseData" ref="courseData" :rules="rules" hide-required-asterisk>
         <el-form-item label="课程名称" prop="courseName">
             <el-input v-model="courseData.courseName" />
@@ -335,7 +335,7 @@ export default {
                             roomNum: this.courseData.roomNum
                         })
                     .then(res => {
-                        this.unavalRoomTimes = res
+                        this.unavalRoomTimes = res.data.data1
                     })
                     await axios.put('http://localhost:8081/affair/teacher/time',
                         {   
@@ -343,7 +343,7 @@ export default {
                             number: this.courseData.teacherNum
                         })
                     .then(res => {
-                        this.unavalTeaTimes = res
+                        this.unavalTeaTimes = res.data.data1
                     })
 
                     // console.log(this.courseData)
@@ -371,19 +371,9 @@ export default {
                 alert(error.response.data.msg)
                 })
         }
-        // Upload(param) {
-        //     var para = new FormData();
-        //     para.append('file',param.file)
-        //     axios.post("http://localhost:8081/course/csv",para,{headers: {'Content-Type': 'multipart/form-data'}})
-        //         .then(function(){
-        //         alert('批量导入信息完成，无导入失败')                  
-        //         }).catch(error => {
-        //         alert(error.response.data.msg)
-        //         })
-        // },
     },
     async created() {
-        await axios.get('http://localhost:8081/course/new')
+        await axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.teacherData = res.data.data1
             this.classroom = res.data.data2

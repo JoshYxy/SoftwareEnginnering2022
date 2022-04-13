@@ -25,8 +25,8 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
         <template #default="scope">
-            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">申请修改</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">申请删除</el-button>
+            <el-button v-if="scope.row.type != 'add'" size="small" @click="handleEdit(scope.$index, scope.row)">申请修改</el-button>
+            <el-button v-if="scope.row.type != 'add'" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">申请删除</el-button>
             <el-dialog 
                 v-model="editTableVisible[scope.$index]" 
                 title="修改课程" 
@@ -613,7 +613,7 @@ export default {
     },
     async created() {
         //课程时间，可用教师获取
-        axios.get('http://localhost:8081/course/new')
+        axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.classroom = res.data.data2
             for(let i = 0; i < this.classroom.length; i++) {
