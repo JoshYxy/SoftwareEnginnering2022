@@ -226,6 +226,11 @@ public class CourseController extends MainController{
                 Integer courseId = r.getCourseId();
                 //先保存当前数据库内课程信息，并且转化成CourseVO对象
                 Coursepart tempc = courseServiceImp.getCoursepartByCourseId(courseId);
+                if(tempc==null){
+                    response.setStatus(WRONG_RES);
+                    return Result.fail("申请审核失败：修改的课程不存在");
+                }
+
                 List<Timepart> tempt = courseServiceImp.getAllTimepartByCourseId(courseId);
                 CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
 

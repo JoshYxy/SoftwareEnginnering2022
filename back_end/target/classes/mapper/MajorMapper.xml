@@ -23,7 +23,7 @@
     </select>
     <!-- 根据id修改某专业名 -->
     <update id="updateMajorNameById">
-        UPDATE MAJOR SET name = #{name} , college_name = #{college_name}
+        UPDATE MAJOR SET name = #{name}
         where major_id = #{major_id}
     </update>
     <select id="findCollegeByMajorName" resultType="String">
