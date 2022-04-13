@@ -2,7 +2,7 @@
     <div v-if="!courseOpen"> <h2>选课时间未到</h2></div>
     <div v-if="courseOpen">
     <h2>可选课程</h2>
-    <el-button @click="test">test </el-button>
+    <!-- <el-button @click="test">test </el-button> -->
     <el-table class="class-table" :data="courses">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
@@ -87,7 +87,7 @@ export default {
         }
     },
     async created() {
-        axios.get('http://localhost:8081/affair/curriculaVariable')
+        axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
             this.courseOpen = res.data.data1
         })

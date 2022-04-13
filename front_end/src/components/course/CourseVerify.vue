@@ -129,7 +129,7 @@ export default {
             })
             .catch(error => {
                 console.dir(error)
-                alert('申请中的上课时间与现存上课时间冲突，无法通过')
+                alert(error.response.data.msg)
             })
         },
         

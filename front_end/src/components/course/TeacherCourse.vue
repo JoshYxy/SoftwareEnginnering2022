@@ -613,7 +613,7 @@ export default {
     },
     async created() {
         //课程时间，可用教师获取
-        axios.get('http://localhost:8081/course/new')
+        axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.classroom = res.data.data2
             for(let i = 0; i < this.classroom.length; i++) {

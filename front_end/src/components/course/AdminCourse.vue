@@ -558,7 +558,7 @@ export default {
         
     },
     async created() {
-        await axios.get('http://localhost:8081/course/new')
+        await axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.teacherData = res.data.data1
             this.classroom = res.data.data2

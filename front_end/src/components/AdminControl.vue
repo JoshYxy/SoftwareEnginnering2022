@@ -279,6 +279,7 @@ export default {
         alert('获取服务器信息失败')
         console.dir(error);
       });
+    console.log(this.collegeData)
   }
 }
 
