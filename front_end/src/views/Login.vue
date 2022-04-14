@@ -38,7 +38,7 @@
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit">
+        <el-button  style="display:block;margin:0 auto" type="primary" @click="submit">
           <el-icon :size="20">
             <circle-check />
           </el-icon>
