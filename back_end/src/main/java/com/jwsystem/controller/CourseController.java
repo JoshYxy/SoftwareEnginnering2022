@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 import static com.jwsystem.vo.CourseRequest.*;
@@ -412,7 +413,7 @@ public class CourseController extends MainController{
             }
             return Result.succ("批量导入课程成功");
         }
-        catch (IndexOutOfBoundsException e ) {
+        catch (IndexOutOfBoundsException | IOException e) {
             response.setStatus(WRONG_FILE);
             return Result.fail("文件格式错误");
         }

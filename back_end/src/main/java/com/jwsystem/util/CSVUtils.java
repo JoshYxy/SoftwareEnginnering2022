@@ -56,14 +56,19 @@ public class CSVUtils {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally{
+                in.close();
             }
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException | IOException e){
             return null;
+        }
+        finally{
+
         }
         return users;
     }
 
-    public static List<CourseDTO> getCourseByCsv(MultipartFile file) {
+    public static List<CourseDTO> getCourseByCsv(MultipartFile file) throws IOException {
         ArrayList<CourseDTO> courses = new ArrayList<>();
 
         InputStreamReader in = null;
@@ -96,61 +101,10 @@ public class CSVUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            in.close();
         }
         return courses;
-    }
-
-    /**
-     * 解析csv文件并转成bean（方法二）
-     *
-     * @param file csv文件
-     * @return 数组
-     */
-    public static List<String[]> getCsvDataMethod2(MultipartFile file) {
-
-        List<String[]> list = new ArrayList<String[]>();
-        int i = 0;
-        try {
-            CSVReader csvReader = new CSVReaderBuilder(
-                    new BufferedReader(
-                            new InputStreamReader(file.getInputStream(), "utf-8"))).build();
-            Iterator<String[]> iterator = csvReader.iterator();
-            while (iterator.hasNext()) {
-                String[] next = iterator.next();
-                //去除第一行的表头，从第二行开始
-                if (i >= 1) {
-                    list.add(next);
-                }
-                i++;
-            }
-            return list;
-        } catch (Exception e) {
-            System.out.println("CSV文件读取异常");
-            return list;
-        }
-    }
-
-
-    /**
-     * 解析csv文件并转成bean（方法三）
-     *
-     * @param file  csv文件
-     * @param clazz 类
-     * @param <T>   泛型
-     * @return 泛型bean集合
-     */
-    public static <T> List<T> getCsvDataMethod3(MultipartFile file, Class<T> clazz) {
-        InputStreamReader in = null;
-        CsvToBean<T> csvToBean = null;
-        try {
-            in = new InputStreamReader(file.getInputStream(), "utf-8");
-            HeaderColumnNameMappingStrategy<T> strategy = new HeaderColumnNameMappingStrategy<>();
-            strategy.setType(clazz);
-            csvToBean = new CsvToBeanBuilder<T>(in).withMappingStrategy(strategy).build();
-        } catch (Exception e) {
-            return null;
-        }
-        return csvToBean.parse();
     }
 
     private static String splitResult(String once) {
