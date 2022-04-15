@@ -4,6 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -11,6 +12,9 @@
       <change beforePath="$PROJECT_DIR$/../front_end/node_modules/.cache/eslint/53e8970e.json" beforeDir="false" afterPath="$PROJECT_DIR$/../front_end/node_modules/.cache/eslint/53e8970e.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../front_end/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../front_end/src/router/index.js" afterDir="false" />
     </list>
+=======
+    <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -221,9 +225,13 @@
       <workItem from="1649843857845" duration="222000" />
       <workItem from="1649844908387" duration="38000" />
       <workItem from="1649845842618" duration="924000" />
+<<<<<<< Updated upstream
       <workItem from="1649949362447" duration="1927000" />
       <workItem from="1650004519820" duration="64000" />
       <workItem from="1650005184420" duration="307000" />
+=======
+      <workItem from="1650002822429" duration="176000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
