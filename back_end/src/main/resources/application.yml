@@ -1,9 +1,9 @@
 spring:
   # datasource 数据源配置内容
   datasource:
-    url: jdbc:mysql://localhost:3306/lab3?useSSL=false
+    url: jdbc:mysql://localhost:3306/userinfo?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
-    username: root
+    username: mima1234
     password: 10291004
 # mybatis 配置内容
 mybatis:

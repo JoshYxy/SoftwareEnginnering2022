@@ -95,7 +95,7 @@ export default {
             else this.$router.push({path:"/home/welcome"});
           }).catch(error => {
             if(error.response.status == 426){
-                alert('身份已过期');
+                alert(error.response.data.msg);
               }
             else alert('账号或密码错误!!');
             console.dir(error);
