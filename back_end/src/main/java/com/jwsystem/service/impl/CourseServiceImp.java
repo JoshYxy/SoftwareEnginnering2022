@@ -129,6 +129,19 @@ public class CourseServiceImp implements CourseService {
     public void deleteReqByRequestId(Integer c) {
         requestDao.deleteReqByRequestId(c);
     }
+
+    public boolean examineTimes(String[] s) {
+        //得到timepart 和 req_timepart中所有的section
+        List<String> allSections = timepartDao.getAllSections();
+        for(String section:s){
+            for(String allSection:allSections) {
+                if(allSection.contains(section)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 

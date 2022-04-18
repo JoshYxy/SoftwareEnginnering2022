@@ -74,6 +74,17 @@
         FROM req_timepart WHERE building = #{building} and room_num = #{room_num}
     </select>
 
+    <select id="getAllSections" resultType="java.lang.String">
+        SELECT
+            section
+        FROM
+            req_timepart UNION
+        SELECT
+            section
+        FROM
+            timepart
+    </select>
+
     <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
         insert into timepart(
             id,

@@ -20,4 +20,5 @@ public interface TimepartDao {
     List<Integer> getRequestIdByBuilding(String building);
     List<Integer> getCourseIdByRoom(String building,  @Param("room_num")String roomNum);
     List<Integer> getRequestIdByRoom(String building,  @Param("room_num")String roomNum);
+    List<String> getAllSections();
 }
