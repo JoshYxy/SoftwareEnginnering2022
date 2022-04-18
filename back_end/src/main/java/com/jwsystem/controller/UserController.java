@@ -45,6 +45,7 @@ public class UserController extends MainController{
 
     public static int TEACHER_NUM_LENGTH = 8;
     public static int STUDENT_NUM_LENGTH = 6;
+    public static int ID_LENGTH = 18;
 
     //登陆请求
     @PostMapping("")

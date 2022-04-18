@@ -72,6 +72,11 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
+    public Boolean findMajorByStringName(String majorName) {
+        return majorDao.findMajorByName(majorName) != null;
+    }
+
+    @Override
     public Boolean judgeMajorAndCollege(String majorName,String collegeName) {
         return majorDao.findCollegeByMajorName(majorName).equals(collegeName);
     }

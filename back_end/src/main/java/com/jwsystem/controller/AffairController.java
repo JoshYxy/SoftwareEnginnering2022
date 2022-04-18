@@ -162,6 +162,34 @@ public class AffairController extends MainController{
 //        timesServiceImp.changeTimesByName(times.getName(),times.getStartTime(),times.getEndTime());
 
         //yxy的阴间要求：一改改全部
+
+        //加入对是否有课的判断
+        //根据传入times的个数，表示出修改后节次，从第一节开始
+        int changed = times.size();
+
+        //取出数据库内目前的times数组，转化为int，表示节次
+        List<Times> timesInDB = timesServiceImp.getAllTimes();
+        int now = timesInDB.size();
+
+        //如果存在删除，即传入节次少于目前节次，则被删掉的节次就是从changed末尾，差值个数的节次，将其作为数组传入service，检验有没有课
+        if(changed<now){
+            int diff = now - changed;
+            String [] s = new String[diff];
+            for(int i=0;i<diff;i++){
+                s[i] = Integer.toString(changed+i+1);
+            }
+
+            //如果有课，修改失败
+            //有课返回true
+            boolean haveClass = courseServiceImp.examineTimes(s);
+
+            if(haveClass){
+                response.setStatus(CONFLICT_TIME);
+                return Result.fail("删除的时间段存在课程，删除失败");
+            }
+        }
+
+        //无冲突，执行修改操作
         //先把times表清空
         timesServiceImp.deleteAll();
         //再插入list中的全部对象
@@ -241,6 +269,16 @@ public class AffairController extends MainController{
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法删除");
         }
+
+        //检验楼内教室有没有课程
+        List<Integer> idList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
+        if(!idList.isEmpty()){
+            //楼内有课
+            response.setStatus(WRONG_RES);
+            return Result.fail("楼内存在课程，删除失败！");
+        }
+
+
         //找到这栋楼在timepart和req_timepart里对应的所有的course_id和request_id
         List<Integer> courseIdList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
         List<Integer> requestIdList = courseServiceImp.getRequestIdByBuilding(building.getAbbrName());
@@ -290,6 +328,15 @@ public class AffairController extends MainController{
             response.setStatus(WRONG_RES);
             return Result.fail("不存在该教室");
         }
+
+        //检验教室有没有课程
+        List<Integer> idList = courseServiceImp.getCourseIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+        if(!idList.isEmpty()){
+            //有课
+            response.setStatus(WRONG_RES);
+            return Result.fail("教室内存在课程，删除失败！");
+        }
+
         //找到这间教室在timepart和req_timepart里对应的所有的course_id和request_id
         List<Integer> courseIdList = courseServiceImp.getCourseIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
         List<Integer> requestIdList = courseServiceImp.getRequestIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());

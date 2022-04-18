@@ -27,6 +27,8 @@ public interface EduService {
 
     Boolean findMajorByName(Major major);
 
+    Boolean findMajorByStringName(String majorName);
+
     //判断学院和专业是否对应
     Boolean judgeMajorAndCollege(String majorName,String CollegeName);
 

@@ -11,6 +11,7 @@ import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.vo.CollegeVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.jwsystem.controller.UserController.ID_LENGTH;
 import static com.jwsystem.dto.User.*;
 
 @RestController
@@ -37,9 +39,110 @@ public class AdminController extends MainController{
     private StuServiceImp stuServiceImp;
 
 
-    /*
+
+
+    //用户信息合规性检验函数
+    boolean verifyUser (User tempUser){
+
+        boolean valid = true;
+
+        //role检验：是否为老师或学生
+        String role = tempUser.getRole();
+        if(!role.equals("student") && !role.equals("teacher")) valid = false;
+
+        //number检验：学工号非空判断和数字判断、位数判断
+        if(role.equals("student") && !stuServiceImp.legalNumber(tempUser.getNumber())) valid = false;
+        if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUser.getNumber())) valid = false;
+
+        //id检验:非空判断和数字判断、位数判断
+        String id = tempUser.getId();
+        //先检验长度是否为18
+        if(id.length() != ID_LENGTH) valid = false;
+        else{
+            //长度正确的情况下检验前17位为数字，第18位为数字或者X
+            String shortId = id.substring(0,17);
+            String last = id.substring(17);
+            String template = "0123456789Xx";
+            if(!StringUtils.isNumeric(shortId) || !template.contains(last)){
+                valid = false;
+            }
+        }
+
+        //name检验
+        if(tempUser.getName().isEmpty()) valid = false;
+
+        //password检验
+        if(tempUser.getPassword().isEmpty()) valid = false;
+
+        //status检验
+        String status = tempUser.getStatus();
+        if(!status.equals(GRADUATED)
+                && !status.equals(QUIT)
+                && !status.equals(STUDYING)
+                && !status.equals(WORKING)
+        ) valid = false;
+
+        //major检验
+        if(tempUser.getMajor().isEmpty()) valid = false;
+
+        //college检验
+        if(tempUser.getCollege().isEmpty()) valid = false;
+
+        return valid;
+    }
+
+    //用户信息有效性检验函数
+    boolean verifyData(User tempUser, String type){
+
+        boolean valid = true;
+
+        if(type.equals("add")){
+            //number非重复检验
+            String number = tempUser.getNumber();
+            if(stuServiceImp.getUserByNumber(number) != null || teaServiceImp.getUserByNumber(number) != null) valid = false;
+        }
+
+        //id非重复检验
+        String id = tempUser.getId();
+        if(type.equals("add")){
+            if(stuServiceImp.selectStuById(id) != null || teaServiceImp.selectTeaById(id) != null) valid = false;
+        }
+        else if(type.equals("change")){
+            Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
+            Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
+
+            if(temp1!=null){
+                String tempNum = temp1.getNumber();
+                if(!tempNum.equals(tempUser.getNumber())){
+                    valid = false;
+                }
+            }
+
+            if(temp2!=null){
+                String tempNum = temp2.getNumber();
+                if(!tempNum.equals(tempUser.getNumber())){
+                    valid = false;
+                }
+            }
+        }
+
+        //major存在性检验
+        if(!eduServiceImp.findMajorByStringName(tempUser.getMajor())) valid = false;
+
+        //college存在性检验
+        if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())) valid = false;
+
+        return valid;
+    }
+
+
+
+
+     /*
             用户信息管理部分
      */
+
+
 
 
     //管理员查看全部用户信息
@@ -49,6 +152,30 @@ public class AdminController extends MainController{
         List<User> students = stuServiceImp.getAllUserInfos();
         users.addAll(students);
         return Result.succ("查询成功",users);
+    }
+
+    //管理员单条录入信息
+    @PostMapping("/new")
+    public Result register(@RequestBody User tempUser){
+        System.out.println("进入了register...");
+
+        //数据格式检查
+        if(!verifyUser(tempUser)){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("用户数据格式不符合规定！");
+        }
+
+        //数据有效性检查
+        if(!verifyData(tempUser,"add")){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("用户数据内容无效！");
+        }
+
+        if(tempUser.getRole().equals("student")) stuServiceImp.insertUser(tempUser);
+
+        else if(tempUser.getRole().equals("teacher")) teaServiceImp.insertUser(tempUser);
+
+        return Result.succ("录入信息成功",tempUser);
     }
 
     //管理员批量导入用户信息
@@ -92,143 +219,33 @@ public class AdminController extends MainController{
         return Result.succ("批量导入信息成功");
     }
 
-    //管理员单条录入信息
-    @PostMapping("/new")
-    public Result register(@RequestBody User tempUser){
-        //增加数据格式检查功能
-        System.out.println("进入了register...");
-        String status = tempUser.getStatus();
-        if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
-            response.setStatus(WRONG_DATA);
-            return Result.fail("状态设置不符合规定");
-        }
-        if(tempUser.getRole().equals("student")){
-            //学生
-            if(stuServiceImp.selectStuById(tempUser.getId()) != null){
-                response.setStatus(CONFLICT_ID);
-                return Result.fail("该身份证号已注册！");
-            }
-
-            if(stuServiceImp.getUserByNumber(tempUser.getNumber()) != null){
-                response.setStatus(CONFLICT_NUMBER);
-                return Result.fail("该学号已注册！");
-            }
-
-            if(!stuServiceImp.legalNumber(tempUser.getNumber())){
-                response.setStatus(WRONG_DATA);
-                return Result.fail("学号需为6位整数！");
-            }
-
-            if(!stuServiceImp.findUserMajor(tempUser.getMajor())){
-                response.setStatus(NO_MAJOR);
-                return Result.fail("专业不存在！");
-            }
-
-            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
-                response.setStatus(NO_COLLEGE);
-                return Result.fail("无法找到专业对应学院！");
-            }
-
-            stuServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
-        } else if(tempUser.getRole().equals("teacher")){
-            //老师
-            if(teaServiceImp.selectTeaById(tempUser.getId()) != null){
-                response.setStatus(CONFLICT_ID);
-                return Result.fail("该身份证号已注册！");
-            }
-
-            if(teaServiceImp.getUserByNumber(tempUser.getNumber()) != null){
-                response.setStatus(CONFLICT_NUMBER);
-                return Result.fail("该工号已注册！");
-            }
-
-            if(!teaServiceImp.legalNumber(tempUser.getNumber())){
-                response.setStatus(WRONG_DATA);
-                return Result.fail("工号需为8位整数！");
-            }
-
-            if(!teaServiceImp.findUserMajor(tempUser.getMajor())){
-                response.setStatus(NO_MAJOR);
-                return Result.fail("专业不存在！");
-            }
-
-            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
-                response.setStatus(NO_COLLEGE);
-                return Result.fail("无法找到专业对应学院！");
-            }
-
-            teaServiceImp.insertUser(tempUser);//增加相应的学院和专业信息的方法
-        }
-        else{
-            response.setStatus(WRONG_DATA);
-            return Result.fail("用户角色无效");
-        }
-        return Result.succ("录入信息成功",tempUser);
-    }
-
     //管理员修改用户信息（包括状态）
     //加入身份证重复的判断
     //加入学院专业是否存在的检测
     @PostMapping("/user/info")
     public Result changeUserInfo(@RequestBody User tempUser){
         //管理员可以修改用户除学工号以外的所有信息
-        String status = tempUser.getStatus();
-        if(!status.equals(GRADUATED) && !status.equals(QUIT) && !status.equals(STUDYING) && !status.equals(WORKING)){
+
+        //数据格式检查
+        if(!verifyUser(tempUser)){
             response.setStatus(WRONG_DATA);
-            return Result.fail("状态设置不符合规定");
+            return Result.fail("修改后数据格式不符合规定！");
         }
+
+        //数据有效性检查
+        if(!verifyData(tempUser,"change")){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("修改后数据内容无效！");
+        }
+
         if(tempUser.getRole().equals("student")){
             //学生
-            Student stuInDB = stuServiceImp.selectStuByNum(tempUser.getNumber());
-            String idInDB = stuInDB.getId();
-            if(!idInDB.equals(tempUser.getId())){
-                //身份证被修改，检查是否重复
-                Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
-                Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
-                if(temp1!=null || temp2!=null){
-                    response.setStatus(CONFLICT_ID);
-                    return Result.fail("修改后的身份证号已被注册！",tempUser.getId());
-                }
-            }
-            if(!stuServiceImp.findUserMajor(tempUser.getMajor())){
-                response.setStatus(NO_MAJOR);
-                return Result.fail("专业不存在！");
-            }
-
-            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
-                response.setStatus(NO_COLLEGE);
-                return Result.fail("无法找到专业对应学院！");
-            }
             stuServiceImp.updateStuInfoByAdmin(tempUser);
         } else if(tempUser.getRole().equals("teacher")){
             //老师
-            Teacher teaInDB = teaServiceImp.selectTeaByNum(tempUser.getNumber());
-            String idInDB = teaInDB.getId();
-            if(!idInDB.equals(tempUser.getId())){
-                //身份证被修改，检查是否重复
-                Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
-                Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
-                if(temp1!=null || temp2!=null){
-                    response.setStatus(CONFLICT_ID);
-                    return Result.fail("修改后的身份证号已被注册！",tempUser.getId());
-                }
-            }
-            if(!teaServiceImp.findUserMajor(tempUser.getMajor())){
-                response.setStatus(NO_MAJOR);
-                return Result.fail("专业不存在！");
-            }
-
-            if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())){
-                response.setStatus(NO_COLLEGE);
-                return Result.fail("无法找到专业对应学院！");
-            }
-
             teaServiceImp.updateTeaInfoByAdmin(tempUser);
         }
-        else{
-            response.setStatus(WRONG_DATA);
-            return Result.fail("用户角色无效");
-        }
+
         return Result.succ("修改成功");
     }
 
