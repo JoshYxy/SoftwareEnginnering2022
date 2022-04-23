@@ -1,7 +1,9 @@
 <template>
     <h2>所有课程</h2>
+    <el-button @click="resetRoomFilter">重置教室筛选</el-button>
+    <el-button @click="clearFilter">重置筛选</el-button>
     <!-- <el-button @click="test">test </el-button> -->
-    <el-table class="class-table" :data="courses" :row-class-name="tableRowClassName" max-height="500px">
+    <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
         <el-table-column prop="collegeName" label="开课院系" width="180" />
@@ -9,7 +11,11 @@
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
-        <el-table-column prop="building,roomNum" label="上课地点" width="80" >
+        <el-table-column prop="building,roomNum" label="上课地点" width="100" 
+            column-key="room"
+            :filter-multiple="true"
+            :filters="roomFilters"
+            :filter-method="filterRoom">
             <template #default="scope">
                 {{scope.row.building}}{{scope.row.roomNum}}
             </template>
@@ -334,7 +340,44 @@ export default {
             },
         }
     },
+    computed: {    
+        // 筛选项
+        roomFilters(){
+            let obj = [];
+            //找到对应的数据 并添加到obj
+            this.courses.filter(item => {
+                obj.push({
+                    text:item['building']+item['roomNum'],
+                    value:item['building']+item['roomNum'],
+                })
+            })
+            //因为column有重复数据，所以要进行去重
+            console.log(obj)
+            return this.deWeight(obj) 
+        },
+    },
     methods: {
+        
+        deWeight(arr) {
+            for (var i = 0; i < arr.length - 1; i++) {
+                for (var j = i + 1; j < arr.length; j++) {
+                    if (arr[i].text == arr[j].text) {
+                        arr.splice(j, 1);
+                        j--;
+                    }
+                }
+            }
+            return arr;
+        },
+        filterRoom(value, row) {
+            return row['building'] + row['roomNum'] === value;
+        },
+        resetRoomFilter() {
+            this.$refs['coursesData'].clearFilter(['room'])
+        },
+        clearFilter() {
+            this.$refs['coursesData'].clearFilter()
+        },
         // eslint-disable-next-line
         tableRowClassName(row, rowIndex) {//根据该行课程的状态动态显示该行表格颜色
             if(row.row.type == 'changed')

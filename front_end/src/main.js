@@ -6,7 +6,8 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import router from './router'
 import store from './store'
-
+// import Mock from 'mockjs'
+// require('./mock')
 const app = createApp(App)
 app.use(VueAxios, axios)
 app.use(ElementPlus)
