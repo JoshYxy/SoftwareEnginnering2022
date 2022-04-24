@@ -47,7 +47,7 @@
                 v-model="newRoom"
                 placeholder="教室号"
                 class="input-with-select"
-                
+                style="width:70%"
                 >
                 <template #prepend>
                     <el-select v-model="newClassroom" placeholder="教学楼" value-key="name" style="width: 150px">
@@ -55,10 +55,12 @@
                     </el-select>
                 </template>
                 <template #append>
-                    <section style="width: 150px"> {{newClassroom.aka}}{{newRoom}} </section>
+                    <section style="width: 80px"> {{newClassroom.aka}}{{newRoom}} </section>
                     
                 </template>
             </el-input>
+            <el-input v-model="newCap" placeholder="教室容量" style="width:30%"/>
+
             <el-button @keydown="addClassroom" @click="addClassroom">添加新教室</el-button>
         </div>
         <div class="classroom-container">
@@ -79,11 +81,11 @@
                     <el-button v-if="onDelete[index]" class="button2" type="text" @click="cancelDelete(index)">取消删除</el-button>
                     <div class="hold-place" v-if="onDeleteAll && !onDelete[index]"> </div>
                     <div v-if="!onDelete[index]" class="card-item-div-container">
-                        <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room}}</div>
+                        <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room.name}} 容量：{{room.capacity}}</div>
                     </div> 
                     <div v-for="(room,index2) in checkGroup" 
                             :key="room.name" 
-                            class="card-item" >
+                            class="card-item-delete" >
                         <el-checkbox 
                             v-if="onDelete[index]"
                             v-model="checkGroup[index2].status" 
@@ -112,13 +114,29 @@ export default {
             startTime:[],
             endTime:[],
             newRoom:'',//存放input输入的教室号
+            newCap:'',//存放input输入的教室容量
             newClassroom: {
                 name: '',
                 aka: '',
                 room: [],
             },//存档select选择的教学楼
             classroom: [
-    
+                {
+                    name: '第三教学楼',
+                    aka: 'H3',
+                    room: [
+                        {name:'301', capacity:'120'},
+                        {name:'402', capacity:'120'}
+                    ]
+                },
+                {
+                    name: '光华楼西辅楼',
+                    aka: 'HGX',
+                    room: [
+                        {name:'201', capacity:'110'},
+                        {name:'502', capacity:'100'}
+                    ]
+                },
             ],//存放所有的教学楼及教室号信息
             buildings: [
                 {id:1,name: '第三教学楼', aka: 'H3'},
@@ -156,32 +174,40 @@ export default {
                 alert('教学楼不能为空')
                 return
             }
+            if(this.newCap === '') {
+                alert('教室容量不能为空')
+                return
+            }
+            if(!(/^[1-9]\d*$/.test(this.newCap))) {
+                alert('教室容量为正整数')
+                return
+            }
             var i;
             i = this.classroom.findIndex((building) => building.name == this.newClassroom.name)//寻找classroom已有的教学楼中是否有newClassroom中的教学楼 
             if(i >= 0) {
-                if(this.classroom[i].room.indexOf(this.newRoom) > -1) {
+                if(this.classroom[i].room.find(item => item.name == this.newRoom) != null) {
                     alert('教室已存在，请勿重复添加')
                     this.newRoom = ''
                     return
                 }
-                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom, roomCapacity: this.newCap})
                 .then(res => {
                     console.log(res)
-                    this.classroom[i].room.push(this.newRoom) 
+                    this.classroom[i].room.push({name:this.newRoom, capacity: this.newCap}) 
                     this.classroom[i].room.sort((a, b) => {
-                        if(a.length < b.length) return -1
-                        else if(a.length > b.length) return 1
-                        else return a.localeCompare(b)   
+                        if(a.name.length < b.name.length) return -1
+                        else if(a.name.length > b.name.length) return 1
+                        else return a.name.localeCompare(b.name)   
                     }) //将教室号排序
                 })
                 
             } 
             else {
-                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom})
+                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom, roomCapacity: this.newCap})
                 .then(res => {
                     console.log(res)
                     this.newClassroom.room=[]
-                    this.newClassroom.room.push(this.newRoom)
+                    this.newClassroom.room.push({name:this.newRoom, capacity: this.newCap})
                     this.classroom.push(this.newClassroom)
                 })
 
@@ -221,7 +247,7 @@ export default {
             this.onDelete[index] = true
             this.checkGroup = []
             for(let i in this.classroom[index].room) {
-                this.checkGroup.push({name:this.classroom[index].room[i], status: false})
+                this.checkGroup.push({name:this.classroom[index].room[i].name, status: false})
             }
             console.log(this.checkGroup)
             
@@ -231,7 +257,7 @@ export default {
             this.onDeleteAll = false
             for(let i = 0; i < this.checkGroup.length; i++) {
                 if(this.checkGroup[i].status) {
-                    await axios.delete('http://localhost:8081/affair/room', {data:{building: this.classroom[index].aka, roomNum: this.classroom[index].room[i]}})
+                    await axios.delete('http://localhost:8081/affair/room', {data:{building: this.classroom[index].aka, roomNum: this.classroom[index].room[i].name}})
                     .then(res => {
                         console.log(res)
                         this.classroom[index].room.splice(i, 1)
@@ -302,7 +328,7 @@ export default {
             for(let i = 0; i < classrooms.length; i++) {
                 this.classroom.push({name:classrooms[i].fullName, aka:classrooms[i].abbrName, room:[]})
                 for(let j = 0; j < classrooms[i].room.length; j++) {
-                    this.classroom[i].room.push(classrooms[i].room[j].roomNum)
+                    this.classroom[i].room.push({name:classrooms[i].room[j].roomNum, capacity:classrooms[i].room[j].capacity})
                 }
             }
             //获取上课时间信息
@@ -345,6 +371,10 @@ export default {
 
 }
 .card-item {
+    font-size: 16px;
+    width: 100%;
+}
+.card-item-delete {
     font-size: 16px;
     width: 50%;
 }
