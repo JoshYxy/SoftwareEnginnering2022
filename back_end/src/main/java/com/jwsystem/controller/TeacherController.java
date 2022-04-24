@@ -1,15 +1,15 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Teacher;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.user.Teacher;
+import com.jwsystem.entity.course.Timepart;
 import com.jwsystem.service.TeaService;
 import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CourseUtil;
-import com.jwsystem.vo.CourseRequest;
+import com.jwsystem.vo.CourseRequestVO;
 import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -132,17 +132,17 @@ public class TeacherController extends MainController{
 
     //教师提交课程维护申请
     @PostMapping("/courseRequest")
-    public Result addRequest(@RequestBody CourseRequest courseRequest){
+    public Result addRequest(@RequestBody CourseRequestVO courseRequestVO){
 
         Request request = new Request(
-                courseRequest.getRequestId(),
-                courseRequest.getType(),
-                courseRequest.getCourseVO().getCourseId(),
-                courseRequest.getCourseVO().getTeacherNum(),
-                courseRequest.getCourseVO().getBuilding(),
-                courseRequest.getCourseVO().getRoomNum(),
-                courseRequest.isExamined(),
-                courseRequest.isPassed()
+                courseRequestVO.getRequestId(),
+                courseRequestVO.getType(),
+                courseRequestVO.getCourseVO().getCourseId(),
+                courseRequestVO.getCourseVO().getTeacherNum(),
+                courseRequestVO.getCourseVO().getBuilding(),
+                courseRequestVO.getCourseVO().getRoomNum(),
+                courseRequestVO.isExamined(),
+                courseRequestVO.isPassed()
         );
 
         //把申请插入申请表，返回requestId给我
@@ -151,7 +151,7 @@ public class TeacherController extends MainController{
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 
-        CourseVO courseVO = courseRequest.getCourseVO();
+        CourseVO courseVO = courseRequestVO.getCourseVO();
         Coursepart coursePart = new Coursepart(
                 requestId,
                 courseVO.getCourseName(),

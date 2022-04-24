@@ -1,6 +1,6 @@
 package com.jwsystem.vo;
 
-import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.affair.Classroom;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

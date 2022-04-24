@@ -1,8 +1,8 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.College;
+import com.jwsystem.entity.college.College;
 import com.jwsystem.vo.CollegeVO;
-import com.jwsystem.entity.Major;
+import com.jwsystem.entity.college.Major;
 
 import java.util.List;
 

@@ -2,10 +2,10 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.User;
-import com.jwsystem.entity.Building;
-import com.jwsystem.entity.Classroom;
-import com.jwsystem.entity.Timepart;
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Building;
+import com.jwsystem.entity.affair.Classroom;
+import com.jwsystem.entity.course.Timepart;
+import com.jwsystem.entity.affair.Times;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.vo.BuildingVO;
 import org.springframework.beans.factory.annotation.Autowired;

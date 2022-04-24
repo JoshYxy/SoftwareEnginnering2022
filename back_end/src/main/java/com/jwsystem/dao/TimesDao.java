@@ -1,6 +1,6 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Times;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

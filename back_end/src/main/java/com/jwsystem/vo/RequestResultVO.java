@@ -1,9 +1,9 @@
-package com.jwsystem.util;
+package com.jwsystem.vo;
 
 import lombok.Data;
 
 @Data
-public class RequestResult {
+public class RequestResultVO {
     private Integer requestId;
     private boolean res;
 }

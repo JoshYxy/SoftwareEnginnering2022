@@ -1,9 +1,7 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Coursepart;
+import com.jwsystem.entity.course.Coursepart;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.SelectKey;
 
 import java.util.List;
 

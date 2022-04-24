@@ -1,8 +1,8 @@
 package com.jwsystem.util;
 
-import com.jwsystem.entity.Coursepart;
+import com.jwsystem.entity.course.Coursepart;
 import com.jwsystem.vo.CourseVO;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.course.Timepart;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

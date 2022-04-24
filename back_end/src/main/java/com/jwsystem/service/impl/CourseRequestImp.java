@@ -3,11 +3,10 @@ package com.jwsystem.service.impl;
 import com.jwsystem.dao.CoursepartDao;
 import com.jwsystem.dao.RequestDao;
 import com.jwsystem.dao.TimepartDao;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.course.Timepart;
 import com.jwsystem.service.RequestService;
-import com.jwsystem.vo.CourseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

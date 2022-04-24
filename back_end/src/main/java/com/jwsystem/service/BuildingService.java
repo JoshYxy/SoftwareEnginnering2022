@@ -1,7 +1,6 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Building;
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Building;
 import com.jwsystem.vo.BuildingVO;
 
 import java.util.List;

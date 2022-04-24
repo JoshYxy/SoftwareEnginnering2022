@@ -1,8 +1,8 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Teacher;
+import com.jwsystem.entity.user.Teacher;
 import com.jwsystem.dto.User;
-import com.jwsystem.vo.TeacherData;
+import com.jwsystem.vo.TeacherDataVO;
 
 import java.util.List;
 
@@ -28,5 +28,5 @@ public interface TeaService {
 
     boolean findUserMajor(String majorName);
     //返回教师信息 按照学院分类
-    List<TeacherData> getAllTeachersWithCollege();
+    List<TeacherDataVO> getAllTeachersWithCollege();
 }

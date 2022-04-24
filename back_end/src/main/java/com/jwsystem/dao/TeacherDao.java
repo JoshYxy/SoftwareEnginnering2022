@@ -1,6 +1,6 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Teacher;
+import com.jwsystem.entity.user.Teacher;
 import com.jwsystem.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 

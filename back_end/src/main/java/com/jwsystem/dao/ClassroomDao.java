@@ -1,6 +1,6 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.affair.Classroom;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

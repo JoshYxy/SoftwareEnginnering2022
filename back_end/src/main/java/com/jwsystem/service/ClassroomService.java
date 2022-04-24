@@ -1,8 +1,6 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Classroom;
-
-import java.util.List;
+import com.jwsystem.entity.affair.Classroom;
 
 public interface ClassroomService {
 

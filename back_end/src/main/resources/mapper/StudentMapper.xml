@@ -70,7 +70,7 @@
     </select>
 
     <!--根据身份证号查找-->
-    <select id="selectById" resultType="com.jwsystem.entity.Student">
+    <select id="selectById" resultType="com.jwsystem.entity.user.Student">
         SELECT
             *
         FROM
@@ -80,7 +80,7 @@
     </select>
 
     <!--根据学号查找-->
-    <select id="selectByNum" resultType="com.jwsystem.entity.Student">
+    <select id="selectByNum" resultType="com.jwsystem.entity.user.Student">
         SELECT
             *
         FROM
@@ -109,7 +109,7 @@
     </select>
 
     <!--学生查看个人信息-->
-    <select id="getStuInfo" resultType="com.jwsystem.entity.Student">
+    <select id="getStuInfo" resultType="com.jwsystem.entity.user.Student">
         SELECT
             *
         FROM

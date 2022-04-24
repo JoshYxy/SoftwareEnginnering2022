@@ -2,8 +2,8 @@ package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.BuildingDao;
 import com.jwsystem.dao.ClassroomDao;
-import com.jwsystem.entity.Building;
-import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.affair.Building;
+import com.jwsystem.entity.affair.Classroom;
 import com.jwsystem.service.BuildingService;
 import com.jwsystem.vo.BuildingVO;
 import org.springframework.beans.factory.annotation.Autowired;

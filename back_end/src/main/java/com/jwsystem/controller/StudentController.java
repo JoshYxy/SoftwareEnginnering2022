@@ -1,9 +1,9 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Student;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.user.Student;
+import com.jwsystem.entity.course.Timepart;
 import com.jwsystem.service.StuService;
 import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.CourseRequestImp;

@@ -1,7 +1,6 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Request;
-import com.jwsystem.vo.CourseRequest;
+import com.jwsystem.entity.request.Request;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -1,6 +1,6 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.College;
+import com.jwsystem.entity.college.College;
 import com.jwsystem.vo.CollegeVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -1,14 +1,13 @@
-package com.jwsystem.entity;
+package com.jwsystem.entity.college;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Major {
-    private Integer majorId;
+@NoArgsConstructor
+public class College {
+    private Integer collegeId;
     private String name;
-    private String collegeName;
 }

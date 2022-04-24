@@ -2,10 +2,10 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.User;
-import com.jwsystem.entity.College;
-import com.jwsystem.entity.Major;
-import com.jwsystem.entity.Student;
-import com.jwsystem.entity.Teacher;
+import com.jwsystem.entity.college.College;
+import com.jwsystem.entity.college.Major;
+import com.jwsystem.entity.user.Student;
+import com.jwsystem.entity.user.Teacher;
 import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;

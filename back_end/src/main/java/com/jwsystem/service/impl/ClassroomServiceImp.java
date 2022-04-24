@@ -1,12 +1,10 @@
 package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.ClassroomDao;
-import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.affair.Classroom;
 import com.jwsystem.service.ClassroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ClassroomServiceImp implements ClassroomService {

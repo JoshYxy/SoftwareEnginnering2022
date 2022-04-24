@@ -1,6 +1,6 @@
 package com.jwsystem.vo;
 
-import com.jwsystem.entity.Teacher;
+import com.jwsystem.entity.user.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeacherData {
+public class TeacherDataVO {
     private String collegeName;
     private List<Teacher> teachers;
 }

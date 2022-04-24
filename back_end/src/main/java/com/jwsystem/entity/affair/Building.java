@@ -1,4 +1,4 @@
-package com.jwsystem.entity;
+package com.jwsystem.entity.affair;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

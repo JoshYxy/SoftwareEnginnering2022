@@ -1,6 +1,6 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Times;
 
 import java.util.List;
 

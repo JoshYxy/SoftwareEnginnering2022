@@ -2,18 +2,15 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.CourseDTO;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Timepart;
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.course.Timepart;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.CourseUtil;
-import com.jwsystem.util.RequestResult;
-import com.jwsystem.vo.BuildingVO;
-import com.jwsystem.vo.CourseRequest;
+import com.jwsystem.vo.RequestResultVO;
+import com.jwsystem.vo.CourseRequestVO;
 import com.jwsystem.vo.CourseVO;
-import com.jwsystem.vo.TeacherData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static com.jwsystem.vo.CourseRequest.*;
+import static com.jwsystem.vo.CourseRequestVO.*;
 
 //管理员对课程的管理
 @RestController
@@ -140,41 +137,41 @@ public class CourseController extends MainController{
         //从存申请信息的表中取出所有未被审核的申请
         List<Request> requestList = courseRequestImp.getAllRequests();
 
-        List<CourseRequest> courseRequestList = new ArrayList<>();
+        List<CourseRequestVO> courseRequestVOList = new ArrayList<>();
         //将每个requestInDB包装成CourseRequest
         for (Request r:
                 requestList) {
-                CourseRequest courseRequest  = new CourseRequest();
+                CourseRequestVO courseRequestVO = new CourseRequestVO();
 
                 //从req-coursepart和req-timepart里取出request对应数据
                 Coursepart cp = courseRequestImp.getReqCoursepartByRequestId(r.getRequestId());
                 List<Timepart> tp = courseRequestImp.getAllReqTimepartByRequestId(r.getRequestId());
 
-                courseRequest.setRequestId(r.getRequestId());
-                courseRequest.setType(r.getType());
-                courseRequest.setPassed(r.isPassed());
-                courseRequest.setExamined(r.isExamined());
+                courseRequestVO.setRequestId(r.getRequestId());
+                courseRequestVO.setType(r.getType());
+                courseRequestVO.setPassed(r.isPassed());
+                courseRequestVO.setExamined(r.isExamined());
 
                 CourseVO courseVO = courseUtil.transToVO(cp,tp);
                 courseVO.setCourseId(r.getCourseId());
 
-                courseRequest.setCourseVO(courseVO);
-                courseRequestList.add(courseRequest);
+                courseRequestVO.setCourseVO(courseVO);
+                courseRequestVOList.add(courseRequestVO);
         }
 
-        return Result.succ(courseRequestList);
+        return Result.succ(courseRequestVOList);
     }
 
     //管理员审核申请
     @PostMapping("/courseRequests")
-    public Result examine(@RequestBody RequestResult requestResult){
+    public Result examine(@RequestBody RequestResultVO requestResultVO){
         //检查request是否存在
-        if(requestResult.getRequestId()==null){
+        if(requestResultVO.getRequestId()==null){
             response.setStatus(WRONG_DATA);
             return Result.fail("审核失败：未给出请求id");
         }
 
-        Request r = courseRequestImp.selectRequestById(requestResult.getRequestId());
+        Request r = courseRequestImp.selectRequestById(requestResultVO.getRequestId());
         if(r==null){
             response.setStatus(WRONG_DATA);
             return Result.fail("审核失败：该请求不存在");
@@ -183,7 +180,7 @@ public class CourseController extends MainController{
         String resultInfo = null;
 
         //如果申请通过
-        if(requestResult.isRes()){
+        if(requestResultVO.isRes()){
             String type = r.getType();
 
 
@@ -259,11 +256,11 @@ public class CourseController extends MainController{
             }
             else{
                 response.setStatus(WRONG_DATA);
-                return Result.fail("无效的请求类型",requestResult);
+                return Result.fail("无效的请求类型", requestResultVO);
             }
         }
         //设置对应的请求，examined为true，passed为requestResult.isRes()
-        courseRequestImp.examinedById(requestResult.getRequestId(),true,requestResult.isRes());
+        courseRequestImp.examinedById(requestResultVO.getRequestId(),true, requestResultVO.isRes());
         return Result.succ("审核完毕，"+ resultInfo);
     }
 

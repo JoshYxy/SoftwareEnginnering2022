@@ -2,9 +2,9 @@ package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.CollegeDao;
 import com.jwsystem.dao.MajorDao;
-import com.jwsystem.entity.College;
+import com.jwsystem.entity.college.College;
 import com.jwsystem.vo.CollegeVO;
-import com.jwsystem.entity.Major;
+import com.jwsystem.entity.college.Major;
 import com.jwsystem.service.EduService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

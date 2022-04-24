@@ -16,19 +16,19 @@
         DELETE FROM classroom WHERE room_id = #{room_id}
     </delete>
 
-    <select id="findByNumAndBuilding" resultType="com.jwsystem.entity.Classroom">
+    <select id="findByNumAndBuilding" resultType="com.jwsystem.entity.affair.Classroom">
         SELECT *
         FROM classroom
         where room_num=#{room_num} and building = #{building}
     </select>
 
-    <select id="findById" resultType="com.jwsystem.entity.Classroom">
+    <select id="findById" resultType="com.jwsystem.entity.affair.Classroom">
         SELECT *
         FROM classroom
         where room_id = #{room_id}
     </select>
 
-    <select id="getClassroomsByBuilding" resultType="com.jwsystem.entity.Classroom">
+    <select id="getClassroomsByBuilding" resultType="com.jwsystem.entity.affair.Classroom">
         SELECT *
         FROM classroom
         where building = #{building}

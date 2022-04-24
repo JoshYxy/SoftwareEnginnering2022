@@ -1,8 +1,8 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.course.Timepart;
 
 import java.util.List;
 

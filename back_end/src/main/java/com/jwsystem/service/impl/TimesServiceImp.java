@@ -1,7 +1,7 @@
 package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.TimesDao;
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Times;
 import com.jwsystem.service.TimesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.jwsystem.entity;
+package com.jwsystem.entity.user;
 
 import com.jwsystem.dto.User;
 

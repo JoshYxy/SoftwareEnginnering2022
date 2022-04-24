@@ -3,8 +3,8 @@ package com.jwsystem.service.impl;
 import com.jwsystem.dao.CollegeDao;
 import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.TeacherDao;
-import com.jwsystem.entity.Teacher;
-import com.jwsystem.vo.TeacherData;
+import com.jwsystem.entity.user.Teacher;
+import com.jwsystem.vo.TeacherDataVO;
 import com.jwsystem.dto.User;
 import com.jwsystem.service.TeaService;
 import org.apache.commons.lang3.StringUtils;
@@ -82,20 +82,20 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
-    public List<TeacherData> getAllTeachersWithCollege(){
+    public List<TeacherDataVO> getAllTeachersWithCollege(){
         //将所有的有老师的college拿出来遍历，根据college名字去找到所有的teacher
 //        public class TeacherData {
 //            private String collegeName;
 //            private List<Teacher> teachers;
 //        }
-        List<TeacherData> teacherDataList = new ArrayList<>();
+        List<TeacherDataVO> teacherDataVOList = new ArrayList<>();
         List<String> colleges;
         colleges = collegeDao.getAllCollegeName();
         for(String c:colleges){
-            TeacherData td = new TeacherData(c,teacherDao.getTeacherByCollegeName(c));
-            teacherDataList.add(td);
+            TeacherDataVO td = new TeacherDataVO(c,teacherDao.getTeacherByCollegeName(c));
+            teacherDataVOList.add(td);
         }
-        return teacherDataList;
+        return teacherDataVOList;
     }
 
 

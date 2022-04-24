@@ -2,11 +2,11 @@ package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.User;
-import com.jwsystem.entity.Times;
+import com.jwsystem.entity.affair.Times;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.JwtUtils;
 import com.jwsystem.vo.BuildingVO;
-import com.jwsystem.vo.TeacherData;
+import com.jwsystem.vo.TeacherDataVO;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -183,7 +183,7 @@ public class UserController extends MainController{
     @GetMapping("/course/new")
     public Result getCourseInfo(){
         //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
-        List<TeacherData> teacherDataList = teaServiceImp.getAllTeachersWithCollege();
+        List<TeacherDataVO> teacherDataVOList = teaServiceImp.getAllTeachersWithCollege();
 
         //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
         List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
@@ -191,7 +191,7 @@ public class UserController extends MainController{
         //上课时间信息
         List<Times> times = timesServiceImp.getAllTimes();
 
-        return Result.succ3(teacherDataList,buildingVOList,times);
+        return Result.succ3(teacherDataVOList,buildingVOList,times);
     }
 
 }

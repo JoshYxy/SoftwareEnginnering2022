@@ -1,6 +1,5 @@
 package com.jwsystem.vo;
 
-import com.jwsystem.vo.CourseVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseRequest {
+public class CourseRequestVO {
     private Integer requestId;   //作为键的id
     private String type;    //请求类型
     private CourseVO courseVO;  //请求对应的课程
