@@ -1,11 +1,17 @@
 <template>
     <div >
         <h2>选课状态设置</h2>
-        <el-switch    
+        <el-radio-group v-model="courseStatus" @change="courseChange">
+            <el-radio :label='0'>关闭选课</el-radio>
+            <el-radio :label="1">第一轮选课</el-radio>
+            <el-radio :label="2">第二轮选课</el-radio>
+        </el-radio-group>
+
+        <!-- <el-switch    
             v-model="courseOpen"
             active-text="开始选课"
             inactive-text="停止选课" 
-            :before-change="courseChange"/>
+            :before-change="courseChange"/> -->
         <h2>教学时间设置</h2>
         <el-button @click="addCourse(-1)">增加第一节课</el-button>
         <el-button type='primary' @click="submitCourse">提交修改</el-button>
@@ -99,6 +105,7 @@ export default {
         return {
 
             courseOpen: true,
+            courseStatus: '0',
             onDeleteAll: false,//是否有card进入删除状态
             onDelete: [false],//特定card是否进入删除教室状态
             checkGroup: [],
@@ -123,29 +130,13 @@ export default {
         }
     },
     methods: {
-        async courseChange() {
-            var flag = false
-            await ElMessageBox.confirm(
-                '是否更改选课状态',
-                '请确认',
-                {
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
-                type: 'warning',
-                }
-            )
-                .then(() => {
-                    axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:!this.courseOpen}})
-                    ElMessage({
-                        type: 'success',
-                        message: '修改完成',
-                    })
-                    flag = true
-                })
-                .catch(() => {
-                    flag = false
-                })
-            return flag
+        courseChange() {
+            axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:!this.courseOpen}})
+            ElMessage({
+                type: 'success',
+                message: '修改完成',
+            })
+            console.log(this.courseStatus)
         },
         deleteCourse(index) {
             this.startTime.splice(index,1)
@@ -288,7 +279,7 @@ export default {
          //获取选课状态
         axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
-            this.courseOpen = res.data.data1
+            this.courseStatus = res.data.data1
         })
         .catch(error => {
             console.dir(error)
