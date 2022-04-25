@@ -97,7 +97,8 @@
                     </el-form-item>
                     <el-form-item label="上课教室" prop="selectRoom">
                         <el-cascader :props="roomProps" :options="classroom" v-model="editCourse.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom(scope.row)" filterable clearable/>     
-                        <span style="padding-left:20px">*切换教室后需重新选择课程时间</span>
+                        <span style="padding-left:20px">教室容量: {{roomCap}} </span>
+                        <span style="padding-left:20px">*切换教室后需重新选择课程时间</span>           
                     </el-form-item>
                     <el-form-item label="上课时间" prop="selectTime">
                         <div class="time-container">
@@ -146,6 +147,24 @@ import global_ from '../jsComponents/global'
 import axios from 'axios'
 export default {
     data() {
+        var validCapacity = (rule, value, callback) => {
+            if(value!==''){
+                var cap = parseInt(value)
+                console.log(1)
+                if(cap <= parseInt(this.roomCap)){
+                    callback()
+                }
+                else {
+                    return callback(new Error('选课容量需小于教室容量'))
+                }
+            }
+        };
+        var validRoom = (rule, value, callback) => {
+            if(this.editCourse.capacity!==''){
+                this.$refs['editCourse'].validateField('capacity', () => null)
+            } 
+            callback()
+        };
         return {
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: ['blur','change']}],
@@ -153,13 +172,15 @@ export default {
                 courseNum: [{required: true, message: '请输入课程编号', trigger: ['blur','change']}],
                 credits: [{required: true, message: '请输入学分', trigger: ['blur','change']},
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
-                capacity: [{required: true, message: '请输入选课容量', trigger: ['blur','change']},
-                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
+                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'},
+                           {validator: validCapacity, trigger: 'blur'}],
                 commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
                 majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 college: [{validator: validCollege, trigger: ['blur','change']}], 
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
-                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
+                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']},
+                             {validator: validRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
             },
             majorProps: {
@@ -211,16 +232,16 @@ export default {
                     name: '第三教学楼',
                     aka: 'H3',
                     room: [
-                        {name:'301'},
-                        {name:'402'}
+                        {name:'301', capacity:120},
+                        {name:'402', capacity:120}
                     ]
                 },
                 {
                     name: '光华楼西辅楼',
                     aka: 'HGX',
                     room: [
-                        {name:'201'},
-                        {name:'502'}
+                        {name:'201', capacity:100},
+                        {name:'502', capacity:110}
                     ]
                 },
             ],
@@ -423,6 +444,17 @@ export default {
             console.log(obj)
             return this.deWeight(obj) 
         },
+        roomCap() {
+            if(this.editCourse.selectRoom == null) return 0
+            for(let i = 0; i < this.classroom.length; i++){
+                for(let j = 0; j < this.classroom[i].room.length; j++) {
+                    if(this.editCourse.selectRoom[1] == this.classroom[i].room[j].name) {
+                        return this.classroom[i].room[j].capacity
+                    }
+                }
+            }
+            return 0
+        }
     },
     methods: {
         

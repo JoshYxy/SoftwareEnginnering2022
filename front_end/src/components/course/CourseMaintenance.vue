@@ -61,6 +61,7 @@
         </el-form-item> 
         <el-form-item label="上课教室" prop="selectRoom">
             <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
+            <span>教室容量: {{roomCap}} </span>
         </el-form-item>
         <el-form-item label="上课时间" prop="selectTime">            
             <div class="time-container">
@@ -116,6 +117,24 @@ export default {
         Upload
     },
     data() {
+        var validCapacity = (rule, value, callback) => {
+            if(value!==''){
+                var cap = parseInt(value)
+                console.log(1)
+                if(cap <= parseInt(this.roomCap)){
+                    callback()
+                }
+                else {
+                    return callback(new Error('选课容量需小于教室容量'))
+                }
+            }
+        };
+        var validRoom = (rule, value, callback) => {
+            if(this.courseData.capacity!==''){
+                this.$refs['courseData'].validateField('capacity', () => null)
+            } 
+            callback()
+        };
         return {
             buildingToAbbr: global_.buildingToAbbr,
             periods:[
@@ -270,11 +289,25 @@ export default {
                 commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
                 majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
-                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'},
+                           {validator: validCapacity, trigger: 'blur'}],
                 college: [{validator: validCollege, trigger: ['blur','change']}],
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
-                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
+                selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']},
+                             {validator: validRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
+            }
+        }
+    },
+    computed: {
+        roomCap() {
+            if(this.courseData.selectRoom == null) return 0
+            for(let i = 0; i < this.classroom.length; i++){
+                for(let j = 0; j < this.classroom[i].room.length; j++) {
+                    if(this.courseData.selectRoom[1] == this.classroom[i].room[j].name) {
+                        return this.classroom[i].room[j].capacity
+                    }
+                }
             }
         }
     },
