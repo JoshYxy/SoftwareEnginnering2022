@@ -190,7 +190,7 @@ export default {
                     this.newRoom = ''
                     return
                 }
-                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom, roomCapacity: this.newCap})
+                await axios.post('http://localhost:8081/affair/room/new', {building: this.newClassroom.aka, roomNum: this.newRoom, capacity: this.newCap})
                 .then(res => {
                     console.log(res)
                     this.classroom[i].room.push({name:this.newRoom, capacity: this.newCap}) 
@@ -240,6 +240,9 @@ export default {
         },
         deleteBuilding(index) {
             axios.delete('http://localhost:8081/affair/building/rooms', {data:{fullName: this.classroom[index].name, abbrName: this.classroom[index].aka}})
+            .catch(error => {
+                alert(error.response.data.msg)
+            })
             this.classroom.splice(index, 1)
         },
         openDelete(index) {
@@ -265,6 +268,7 @@ export default {
                     })
                     .catch(err => {
                         console.dir(err)
+                        alert(err.response.data.msg)
                     })
                     i=i-1
                 }

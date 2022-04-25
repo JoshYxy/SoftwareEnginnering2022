@@ -125,7 +125,7 @@ export default {
                 this.remove(node, data)
                 ElMessage({type: 'success', message: `删除成功`})
               }).catch(error => {
-                ElMessage.error('删除失败')
+                ElMessage.error(error.response.data.msg)
                 console.dir(error);
               });
           }
@@ -136,7 +136,7 @@ export default {
                 this.remove(node, data)
                 ElMessage({type: 'success', message: `删除成功`})
               }).catch(error => {
-                ElMessage.error('删除失败')
+                ElMessage.error(error.response.data.msg)
                 console.dir(error);
               });
           }
