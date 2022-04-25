@@ -40,7 +40,15 @@
         <el-form-item label="课程简介" prop="courseInfo">
             <el-input v-model="courseData.courseInfo" type="textarea" />
         </el-form-item>  
-    
+        <el-form-item label="课程类型" prop="commonCourse">
+            <el-select v-model="courseData.commonCourse" placeholder="类型">
+                <el-option label="通选课程" value="1" />
+                <el-option label="专业选修" value="0" />
+            </el-select>
+        </el-form-item> 
+        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '0'">
+            <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
+        </el-form-item> 
         <el-form-item label="开课院系" prop="college">
             <el-select v-model="courseData.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
                 <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
@@ -113,27 +121,59 @@ export default {
             periods:[
                 '周日','周一','周二','周三','周四','周五','周六',
             ],
-
+            
             roomProps: {
                 children: 'room',
                 label: 'name',
                 value: 'name'
+            },
+            majorProps: {
+                children: 'majors',
+                label: 'name',
+                value: 'name',
+                multiple: true
             },
             classroom: [
                 {
                     name: '第三教学楼',
                     aka: 'H3',
                     room: [
-                        {name:'301'},
-                        {name:'402'}
+                        {name:'301', capacity:'120'},
+                        {name:'402', capacity:'120'}
                     ]
                 },
                 {
                     name: '光华楼西辅楼',
                     aka: 'HGX',
                     room: [
-                        {name:'201'},
-                        {name:'502'}
+                        {name:'201', capacity:'110'},
+                        {name:'502', capacity:'100'}
+                    ]
+                },
+            ],
+            collegeData: [
+                { 
+                    id: 1,
+                    name: '计算机科学技术学院', 
+                    majors: [
+                        {id: 1, name: '大数据'},
+                        {id: 2, name: '信息安全'}
+                    ]
+                },
+                { 
+                    id: 1,
+                    name: '生命科学学院', 
+                    disabled: true,
+                    majors: [
+                        // {id: 1, name: '生物'},
+                        // {id: 2, name: '123'}
+                    ]
+                },
+                { 
+                    id: 1,
+                    name: '软件工程学院', 
+                    majors: [
+                        {id: 1, name: '软件工程'},
                     ]
                 },
             ],
@@ -214,6 +254,12 @@ export default {
                 capacity: 0,
                 building: '',
                 roomNum: '',
+                commonCourse:'1',
+                majors: [
+                            ["计算机科学技术学院","大数据"],
+                            ["计算机科学技术学院","信息安全"],
+                            ['软件工程学院','软件工程']
+                        ]
             },
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: 'blur'}],
@@ -221,6 +267,8 @@ export default {
                 credits: [{required: true, message: '请输入学分', trigger: 'blur'},
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 courseInfo: [{required: true, message: '请输入课程介绍', trigger: 'blur'}],
+                commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
+                majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 college: [{validator: validCollege, trigger: ['blur','change']}],
@@ -251,6 +299,9 @@ export default {
         },
         updateCollege() {
             this.courseData.teacher = {}
+        },
+        updateMajors() {
+            console.log(this.courseData.majors)
         },
         async updateTeacher(value) {
             //axios获取教师不可用时间
@@ -315,6 +366,7 @@ export default {
                     this.courseData.times = this.courseData.selectTime
                     this.courseData.collegeName = this.courseData.college.collegeName
                     setCourseTime(this.courseData, this.courseData.selectTime)
+                    // setMajors(this.courseData, this.courseData.majors)
                     await axios.post('http://localhost:8081/course/new',this.courseData)
                     .then(res => {
                         console.log(res)
@@ -383,6 +435,12 @@ export default {
                 this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
             }
             this.times = res.data.data3
+            // this.collegeData = res.data.data4
+            // for(let i = 0; i < this.collegeData.length; i++) {
+            //     if(this.collegeData[i].majors == []) {
+            //         this.collegeData[i]['disabled'] = true
+            //     }
+            // }
         }).catch(error => {
             console.dir(error)
         })

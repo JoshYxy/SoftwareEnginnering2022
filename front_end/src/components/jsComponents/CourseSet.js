@@ -36,3 +36,15 @@ export function setCourseTime(data, e) {
             }
         }
 }
+// export function setMajors(data, majors) {
+//     //majors: [
+//     //     {0:学院a 1:专业b}
+//     //     {0:学院a 1:专业c}
+//     //     {0:学院d 1:专业e}
+//     // ]
+//     let major = []
+//     for(let i = 0; i < majors.length; i++) {
+//         major.push(majors[i][1])
+//     }
+
+// }

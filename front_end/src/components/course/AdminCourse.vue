@@ -9,6 +9,20 @@
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
+        <el-table-column prop="commonCourse" label="课程类型" width="180">
+            <template #default="scope">
+                <div v-if="scope.row.commonCourse == '1'">通选课程</div>
+                <div v-if="scope.row.commonCourse == '0'">
+                    <span style="padding-right:10px">专业课程</span>
+                    <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
+                    <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
+                        <div v-for="major in courses[scope.$index].majors" :key="major">
+                            {{major[1]}} ({{major[0]}})
+                        </div>
+                    </el-dialog>
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
         <el-table-column prop="building,roomNum" label="上课地点" width="100" 
@@ -61,7 +75,16 @@
                     </el-form-item>
                     <el-form-item label="课程简介" prop="courseInfo">
                         <el-input v-model="editCourse.courseInfo" type="textarea" />
-                    </el-form-item>      
+                    </el-form-item>     
+                    <el-form-item label="课程类型" prop="commonCourse">
+                        <el-select v-model="editCourse.commonCourse" placeholder="类型">
+                            <el-option label="通选课程" value="1" />
+                            <el-option label="专业选修" value="0" />
+                        </el-select>
+                    </el-form-item> 
+                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.commonCourse == '0'">
+                        <el-cascader :props="majorProps" :options="collegeData" v-model="editCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
+                    </el-form-item>                      
                     <el-form-item label="开课院系" prop="college">
                         <el-select v-model="editCourse.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
                             <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
@@ -132,22 +155,57 @@ export default {
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: ['blur','change']},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
+                commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
+                majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 college: [{validator: validCollege, trigger: ['blur','change']}], 
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
+            },
+            majorProps: {
+                children: 'majors',
+                label: 'name',
+                value: 'name',
+                multiple: true
             },
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
             editTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
             dialogTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
+            majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             selectTime:[[]],
             roomProps: {
                 children: 'room',
                 label: 'name',
                 value: 'name'
             },
+            collegeData: [
+                { 
+                    id: 1,
+                    name: '计算机科学技术学院', 
+                    majors: [
+                        {id: 1, name: '大数据'},
+                        {id: 2, name: '信息安全'}
+                    ]
+                },
+                { 
+                    id: 1,
+                    name: '生命科学学院', 
+                    disabled: true,
+                    majors: [
+                        // {id: 1, name: '生物'},
+                        // {id: 2, name: '123'}
+                    ]
+                },
+                { 
+                    id: 1,
+                    name: '软件工程学院', 
+                    majors: [
+                        {id: 1, name: '软件工程'},
+                    ]
+                },
+            ],
             classroom: [
                 {
                     name: '第三教学楼',
@@ -295,6 +353,12 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'normal',
+                    commonCourse: '0',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ]
                 },
                 {
                     courseId: 2,
@@ -318,6 +382,8 @@ export default {
                     roomNum: '502',
                     courseInfo: '123',
                     type: 'normal',
+                    commonCourse: '1',
+                    majors: [],
                 }
             ],
             editCourse: {
@@ -337,6 +403,8 @@ export default {
                 classHours: '',
                 building: '',
                 roomNum: '',
+                majors:[],
+                commonCourse:'',
             },
         }
     },
@@ -420,36 +488,35 @@ export default {
                 })
         },
         async handleEdit(index, data) {
-            await axios.put('http://localhost:8081/affair/teacher/time',
-                {  
-                    name: data.teacherName, 
-                    number: data.teacherNum
-                })
-            .then(res => {
-                this.unavalTeaTimes = res.data.data1
-            })
-            .catch(err => {
-                console.dir(err)
-            })
-            await axios.put('http://localhost:8081/affair/building/room/time',
-                {   
-                    building: data.building, 
-                    roomNum: data.roomNum
-                })
-            .then(res => {
-                this.unavalRoomTimes = res.data.data1
-            })
+            // await axios.put('http://localhost:8081/affair/teacher/time',
+            //     {  
+            //         name: data.teacherName, 
+            //         number: data.teacherNum
+            //     })
+            // .then(res => {
+            //     this.unavalTeaTimes = res.data.data1
+            // })
+            // .catch(err => {
+            //     console.dir(err)
+            // })
+            // await axios.put('http://localhost:8081/affair/building/room/time',
+            //     {   
+            //         building: data.building, 
+            //         roomNum: data.roomNum
+            //     })
+            // .then(res => {
+            //     this.unavalRoomTimes = res.data.data1
+            // })
             //axios获取教室，教师不可用时间 data.teacher data.selectRoom
-            // this.unavalTeaTimes = [[],[],[],[],[],[],[],[5,6,7,13]]
             
             this.setAvalTime()
             //当前课程时间设置为可以选中
-            for(let i = 0; i < data.times.length; i++) {
-                for(let j = 1; j <= this.times.length; j++) {
-                    if(data.times[i].indexOf(j) > -1)
-                        this.timeData[i].times[j-1].disable = false
-                }
-            }
+            // for(let i = 0; i < data.times.length; i++) {
+            //     for(let j = 1; j <= this.times.length; j++) {
+            //         if(data.times[i].indexOf(j) > -1)
+            //             this.timeData[i].times[j-1].disable = false
+            //     }
+            // }
             //数组深拷贝
             this.editCourse.selectTime = []
             for(let i = 0; i < data.times.length; i++)
@@ -457,12 +524,19 @@ export default {
                 let [...arr] = data.times[i]
                 this.editCourse.selectTime.push(arr)
             }
+            this.editCourse.majors = []
+            for(let i = 0; i < data.majors.length; i++)
+            {
+                let [...arr] = data.majors[i]
+                this.editCourse.majors.push(arr)
+            }
             this.editCourse.courseId = data.courseId
             this.editCourse.courseNum = data.courseNum
             this.editCourse.capacity = data.capacity
             this.editCourse.credits = data.credits
             this.editCourse.courseInfo = data.courseInfo
             this.editCourse.courseName = data.courseName
+            this.editCourse.commonCourse = data.commonCourse
             // this.editCourse.collegeName = data.collegeName
             for(let i = 0; i < this.teacherData.length; i++) {
                 if(data.collegeName == this.teacherData[i].collegeName) {
@@ -492,6 +566,8 @@ export default {
                     this.courses[index].teacherName = this.editCourse.teacher.name
                     this.courses[index].teacherNum = this.editCourse.teacher.number
                     this.courses[index].collegeName = this.editCourse.college.collegeName
+                    this.courses[index].commonCourse = this.editCourse.commonCourse
+                    this.courses[index].majors = this.editTableVisible.majors
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].type = 'changed'
                     axios.post('http://localhost:8081/course', this.courses[index])
@@ -600,45 +676,51 @@ export default {
         },
         
     },
-    async created() {
-        await axios.get('http://localhost:8081/user/course/new')
-        .then(res => {
-            this.teacherData = res.data.data1
-            this.classroom = res.data.data2
-            for(let i = 0; i < this.classroom.length; i++) {
-                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
-                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
-                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
-            }
-            this.times = res.data.data3
-        })
-        await axios.get('http://localhost:8081/course')
-        .then(res => {
-            for(let i = 0; i < res.data.data1.length; i++){
-            this.editTableVisible.push(false)
-            this.dialogTableVisible.push(false)
-            }
-            this.courses = res.data.data1
-        })
+    // async created() {
+    //     await axios.get('http://localhost:8081/user/course/new')
+    //     .then(res => {
+    //         this.teacherData = res.data.data1
+    //         this.classroom = res.data.data2
+    //         for(let i = 0; i < this.classroom.length; i++) {
+    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
+    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
+    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
+    //         }
+    //         this.times = res.data.data3
+    //         // this.collegeData = res.data.data4
+    //         // for(let i = 0; i < this.collegeData.length; i++) {
+    //         //     if(this.collegeData[i].majors == []) {
+    //         //         this.collegeData[i]['disabled'] = true
+    //         //     }
+    //         // }
+    //     })
+    //     await axios.get('http://localhost:8081/course')
+    //     .then(res => {
+    //         for(let i = 0; i < res.data.data1.length; i++){
+    //         this.editTableVisible.push(false)
+    //         this.dialogTableVisible.push(false)
+    //         }
+    //         this.courses = res.data.data1
+    //     })
 
-        for(let course of this.courses) {
-            course.courseTime = ''
-            setCourseTime(course, course.times)
+    //     for(let course of this.courses) {
+    //         course.courseTime = ''
+    //         setCourseTime(course, course.times)
 
-        }
-        this.timeData = []
-        for(let i = 0; i < 7; i++) {//创建选课时间数组
-            this.timeData.push({id:0, name:'', times:[]})
-            this.timeData[i].id = i;
-            this.timeData[i].name = '周'+ i
-            this.timeData[i].times = []
-            for(let j in this.times) {
-                this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
-            }
-        }
-        // console.log(this.editTableVisible)
-        // console.log(this.dialogTableVisible)
-    }
+    //     }
+    //     this.timeData = []
+    //     for(let i = 0; i < 7; i++) {//创建选课时间数组
+    //         this.timeData.push({id:0, name:'', times:[]})
+    //         this.timeData[i].id = i;
+    //         this.timeData[i].name = '周'+ i
+    //         this.timeData[i].times = []
+    //         for(let j in this.times) {
+    //             this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
+    //         }
+    //     }
+    //     // console.log(this.editTableVisible)
+    //     // console.log(this.dialogTableVisible)
+    // }
 }
 </script>
 

@@ -5,7 +5,20 @@
     <el-table class="tea-course-table" ref="course-table" :data="courses" :row-class-name="tableRowClassName">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
-        
+        <el-table-column prop="commonCourse" label="课程类型" width="180">
+            <template #default="scope">
+                <div v-if="scope.row.commonCourse == '1'">通选课程</div>
+                <div v-if="scope.row.commonCourse == '0'">
+                    <span style="padding-right:10px">专业课程</span>
+                    <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
+                    <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
+                        <div v-for="major in courses[scope.$index].majors" :key="major">
+                            {{major[1]}} ({{major[0]}})
+                        </div>
+                    </el-dialog>
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
         <el-table-column prop="building,roomNum" label="上课地点" width="100" >
@@ -166,6 +179,7 @@ export default {
             buildingToAbbr: global_.buildingToAbbr,
             editTableVisible:[false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
             dialogTableVisible:[false,false,false,false,false,false,false,false,],
+            majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             newTableVisible: false,
             selectTime:[[]],
             roomProps: {
@@ -308,6 +322,12 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'normal',
+                    commonCourse: '0',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ]
                 },
                 {
                     courseId: 2,
@@ -331,6 +351,12 @@ export default {
                     roomNum: '502',
                     courseInfo: '123',
                     type: 'normal',
+                    commonCourse: '0',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ]
                 }
             ],
             editCourse: {

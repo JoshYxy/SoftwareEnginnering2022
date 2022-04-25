@@ -81,7 +81,7 @@
                     <el-button v-if="onDelete[index]" class="button2" type="text" @click="cancelDelete(index)">取消删除</el-button>
                     <div class="hold-place" v-if="onDeleteAll && !onDelete[index]"> </div>
                     <div v-if="!onDelete[index]" class="card-item-div-container">
-                        <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room.name}} 容量：{{room.capacity}}</div>
+                        <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room.name}} {{room.capacity}}人</div>
                     </div> 
                     <div v-for="(room,index2) in checkGroup" 
                             :key="room.name" 
