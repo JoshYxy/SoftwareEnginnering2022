@@ -49,6 +49,16 @@
         <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '专业课程'">
             <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
         </el-form-item> 
+        <el-form-item label="开课学年" prop="year" style="float:left; margin-right:20px">
+            <el-select v-model="courseData.year" placeholder="学年">
+                <el-option :key="year" :value="year" :label="year" v-for="year in years" />
+            </el-select>
+        </el-form-item>
+        <el-form-item label="开课学期" prop="year">
+            <el-select v-model="courseData.semester" placeholder="学期">
+                <el-option :key="semester" :value="semester" :label="semester" v-for="semester in semesters" />
+            </el-select>
+        </el-form-item>
         <el-form-item label="开课院系" prop="college">
             <el-select v-model="courseData.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
                 <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
@@ -137,10 +147,9 @@ export default {
         };
         return {
             buildingToAbbr: global_.buildingToAbbr,
-            periods:[
-                '周日','周一','周二','周三','周四','周五','周六',
-            ],
-            
+            periods: global_.periods,
+            semesters: global_.semesters,
+            years: global_.years,
             roomProps: {
                 children: 'room',
                 label: 'name',
@@ -278,7 +287,9 @@ export default {
                             ["计算机科学技术学院","大数据"],
                             ["计算机科学技术学院","信息安全"],
                             ['软件工程学院','软件工程']
-                        ]
+                        ],
+                year: '',
+                semester: '',
             },
             rules: {
                 courseName: [{required: true, message: '请输入课程名称', trigger: 'blur'}],
@@ -296,6 +307,8 @@ export default {
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']},
                              {validator: validRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
+                year: [{required: true, message: '请选择开课学年',trigger: ['blur','change']}],
+                semester: [{required: true, message: '请选择开课学期',trigger: ['blur','change']}],
             }
         }
     },

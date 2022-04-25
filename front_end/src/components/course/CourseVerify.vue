@@ -5,7 +5,26 @@
         <el-table-column fixed prop="showStatus" label="申请类型" width="80" />
         <el-table-column prop="courseName" label="课程名" width="140" />
         <el-table-column prop="courseNum" label="课程编号" width="150" />
+        <el-table-column prop="year,semester" label="开课学期" width="180">
+            <template #default="scope">
+                {{scope.row.year}}{{scope.row.semester}}
+            </template>
+        </el-table-column>
         <el-table-column prop="collegeName" label="开课院系" width="180" />
+        <el-table-column prop="commonCourse" label="课程类型" width="180">
+            <template #default="scope">
+                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
+                <div v-if="scope.row.commonCourse == '专业课程'">
+                    <span style="padding-right:10px">专业课程</span>
+                    <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
+                    <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
+                        <div v-for="major in pendingCourses[scope.$index].majors" :key="major">
+                            {{major[1]}} ({{major[0]}})
+                        </div>
+                    </el-dialog>
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="classHours" label="学时" width="60" />
         <el-table-column prop="credits" label="学分" width="60" />
         <el-table-column prop="building,roomNum" label="上课地点" width="140" >
@@ -47,6 +66,7 @@ export default {
                 change: '修改',
             },
             dialogTableVisible:[false,false,false,false,false,false,false,false],
+            majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             pendingCourses:[
                 {
                     showStatus: '',
@@ -75,6 +95,14 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'change',
+                    commonCourse: '专业课程',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ],
+                    year:'2021-2022',
+                    semester:'春',
                     examined: false,
                     passed: false,
                 },
@@ -105,6 +133,14 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'delete',
+                    commonCourse: '通选课程',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ],
+                    year:'2021-2022',
+                    semester:'春',
                     examined: false,
                     passed: false,
                 }   

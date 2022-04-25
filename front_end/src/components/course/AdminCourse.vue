@@ -6,6 +6,11 @@
     <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
+        <el-table-column prop="year,semester" label="开课学期" width="180">
+            <template #default="scope">
+                {{scope.row.year}}{{scope.row.semester}}
+            </template>
+        </el-table-column>
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
@@ -84,7 +89,17 @@
                     </el-form-item> 
                     <el-form-item label="面向专业" prop="majors" v-if="editCourse.commonCourse == '专业课程'">
                         <el-cascader :props="majorProps" :options="collegeData" v-model="editCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
-                    </el-form-item>                      
+                    </el-form-item>
+                    <el-form-item label="开课学年" prop="year" style="float:left; margin-right:20px">
+                        <el-select v-model="editCourse.year" placeholder="学年">
+                            <el-option :key="year" :value="year" :label="year" v-for="year in years" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="开课学期" prop="year">
+                        <el-select v-model="editCourse.semester" placeholder="学期">
+                            <el-option :key="semester" :value="semester" :label="semester" v-for="semester in semesters" />
+                        </el-select>
+                    </el-form-item>                   
                     <el-form-item label="开课院系" prop="college">
                         <el-select v-model="editCourse.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
                             <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
@@ -182,6 +197,8 @@ export default {
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']},
                              {validator: validRoom, trigger: ['blur','change']}],
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
+                year: [{required: true, message: '请选择开课学年',trigger: ['blur','change']}],
+                semester: [{required: true, message: '请选择开课学期',trigger: ['blur','change']}],
             },
             majorProps: {
                 children: 'majors',
@@ -192,6 +209,8 @@ export default {
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
+            semesters: global_.semesters,
+            years: global_.years,
             editTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
             dialogTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
@@ -379,7 +398,9 @@ export default {
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
                                 ['软件工程学院','软件工程']
-                            ]
+                            ],
+                    year:'2021-2022',
+                    semester:'春'
                 },
                 {
                     courseId: 2,
@@ -405,6 +426,8 @@ export default {
                     type: 'normal',
                     commonCourse: '通选课程',
                     majors: [],
+                    year:'2020-2021',
+                    semester:'秋'
                 }
             ],
             editCourse: {
@@ -426,6 +449,8 @@ export default {
                 roomNum: '',
                 majors:[],
                 commonCourse:'',
+                semester: '',
+                year: ''
             },
         }
     },
@@ -520,35 +545,35 @@ export default {
                 })
         },
         async handleEdit(index, data) {
-            // await axios.put('http://localhost:8081/affair/teacher/time',
-            //     {  
-            //         name: data.teacherName, 
-            //         number: data.teacherNum
-            //     })
-            // .then(res => {
-            //     this.unavalTeaTimes = res.data.data1
-            // })
-            // .catch(err => {
-            //     console.dir(err)
-            // })
-            // await axios.put('http://localhost:8081/affair/building/room/time',
-            //     {   
-            //         building: data.building, 
-            //         roomNum: data.roomNum
-            //     })
-            // .then(res => {
-            //     this.unavalRoomTimes = res.data.data1
-            // })
+            await axios.put('http://localhost:8081/affair/teacher/time',
+                {  
+                    name: data.teacherName, 
+                    number: data.teacherNum
+                })
+            .then(res => {
+                this.unavalTeaTimes = res.data.data1
+            })
+            .catch(err => {
+                console.dir(err)
+            })
+            await axios.put('http://localhost:8081/affair/building/room/time',
+                {   
+                    building: data.building, 
+                    roomNum: data.roomNum
+                })
+            .then(res => {
+                this.unavalRoomTimes = res.data.data1
+            })
             //axios获取教室，教师不可用时间 data.teacher data.selectRoom
             
             this.setAvalTime()
             //当前课程时间设置为可以选中
-            // for(let i = 0; i < data.times.length; i++) {
-            //     for(let j = 1; j <= this.times.length; j++) {
-            //         if(data.times[i].indexOf(j) > -1)
-            //             this.timeData[i].times[j-1].disable = false
-            //     }
-            // }
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
             //数组深拷贝
             this.editCourse.selectTime = []
             for(let i = 0; i < data.times.length; i++)
@@ -569,6 +594,8 @@ export default {
             this.editCourse.courseInfo = data.courseInfo
             this.editCourse.courseName = data.courseName
             this.editCourse.commonCourse = data.commonCourse
+            this.editCourse.year = data.year
+            this.editCourse.semester = data.semester
             // this.editCourse.collegeName = data.collegeName
             for(let i = 0; i < this.teacherData.length; i++) {
                 if(data.collegeName == this.teacherData[i].collegeName) {
@@ -600,6 +627,8 @@ export default {
                     this.courses[index].collegeName = this.editCourse.college.collegeName
                     this.courses[index].commonCourse = this.editCourse.commonCourse
                     this.courses[index].majors = this.editTableVisible.majors
+                    this.courses[index].semester = this.editTableVisible.semester
+                    this.courses[index].year = this.editTableVisible.year
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].type = 'changed'
                     axios.post('http://localhost:8081/course', this.courses[index])

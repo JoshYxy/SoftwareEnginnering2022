@@ -19,10 +19,26 @@ const buildingToAbbr = {
 const periods = [
     '周日','周一','周二','周三','周四','周五','周六',
 ]
-
+const semesters = ['春','秋']
+const years = [
+    '2010-2011',
+    '2011-2012',
+    '2012-2013',
+    '2013-2014',
+    '2014-2015',
+    '2015-2016',
+    '2016-2017',
+    '2017-2018',
+    '2018-2019',
+    '2019-2020',
+    '2020-2021',
+    '2021-2022'
+]
 export default
 {
     buildingToAbbr,
     abbrToBuilding,
-    periods
+    periods,
+    semesters,
+    years
 }
