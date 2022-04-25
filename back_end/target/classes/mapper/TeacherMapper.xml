@@ -141,4 +141,14 @@
         WHERE
             college = #{college} and status = "working"
     </select>
+
+    <!--根据专业得到在职老师数量-->
+    <select id="getTeacherByMajor" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            teacher
+        WHERE
+            major = #{major} and status = "working"
+    </select>
 </mapper>

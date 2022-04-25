@@ -46,19 +46,29 @@ public class AdminController extends MainController{
 
         boolean valid = true;
 
-        //role检验：是否为老师或学生
         String role = tempUser.getRole();
-        if(!role.equals("student") && !role.equals("teacher")) valid = false;
+        String id = tempUser.getId();
+        String status = tempUser.getStatus();
+
+        //role检验：是否为老师或学生
+        if(!role.equals("student") && !role.equals("teacher")){
+            valid = false;
+        }
 
         //number检验：学工号非空判断和数字判断、位数判断
-        if(role.equals("student") && !stuServiceImp.legalNumber(tempUser.getNumber())) valid = false;
-        if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUser.getNumber())) valid = false;
+        else if(role.equals("student") && !stuServiceImp.legalNumber(tempUser.getNumber())){
+            valid = false;
+        }
+        else if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUser.getNumber())){
+            valid = false;
+        }
 
         //id检验:非空判断和数字判断、位数判断
-        String id = tempUser.getId();
         //先检验长度是否为18
-        if(id.length() != ID_LENGTH) valid = false;
-        else{
+        else if(id.length() != ID_LENGTH) {
+            valid = false;
+        }
+        else if(id.length() == ID_LENGTH){
             //长度正确的情况下检验前17位为数字，第18位为数字或者X
             String shortId = id.substring(0,17);
             String last = id.substring(17);
@@ -69,24 +79,23 @@ public class AdminController extends MainController{
         }
 
         //name检验
-        if(tempUser.getName().isEmpty()) valid = false;
+        else if(tempUser.getName().isEmpty()) valid = false;
 
         //password检验
-        if(tempUser.getPassword().isEmpty()) valid = false;
+        else if(tempUser.getPassword().isEmpty()) valid = false;
 
         //status检验
-        String status = tempUser.getStatus();
-        if(!status.equals(GRADUATED)
+        else if(!status.equals(GRADUATED)
                 && !status.equals(QUIT)
                 && !status.equals(STUDYING)
                 && !status.equals(WORKING)
         ) valid = false;
 
         //major检验
-        if(tempUser.getMajor().isEmpty()) valid = false;
+        else if(tempUser.getMajor().isEmpty()) valid = false;
 
         //college检验
-        if(tempUser.getCollege().isEmpty()) valid = false;
+        else if(tempUser.getCollege().isEmpty()) valid = false;
 
         return valid;
     }
@@ -294,9 +303,12 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody College college){
         //先查询是否存在该学院
-        boolean exist = eduServiceImp.findCollegeByName(college);
-        //存在，进行删除，并且删除对应的所有专业
-        if(exist){
+        boolean existCollege = eduServiceImp.findCollegeByName(college);
+        //存在学院，判断是否有对应的专业、学生和老师，如果有就不删，没有才进行删除
+        //存在对应信息时返回true
+        boolean existOthers = eduServiceImp.findOthersByCollege(college);
+        if(existCollege && !existOthers){
+            //存在学院且不存在老师、学生、课程和专业，可以删除学院
             eduServiceImp.deleteCollege(college);
         }
         else{
@@ -310,9 +322,10 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/major")
     public Result deleteMajor(@RequestBody Major major){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajorByName(major);
-        //存在，进行删除，并且删除对应的所有专业
-        if(exist){
+        boolean existMajor = eduServiceImp.findMajorByName(major);
+        //存在，查询是否有其他相关的学生、老师，没有的话进行删除
+        boolean existOthers = eduServiceImp.findOthersByMajor(major);
+        if(existMajor && !existOthers){
             eduServiceImp.deleteMajor(major);
         }
         else{

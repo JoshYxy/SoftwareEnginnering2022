@@ -2,6 +2,8 @@ package com.jwsystem.service;
 
 import com.jwsystem.entity.affair.Classroom;
 
+import java.util.List;
+
 public interface ClassroomService {
 
     Classroom findByBuildingAndNum(String building, String roomNum);
@@ -14,4 +16,5 @@ public interface ClassroomService {
 
     void changeById(Classroom classRoom);
 
+    List<Classroom> getClassroomsByBuilding(String building);
 }

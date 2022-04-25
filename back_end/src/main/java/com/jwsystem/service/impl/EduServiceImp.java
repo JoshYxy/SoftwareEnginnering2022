@@ -1,8 +1,9 @@
 package com.jwsystem.service.impl;
 
-import com.jwsystem.dao.CollegeDao;
-import com.jwsystem.dao.MajorDao;
+import com.jwsystem.dao.*;
 import com.jwsystem.entity.college.College;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.user.Teacher;
 import com.jwsystem.vo.CollegeVO;
 import com.jwsystem.entity.college.Major;
 import com.jwsystem.service.EduService;
@@ -18,6 +19,15 @@ public class EduServiceImp implements EduService {
 
     @Autowired
     MajorDao majorDao;
+
+    @Autowired
+    TeacherDao teacherDao;
+
+    @Autowired
+    StudentDao studentDao;
+
+    @Autowired
+    CoursepartDao coursepartDao;
 
     @Override
     public List<CollegeVO> getEduInfo() {
@@ -99,5 +109,44 @@ public class EduServiceImp implements EduService {
     @Override
     public void deleteMajor(Major major) {
         majorDao.deleteMajor(major.getName());
+    }
+
+    @Override
+    public boolean findOthersByCollege(College college) {
+        boolean res = false;
+        //根据学院找专业
+        if(majorDao.findMajorByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找老师
+        else if(!teacherDao.getTeacherByCollegeName(college.getName()).isEmpty()){
+            res=true;
+        }
+        //根据学院找学生，返回学生数量
+        else if(studentDao.getStuByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找课程
+        else if(!coursepartDao.getCoursepartByCollege(college.getName()).isEmpty()){
+            res=true;
+        }
+
+        return res;
+    }
+
+    @Override
+    public boolean findOthersByMajor(Major major) {
+        boolean res = false;
+
+        //根据专业找老师
+        if(teacherDao.getTeacherByMajor(major.getName()) != 0){
+            res=true;
+        }
+        //根据专业找学生，返回学生数量
+        else if(studentDao.getStuByMajor(major.getName())!=0){
+            res=true;
+        }
+
+        return res;
     }
 }

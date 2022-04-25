@@ -18,4 +18,6 @@ public interface MajorDao {
     int deleteMajor(String name);
     //判断学院专业对应
     String findCollegeByMajorName(String name);
+    //根据学院name查询该学院下的专业个数，返回int
+    int findMajorByCollegeName(String collegeName);
 }

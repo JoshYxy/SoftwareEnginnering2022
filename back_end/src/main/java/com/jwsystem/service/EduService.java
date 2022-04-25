@@ -40,4 +40,8 @@ public interface EduService {
     void deleteCollege(College college);
     //删除某专业
     void deleteMajor(Major major);
+    //根据学院查找对应的专业、课程、学生、老师信息
+    boolean findOthersByCollege(College college);
+
+    boolean findOthersByMajor(Major major);
 }

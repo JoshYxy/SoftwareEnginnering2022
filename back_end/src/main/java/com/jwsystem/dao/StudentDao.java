@@ -28,4 +28,8 @@ public interface StudentDao {
     Student getStuInfo(String number);
     //删除学生
     int deleteStuByNumber(String number);
+    //根据学院找到对应的学生个数
+    int getStuByCollegeName(String collegeName);
+    //根据专业找到对应的学生个数
+    int getStuByMajor(String major);
 }

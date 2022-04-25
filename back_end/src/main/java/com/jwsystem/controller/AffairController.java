@@ -149,20 +149,11 @@ public class AffairController extends MainController{
         return Result.succ(time);
     }
 
-    //管理员修改某节课开始结束时间
+    //管理员修改节次
     @PostMapping("/times")
     public Result changeTime(@RequestBody List<Times> times){
 
-//  保留：单节修改的方法
-//        if(timesServiceImp.findTimesByName(times.getName())==null){
-//            //不存在
-//            response.setStatus(WRONG_RES);
-//            return Result.fail("不存在此节课，无法修改");
-//        }
-//        timesServiceImp.changeTimesByName(times.getName(),times.getStartTime(),times.getEndTime());
-
-        //yxy的阴间要求：一改改全部
-
+        //前端要求：一改改全部
         //加入对是否有课的判断
         //根据传入times的个数，表示出修改后节次，从第一节开始
         int changed = times.size();
@@ -201,29 +192,6 @@ public class AffairController extends MainController{
         return Result.succ("修改成功");
     }
 
-//    //管理员增加节数
-//    @PostMapping("/times/new")
-//    public Result addTime(@RequestBody Times times){
-//        if(timesServiceImp.findTimesByName(times.getName())!=null){
-//            //存在同名节数
-//            response.setStatus(WRONG_RES);
-//            return Result.fail("已存在同名节数，无法添加");
-//        }
-//        timesServiceImp.addTimes(times);
-//        return Result.succ("添加成功");
-//    }
-//
-//    //管理员删除节数
-//    @DeleteMapping("/times")
-//    public Result deleteTime(@RequestBody Times times){
-//        if(timesServiceImp.findTimesByName(times.getName())==null){
-//            //不存在
-//            response.setStatus(WRONG_RES);
-//            return Result.fail("不存在此节课，无法删除");
-//        }
-//        timesServiceImp.deleteTimesByName(times.getName());
-//        return Result.succ("删除成功");
-//    }
 
     //管理员增加楼
     @PostMapping("/building/new")
@@ -246,18 +214,15 @@ public class AffairController extends MainController{
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法删除");
         }
-        //找到这栋楼在timepart和req_timepart里对应的所有的course_id和request_id
-        List<Integer> courseIdList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
-        List<Integer> requestIdList = courseServiceImp.getRequestIdByBuilding(building.getAbbrName());
-        //根据coourse_id和request_id在coursepart和req_coursepart里面删除
-        for(Integer c:courseIdList) {
-            courseServiceImp.deleteCoursepartByCourseId(c);
+        //楼里有教室，删除失败
+        List<Classroom> classrooms = classroomServiceImp.getClassroomsByBuilding(building.getAbbrName());
+        if(!classrooms.isEmpty()){
+            response.setStatus(WRONG_RES);
+            return Result.fail("教学楼内有教室，无法删除");
         }
-        for(Integer c:requestIdList) {
-            courseServiceImp.deleteReqByRequestId(c);
-        }
-        //连带删除对应的教室
+
         buildingServiceImp.deleteByName(building.getFullName());
+
         return Result.succ("删除成功");
     }
 
@@ -278,35 +243,11 @@ public class AffairController extends MainController{
             return Result.fail("楼内存在课程，删除失败！");
         }
 
-
-        //找到这栋楼在timepart和req_timepart里对应的所有的course_id和request_id
-        List<Integer> courseIdList = courseServiceImp.getCourseIdByBuilding(building.getAbbrName());
-        List<Integer> requestIdList = courseServiceImp.getRequestIdByBuilding(building.getAbbrName());
-        //根据coourse_id和request_id在coursepart和req_coursepart里面删除
-        for(Integer c:courseIdList) {
-            courseServiceImp.deleteCoursepartByCourseId(c);
-        }
-        for(Integer c:requestIdList) {
-            courseServiceImp.deleteReqByRequestId(c);
-        }
         //删除对应的教室，但是不删除楼
         buildingServiceImp.deleteAllRoomByName(building.getAbbrName());
         return Result.succ("删除成功");
     }
 
-
-    //管理员改楼名
-    @PostMapping("/building")
-    public Result changeBuilding(@RequestBody Building building){
-        if(buildingServiceImp.findById(building.getId())==null){
-            //不存在
-            response.setStatus(WRONG_RES);
-            return Result.fail("不存在此教学楼，无法修改");
-        }
-        //用id找到对应的楼，然后把全称和简写都改了
-        buildingServiceImp.changeById(building);
-        return Result.succ("修改成功");
-    }
 
     //管理员增加教室
     @PostMapping("/room/new")
@@ -334,34 +275,11 @@ public class AffairController extends MainController{
         if(!idList.isEmpty()){
             //有课
             response.setStatus(WRONG_RES);
-            return Result.fail("教室内存在课程，删除失败！");
+            return Result.fail("教室内存在课程，删除失败");
         }
 
-        //找到这间教室在timepart和req_timepart里对应的所有的course_id和request_id
-        List<Integer> courseIdList = courseServiceImp.getCourseIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
-        List<Integer> requestIdList = courseServiceImp.getRequestIdByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
-        //根据course_id和request_id在coursepart(连带timepart)和request里面删除
-        for(Integer c:courseIdList) {
-            courseServiceImp.deleteCoursepartByCourseId(c);
-        }
-        for(Integer c:requestIdList) {
-            courseServiceImp.deleteReqByRequestId(c);
-        }
         classroomServiceImp.deleteByBuildingAndRoomNum(classRoom.getBuilding(),classRoom.getRoomNum());
         return Result.succ("删除成功");
-    }
-
-    //管理员改教室名
-    @PostMapping("/room")
-    public Result changeRoom(@RequestBody Classroom classRoom){
-        if(classroomServiceImp.findById(classRoom.getRoomId())==null){
-            //不存在
-            response.setStatus(WRONG_RES);
-            return Result.fail("不存在该教室");
-        }
-        //用id找到对应的教室，然后把名字改了
-        classroomServiceImp.changeById(classRoom);
-        return Result.succ("修改成功");     //修改成功
     }
 
     //修改选课权限

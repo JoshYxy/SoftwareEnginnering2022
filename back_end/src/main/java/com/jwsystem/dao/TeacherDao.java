@@ -30,4 +30,6 @@ public interface TeacherDao {
     int deleteTeaByNumber(String number);
     //根据学院名得到老师信息
     List<Teacher> getTeacherByCollegeName(String college);
+    //根据专业名得到老师数量
+    int getTeacherByMajor(String major);
 }
