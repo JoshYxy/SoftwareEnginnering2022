@@ -10,8 +10,8 @@
         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
         <el-table-column prop="commonCourse" label="课程类型" width="180">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '1'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '0'">
+                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
+                <div v-if="scope.row.commonCourse == '专业课程'">
                     <span style="padding-right:10px">专业课程</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">

@@ -11,8 +11,8 @@
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
         <el-table-column prop="commonCourse" label="课程类型" width="180">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '1'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '0'">
+                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
+                <div v-if="scope.row.commonCourse == '专业课程'">
                     <span style="padding-right:10px">专业课程</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
@@ -78,11 +78,11 @@
                     </el-form-item>     
                     <el-form-item label="课程类型" prop="commonCourse">
                         <el-select v-model="editCourse.commonCourse" placeholder="类型">
-                            <el-option label="通选课程" value="1" />
-                            <el-option label="专业选修" value="0" />
+                            <el-option label="通选课程" value="通选课成" />
+                            <el-option label="专业选修" value="专业课程" />
                         </el-select>
                     </el-form-item> 
-                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.commonCourse == '0'">
+                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.commonCourse == '专业课程'">
                         <el-cascader :props="majorProps" :options="collegeData" v-model="editCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
                     </el-form-item>                      
                     <el-form-item label="开课院系" prop="college">
@@ -374,7 +374,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '0',
+                    commonCourse: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -403,7 +403,7 @@ export default {
                     roomNum: '502',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '1',
+                    commonCourse: '通选课程',
                     majors: [],
                 }
             ],

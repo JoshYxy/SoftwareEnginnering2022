@@ -42,11 +42,11 @@
         </el-form-item>  
         <el-form-item label="课程类型" prop="commonCourse">
             <el-select v-model="courseData.commonCourse" placeholder="类型">
-                <el-option label="通选课程" value="1" />
-                <el-option label="专业选修" value="0" />
+                <el-option label="通选课程" value="通选课程" />
+                <el-option label="专业选修" value="专业课程" />
             </el-select>
         </el-form-item> 
-        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '0'">
+        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '专业课程'">
             <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
         </el-form-item> 
         <el-form-item label="开课院系" prop="college">
@@ -273,7 +273,7 @@ export default {
                 capacity: 0,
                 building: '',
                 roomNum: '',
-                commonCourse:'1',
+                commonCourse:'通选课程',
                 majors: [
                             ["计算机科学技术学院","大数据"],
                             ["计算机科学技术学院","信息安全"],
