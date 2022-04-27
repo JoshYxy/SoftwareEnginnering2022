@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div class="major-container">
     <h2 style="margin-right:250px">专业信息管理</h2>
     <el-button type='primary' @click="appendCollege()"> 新增学院 </el-button>
     <el-tree
@@ -213,18 +213,18 @@ export default {
 </script>
 
 <style>
-.el-tree-container{
+.major-container .el-tree-container{
   width:600px;
   margin-left: 150px;
 
 }
-.el-tree-node__expand-icon{
+.major-container .el-tree-node__expand-icon{
   width:300px;
   max-height: 12px;
   margin-right:-140px;
   transform: none !important;
 }
-.el-tree-node__expand-icon .expanded{
+.major-container .el-tree-node__expand-icon .expanded{
   width:300px;
   max-height: 12px;
   transform: rotate(90deg);
@@ -232,7 +232,7 @@ export default {
   position: relative;
   transform: none !important;
 }
-.custom-tree-node {
+.major-container .custom-tree-node {
   flex: 1;
   display: flex;
   align-items: center;

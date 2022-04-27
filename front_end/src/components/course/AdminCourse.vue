@@ -1,12 +1,21 @@
 <template>
     <h2>所有课程</h2>
+    <el-input class="search" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch"> 
+        <template #suffix>
+            <el-icon @click="submitSearch" class="el-input__icon"><search /></el-icon>
+        </template>
+    </el-input>
+    <el-button @click="resetSearch">查看全部教室</el-button>
     <el-button @click="resetRoomFilter">重置教室筛选</el-button>
     <el-button @click="clearFilter">重置筛选</el-button>
     <!-- <el-button @click="test">test </el-button> -->
-    <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px">
+    <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px" @filter-change="filterChang">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
-        <el-table-column prop="year,semester" label="开课学期" width="180">
+        <el-table-column prop="year,semester" label="开课学期" width="180"
+            :filter-multiple="true"
+            :filters="yearFilters"
+            :filter-method="filterYear">
             <template #default="scope">
                 {{scope.row.year}}{{scope.row.semester}}
             </template>
@@ -39,7 +48,27 @@
                 {{scope.row.building}}{{scope.row.roomNum}}
             </template>
         </el-table-column>
-        <el-table-column prop="courseTime" label="上课时间" width="180" />
+        <el-table-column prop="courseTime" label="上课时间" width="180">
+            <template #header>
+                <el-popover class="time-pop" placement="bottom-start" v-model:visible="popVisible">
+                    <template #reference>
+                        <span class="course-time">上课时间<el-icon @click="popVisible = !popVisible"><arrow-down /></el-icon></span>
+                    </template>
+                    <el-scrollbar max-height="200px">
+                        <el-tree
+                            style="margin:auto;"
+                            :data="timeFilters"
+                            show-checkbox
+                            accordion
+                            highlight-current
+                        />
+                    </el-scrollbar>
+                    <div class="el-table-filter__bottom">
+                        <el-button size="small" @click="filterTime">确认</el-button>
+                    </div>
+                </el-popover>
+            </template>
+        </el-table-column>
         <el-table-column prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
             <template #default="scope">
@@ -160,7 +189,12 @@ import {validTimetable, validSelectRoom, validTeacher, validCollege} from '../js
 import {setCourseTime} from '../jsComponents/CourseSet'
 import global_ from '../jsComponents/global'
 import axios from 'axios'
+import { Search,ArrowDown } from '@element-plus/icons-vue'
 export default {
+    components: {
+        Search,
+        ArrowDown
+    },
     data() {
         var validCapacity = (rule, value, callback) => {
             if(value!==''){
@@ -206,6 +240,12 @@ export default {
                 value: 'name',
                 multiple: true
             },
+            roomProps: {
+                children: 'room',
+                label: 'name',
+                value: 'name'
+            },
+            
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
@@ -215,11 +255,8 @@ export default {
             dialogTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             selectTime:[[]],
-            roomProps: {
-                children: 'room',
-                label: 'name',
-                value: 'name'
-            },
+            searchContent: '',
+            popVisible: false,
             collegeData: [
                 { 
                     id: 1,
@@ -469,6 +506,31 @@ export default {
             console.log(obj)
             return this.deWeight(obj) 
         },
+        yearFilters() {
+            let obj = []
+            for(let i = 0; i < this.years.length; i++) {
+                obj.push({
+                    text:this.years[i]+this.semesters[0],
+                    value:this.years[i]+this.semesters[0],
+                })
+                obj.push({
+                    text:this.years[i]+this.semesters[1],
+                    value:this.years[i]+this.semesters[1],
+                })
+            }
+            return obj
+        },
+        timeFilters() {
+            let obj = []
+            for(let i = 0; i < this.periods.length; i++) {
+                const day = {label: this.periods[i], children:[]}
+                for(let j = 0; j < this.times.length; j++) {
+                    day.children.push({label: '第'+(parseInt(j)+1)+'节课'})
+                }
+                obj.push(day)
+            }
+            return obj
+        },
         roomCap() {
             if(this.editCourse.selectRoom == null) return 0
             for(let i = 0; i < this.classroom.length; i++){
@@ -482,7 +544,108 @@ export default {
         }
     },
     methods: {
-        
+        filterChang() {
+            console.log(this.courses)
+        },
+        submitSearch() {
+            console.log(this.searchContent)
+            //axios
+            this.courses = [
+                {
+                    courseId: 2,
+                    courseName: '离散数学',
+                    courseNum: 'SOFT220022',
+                    classHours: '3',
+                    credits: '5',
+                    courseTime:'',
+                    teacherNum: 22111100,
+                    teacherName: '小一',
+                    collegeId: '',
+                    collegeName: '软件工程学院',
+                    times: [
+                        [],
+                        [3,4],
+                        [],
+                        [3,8],
+                        []
+                    ],
+                    building: 'HGX',
+                    roomNum: '502',
+                    courseInfo: '123',
+                    type: 'normal',
+                    commonCourse: '通选课程',
+                    majors: [],
+                    year:'2020-2021',
+                    semester:'秋'
+                }
+            ]
+        },
+        resetSearch() {
+            //axios
+            this.courses = [
+                {
+                    courseId: 1,
+                    courseName: '软件工程',
+                    courseNum: 'SOFT220011',
+                    teacherNum: 22200000,
+                    teacherName: '小王',
+                    classHours: '4',
+                    credits: '4',
+                    courseTime:'',
+                    capacity: '100',
+                    collegeId: '',
+                    collegeName: '计算机科学技术学院',
+                    times: [
+                        [],
+                        [1,2,3,5,6,8,10,11,12],
+                        [3],
+                        [],
+                        [],
+                        [],
+                        []
+                    ],
+                    building: 'H3',
+                    roomNum: '301',
+                    courseInfo: '123',
+                    type: 'normal',
+                    commonCourse: '专业课程',
+                    majors: [
+                                ["计算机科学技术学院","大数据"],
+                                ["计算机科学技术学院","信息安全"],
+                                ['软件工程学院','软件工程']
+                            ],
+                    year:'2021-2022',
+                    semester:'春'
+                },
+                {
+                    courseId: 2,
+                    courseName: '离散数学',
+                    courseNum: 'SOFT220022',
+                    classHours: '3',
+                    credits: '5',
+                    courseTime:'',
+                    teacherNum: 22111100,
+                    teacherName: '小一',
+                    collegeId: '',
+                    collegeName: '软件工程学院',
+                    times: [
+                        [],
+                        [3,4],
+                        [],
+                        [3,8],
+                        []
+                    ],
+                    building: 'HGX',
+                    roomNum: '502',
+                    courseInfo: '123',
+                    type: 'normal',
+                    commonCourse: '通选课程',
+                    majors: [],
+                    year:'2020-2021',
+                    semester:'秋'
+                }
+            ]
+        },
         deWeight(arr) {
             for (var i = 0; i < arr.length - 1; i++) {
                 for (var j = i + 1; j < arr.length; j++) {
@@ -494,8 +657,14 @@ export default {
             }
             return arr;
         },
+        filterTime() {
+            this.courses.splice(0,1)
+        },
         filterRoom(value, row) {
-            return row['building'] + row['roomNum'] === value;
+            return row['building'] + row['roomNum'] === value
+        },
+        filterYear(value, row) {
+            return row['year'] + row['semester'] === value
         },
         resetRoomFilter() {
             this.$refs['coursesData'].clearFilter(['room'])
@@ -511,6 +680,8 @@ export default {
                 return 'deleting-row';
             if(row.row.type == 'new')
                 return 'new-row';
+            if(row.row.credits == '4')
+                return 'selected'
         },
         handleDelete(index, data){
             ElMessageBox.confirm(
@@ -786,6 +957,22 @@ export default {
 </script>
 
 <style>
+.search {
+    display: block;
+    float: right;
+    width: 200px;
+    margin-bottom: 50px;
+}
+.search .el-input__suffixon {
+    cursor: pointer;
+}
+.course-time .el-icon {
+    vertical-align: middle;
+    cursor: pointer;
+}
+.time-pop {
+    width: 100px;
+}
 .el-table .deleting-row {
   --el-table-tr-bg-color: var(--el-color-danger-light-7);
 }
