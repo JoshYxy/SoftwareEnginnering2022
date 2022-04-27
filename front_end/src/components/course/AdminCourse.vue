@@ -5,7 +5,7 @@
             <el-icon @click="submitSearch" class="el-input__icon"><search /></el-icon>
         </template>
     </el-input>
-    <el-button @click="resetSearch">查看全部教室</el-button>
+    <el-button @click="resetSearch">查看全部课程</el-button>
     <el-button @click="resetRoomFilter">重置教室筛选</el-button>
     <el-button @click="clearFilter">重置筛选</el-button>
     <!-- <el-button @click="test">test </el-button> -->
@@ -550,101 +550,11 @@ export default {
         submitSearch() {
             console.log(this.searchContent)
             //axios
-            this.courses = [
-                {
-                    courseId: 2,
-                    courseName: '离散数学',
-                    courseNum: 'SOFT220022',
-                    classHours: '3',
-                    credits: '5',
-                    courseTime:'',
-                    teacherNum: 22111100,
-                    teacherName: '小一',
-                    collegeId: '',
-                    collegeName: '软件工程学院',
-                    times: [
-                        [],
-                        [3,4],
-                        [],
-                        [3,8],
-                        []
-                    ],
-                    building: 'HGX',
-                    roomNum: '502',
-                    courseInfo: '123',
-                    type: 'normal',
-                    commonCourse: '通选课程',
-                    majors: [],
-                    year:'2020-2021',
-                    semester:'秋'
-                }
-            ]
+   
         },
         resetSearch() {
             //axios
-            this.courses = [
-                {
-                    courseId: 1,
-                    courseName: '软件工程',
-                    courseNum: 'SOFT220011',
-                    teacherNum: 22200000,
-                    teacherName: '小王',
-                    classHours: '4',
-                    credits: '4',
-                    courseTime:'',
-                    capacity: '100',
-                    collegeId: '',
-                    collegeName: '计算机科学技术学院',
-                    times: [
-                        [],
-                        [1,2,3,5,6,8,10,11,12],
-                        [3],
-                        [],
-                        [],
-                        [],
-                        []
-                    ],
-                    building: 'H3',
-                    roomNum: '301',
-                    courseInfo: '123',
-                    type: 'normal',
-                    commonCourse: '专业课程',
-                    majors: [
-                                ["计算机科学技术学院","大数据"],
-                                ["计算机科学技术学院","信息安全"],
-                                ['软件工程学院','软件工程']
-                            ],
-                    year:'2021-2022',
-                    semester:'春'
-                },
-                {
-                    courseId: 2,
-                    courseName: '离散数学',
-                    courseNum: 'SOFT220022',
-                    classHours: '3',
-                    credits: '5',
-                    courseTime:'',
-                    teacherNum: 22111100,
-                    teacherName: '小一',
-                    collegeId: '',
-                    collegeName: '软件工程学院',
-                    times: [
-                        [],
-                        [3,4],
-                        [],
-                        [3,8],
-                        []
-                    ],
-                    building: 'HGX',
-                    roomNum: '502',
-                    courseInfo: '123',
-                    type: 'normal',
-                    commonCourse: '通选课程',
-                    majors: [],
-                    year:'2020-2021',
-                    semester:'秋'
-                }
-            ]
+    
         },
         deWeight(arr) {
             for (var i = 0; i < arr.length - 1; i++) {
@@ -963,7 +873,7 @@ export default {
     width: 200px;
     margin-bottom: 50px;
 }
-.search .el-input__suffixon {
+.search .el-input__suffix {
     cursor: pointer;
 }
 .course-time .el-icon {
