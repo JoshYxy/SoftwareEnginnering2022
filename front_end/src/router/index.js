@@ -14,6 +14,8 @@ import TeacherCourse from '../components/course/TeacherCourse.vue'
 import AdminCourse from '../components/course/AdminCourse.vue'
 import StudentCourse from '../components/course/StudentCourse.vue'
 import CourseVerify from '../components/course/CourseVerify.vue'
+import CourseApplication from '../components/course/CourseApplication.vue'
+import ApplicationVerify from '../components/course/ApplicationVerify.vue'
 const routes = [
   {
     path: '/',
@@ -109,6 +111,18 @@ const routes = [
         component: CourseVerify,
         meta: { role: ['admin'], nav_name: '课程审核'}
       },
+      {
+        path: 'student/application',
+        name: 'courseApplication',
+        component: CourseApplication,
+        meta: { role: ['student'], nav_name: '选课申请'}
+      },
+      {
+        path: 'admin/application',
+        name: 'applicationVerify',
+        component: ApplicationVerify,
+        meta: { role: ['admin'], nav_name: '选课申请审核'}
+      }
     ],
     // component: () => import(/* webpackChunkName: "about" */ '../views/StudentLogin.vue')
   },
