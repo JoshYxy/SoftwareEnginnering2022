@@ -13,6 +13,7 @@ public class ClassroomServiceImp implements ClassroomService {
     @Autowired
     ClassroomDao classroomDao;
 
+    //查找同名同楼教室
     @Override
     public Classroom findByBuildingAndNum(String building, String roomNum) {
         return classroomDao.findByNumAndBuilding(roomNum,building);

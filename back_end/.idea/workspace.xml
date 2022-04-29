@@ -6,19 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/BuildingController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ClassroomController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CollegeController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CoursepartController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/MajorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/RelaCourseMajorController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/RelaCourseStudentController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqCoursepartController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqStudentController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqTeacherController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqTimepartController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/TimepartController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/TimesController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/dao/AdminDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/dao/AdminDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/dto/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/dto/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/AdminServiceMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/AdminServiceMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/BuildingServiceMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/BuildingServiceMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/ClassroomServiceMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/ClassroomServiceMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/AdminServiceImpMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/AdminServiceImpMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/BuildingServiceImpMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/BuildingServiceImpMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/ClassroomServiceImp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/ClassroomServiceImp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/ClassroomServiceImpMP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/service/impl/ClassroomServiceImpMP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/vo/BuildingVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/jwsystem/vo/BuildingVO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

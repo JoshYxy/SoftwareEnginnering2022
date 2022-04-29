@@ -1,5 +1,6 @@
 package com.jwsystem.dto;
 
+import com.jwsystem.entity.AdminPO;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +37,12 @@ public class User {
     protected String major;
     @CsvBindByName(column = "college")
     protected String college;
+
+    public User(AdminPO a) {
+        this.role = a.getRole();
+        this.number = a.getNumber();
+        this.password = a.getPassword();
+    }
 
     /*
             用户角色:role
