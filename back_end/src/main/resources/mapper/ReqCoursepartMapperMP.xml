@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.ReqCoursepartDaoMP">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.ReqCoursepartPO">
+        <id column="request_id" property="requestId" />
+        <result column="course_num" property="courseNum" />
+        <result column="course_name" property="courseName" />
+        <result column="class_hours" property="classHours" />
+        <result column="credits" property="credits" />
+        <result column="course_info" property="courseInfo" />
+        <result column="capacity" property="capacity" />
+        <result column="is_general" property="isGeneral" />
+        <result column="year" property="year" />
+        <result column="semester" property="semester" />
+        <result column="college_id" property="collegeId" />
+        <result column="teacher_num" property="teacherNum" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        request_id, course_num, course_name, class_hours, credits, course_info, capacity, is_general, year, semester, college_id, teacher_num
+    </sql>
+
+</mapper>

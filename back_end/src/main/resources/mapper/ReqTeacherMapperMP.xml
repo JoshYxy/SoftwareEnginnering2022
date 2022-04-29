@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.ReqTeacherDaoMP">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.ReqTeacherPO">
+        <id column="request_id" property="requestId" />
+        <result column="type" property="type" />
+        <result column="course_id" property="courseId" />
+        <result column="teacher_num" property="teacherNum" />
+        <result column="examined" property="examined" />
+        <result column="passed" property="passed" />
+        <result column="room_id" property="roomId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        request_id, type, course_id, teacher_num, examined, passed, room_id
+    </sql>
+
+</mapper>
