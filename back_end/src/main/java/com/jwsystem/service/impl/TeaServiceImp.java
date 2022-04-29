@@ -3,9 +3,13 @@ package com.jwsystem.service.impl;
 import com.jwsystem.dao.CollegeDao;
 import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.TeacherDao;
-import com.jwsystem.entity.Teacher;
-import com.jwsystem.vo.TeacherData;
+import com.jwsystem.entity.user.Teacher;
+import com.jwsystem.vo.TeacherDataVO;
+<<<<<<< Updated upstream
 import com.jwsystem.dto.User;
+=======
+import com.jwsystem.vo.UserVO;
+>>>>>>> Stashed changes
 import com.jwsystem.service.TeaService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +32,12 @@ public class TeaServiceImp implements TeaService {
     CollegeDao collegeDao;
 
     @Override
-    public Boolean insertUser(User user) {
-        return teacherDao.insertUser(user) != 0;
+    public Boolean insertUser(UserVO userVO) {
+        return teacherDao.insertUser(userVO) != 0;
     }
 
     @Override
-    public User getUserByNumber(String number) {
+    public UserVO getUserByNumber(String number) {
         return teacherDao.getUserByNumber(number);
     }
 
@@ -48,7 +52,7 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
-    public List<User> getAllUserInfos() {
+    public List<UserVO> getAllUserInfos() {
         return teacherDao.getAllTea();
     }
 
@@ -58,13 +62,13 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
-    public Boolean updateTeaInfoByUser(User user) {
-        return teacherDao.updateTeaInfoByUser(user) != 0;
+    public Boolean updateTeaInfoByUser(UserVO userVO) {
+        return teacherDao.updateTeaInfoByUser(userVO) != 0;
     }
 
     @Override
-    public void updateTeaInfoByAdmin(User user){
-        teacherDao.updateTeaInfoByAdmin(user);
+    public void updateTeaInfoByAdmin(UserVO userVO){
+        teacherDao.updateTeaInfoByAdmin(userVO);
     }
 
     @Override
@@ -82,20 +86,20 @@ public class TeaServiceImp implements TeaService {
     }
 
     @Override
-    public List<TeacherData> getAllTeachersWithCollege(){
+    public List<TeacherDataVO> getAllTeachersWithCollege(){
         //将所有的有老师的college拿出来遍历，根据college名字去找到所有的teacher
 //        public class TeacherData {
 //            private String collegeName;
 //            private List<Teacher> teachers;
 //        }
-        List<TeacherData> teacherDataList = new ArrayList<>();
+        List<TeacherDataVO> teacherDataVOList = new ArrayList<>();
         List<String> colleges;
         colleges = collegeDao.getAllCollegeName();
         for(String c:colleges){
-            TeacherData td = new TeacherData(c,teacherDao.getTeacherByCollegeName(c));
-            teacherDataList.add(td);
+            TeacherDataVO td = new TeacherDataVO(c,teacherDao.getTeacherByCollegeName(c));
+            teacherDataVOList.add(td);
         }
-        return teacherDataList;
+        return teacherDataVOList;
     }
 
 

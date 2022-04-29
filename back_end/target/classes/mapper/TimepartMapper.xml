@@ -5,7 +5,7 @@
         SELECT *
         FROM timepart WHERE course_id = #{course_id}
     </select>
-    <resultMap id="TimepartMapping" type="com.jwsystem.entity.Timepart">
+    <resultMap id="TimepartMapping" type="com.jwsystem.entity.course.Timepart">
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->
@@ -22,7 +22,7 @@
         FROM req_timepart WHERE request_id = #{request_id}
     </select>
 
-    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.Timepart">
+    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.course.Timepart">
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->
@@ -49,7 +49,7 @@
         FROM timepart WHERE building = #{building} and room_num = #{room_num}
     </select>
 
-    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.Timepart">
+    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.course.Timepart">
         SELECT *
         FROM timepart WHERE teacher_num = #{teacher_num}
     </select>
@@ -85,7 +85,7 @@
             timepart
     </select>
 
-    <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
+    <insert id="insertTimepart" parameterType="com.jwsystem.entity.course.Timepart">
         insert into timepart(
             id,
             course_id,
@@ -106,7 +106,7 @@
               )
     </insert>
 
-    <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.Timepart">
+    <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.course.Timepart">
         insert into req_timepart(
             id,
             request_id,

@@ -3,11 +3,16 @@ package com.jwsystem.service.impl;
 import com.jwsystem.dao.CoursepartDao;
 import com.jwsystem.dao.RequestDao;
 import com.jwsystem.dao.TimepartDao;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Timepart;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.course.Timepart;
+=======
+import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.dto.RequestDTO;
+>>>>>>> Stashed changes
 import com.jwsystem.service.RequestService;
-import com.jwsystem.vo.CourseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,22 +30,22 @@ public class CourseRequestImp implements RequestService {
     TimepartDao timepartDao;
 
     @Override
-    public List<Request> getAllRequests(){
+    public List<RequestDTO> getAllRequests(){
         return requestDao.getAllRequests();
     }
 
     @Override
-    public Coursepart getReqCoursepartByRequestId(int requestId){
+    public CoursepartDTO getReqCoursepartByRequestId(int requestId){
         return coursepartDao.getReqCoursepartByRequestId(requestId);
     }
 
     @Override
-    public List<Timepart> getAllReqTimepartByRequestId(int requestId){
+    public List<TimepartDTO> getAllReqTimepartByRequestId(int requestId){
         return timepartDao.getAllReqTimepartByRequestId(requestId);
     }
 
     @Override
-    public Request selectRequestById(int requestId){
+    public RequestDTO selectRequestById(int requestId){
         return requestDao.selectRequestById(requestId);
     }
 
@@ -56,7 +61,7 @@ public class CourseRequestImp implements RequestService {
 //                             boolean examined,
 //                             boolean passed) {
 
-    public int insertRequest(Request request){
-        return requestDao.insertRequest(request);
+    public int insertRequest(RequestDTO requestDTO){
+        return requestDao.insertRequest(requestDTO);
     }
 }

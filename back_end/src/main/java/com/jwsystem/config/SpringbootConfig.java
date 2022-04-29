@@ -1,13 +1,11 @@
 package com.jwsystem.config;
+
 import com.jwsystem.interceptor.adminInterceptor;
 import com.jwsystem.interceptor.loginInterceptor;
 import com.jwsystem.interceptor.studentInterceptor;
 import com.jwsystem.interceptor.teacherInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

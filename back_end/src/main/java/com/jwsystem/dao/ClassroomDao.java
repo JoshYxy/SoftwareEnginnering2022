@@ -1,6 +1,10 @@
 package com.jwsystem.dao;
 
-import com.jwsystem.entity.Classroom;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.affair.Classroom;
+=======
+import com.jwsystem.entity.affair.ClassroomVO;
+>>>>>>> Stashed changes
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,9 +19,9 @@ public interface ClassroomDao {
     void deleteByRoomId(Integer roomId);
 
     //得到所有教室信息
-    List<Classroom> getClassroomsByBuilding(String building);
+    List<ClassroomVO> getClassroomsByBuilding(String building);
 
-    Classroom findByNumAndBuilding(@Param("room_num")String roomNum, String building);
+    ClassroomVO findByNumAndBuilding(@Param("room_num")String roomNum, String building);
 
-    Classroom findById(Integer roomId);
+    ClassroomVO findById(Integer roomId);
 }

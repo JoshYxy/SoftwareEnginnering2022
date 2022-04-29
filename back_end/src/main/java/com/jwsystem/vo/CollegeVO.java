@@ -1,5 +1,6 @@
 package com.jwsystem.vo;
 
+import com.jwsystem.dto.MajorDataDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,5 @@ public class CollegeVO /*extends College*/{
     Integer collegeVOId;
     String collegeVOName;
     //Map<Integer,String> majors;
-    List<MajorVO> majors;
+    List<MajorDataDTO> majors;
 }

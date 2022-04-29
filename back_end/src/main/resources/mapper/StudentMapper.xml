@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.StudentDao">
     <!-- 新增学生 -->
-    <insert id="insertUser" parameterType="com.jwsystem.dto.User">
+    <insert id="insertUser" parameterType="com.jwsystem.vo.UserVO">
         insert into student
             (role,
              number,
@@ -12,14 +12,14 @@
              phone,
              email,
              status,
-             major,
+             majorDTO,
              college)
         values
-            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{major},#{college})
+            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{majorDTO},#{college})
     </insert>
 
     <!-- 学生修改手机号、邮箱、登陆密码 -->
-    <update id="updateStuInfoByUser" parameterType="com.jwsystem.dto.User">
+    <update id="updateStuInfoByUser" parameterType="com.jwsystem.vo.UserVO">
         UPDATE student
         SET password = #{password},
             phone = #{phone},
@@ -29,7 +29,7 @@
     </update>
 
     <!-- 管理员修改除学工号以外的信息 -->
-    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.dto.User">
+    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.vo.UserVO">
         UPDATE student
         SET role = #{role},
             id = #{id},
@@ -38,7 +38,7 @@
             phone = #{phone},
             email = #{email},
             status = #{status},
-            major = #{major},
+            majorDTO = #{majorDTO},
             college = #{college}
         WHERE
             number = #{number}
@@ -53,7 +53,7 @@
     </update>
 
     <!--查看所有学生信息-->
-    <select id="getAllStu" resultType="com.jwsystem.dto.User">
+    <select id="getAllStu" resultType="com.jwsystem.vo.UserVO">
         SELECT
             role,
             number,
@@ -63,14 +63,18 @@
             phone,
             email,
             status,
-            major,
+            majorDTO,
             college
         FROM
             student
     </select>
 
     <!--根据身份证号查找-->
-    <select id="selectById" resultType="com.jwsystem.entity.Student">
+<<<<<<< Updated upstream
+    <select id="selectById" resultType="com.jwsystem.entity.user.Student">
+=======
+    <select id="selectById" resultType="com.jwsystem.entity.userVO.Student">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
@@ -80,7 +84,11 @@
     </select>
 
     <!--根据学号查找-->
-    <select id="selectByNum" resultType="com.jwsystem.entity.Student">
+<<<<<<< Updated upstream
+    <select id="selectByNum" resultType="com.jwsystem.entity.user.Student">
+=======
+    <select id="selectByNum" resultType="com.jwsystem.entity.userVO.Student">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
@@ -90,7 +98,7 @@
     </select>
 
     <!--查看指定学生信息-->
-    <select id="getUserByNumber" resultType="com.jwsystem.dto.User">
+    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">
         SELECT
             role,
             number,
@@ -100,7 +108,7 @@
             phone,
             email,
             status,
-            major,
+            majorDTO,
             college
         FROM
             student
@@ -109,13 +117,33 @@
     </select>
 
     <!--学生查看个人信息-->
-    <select id="getStuInfo" resultType="com.jwsystem.entity.Student">
+<<<<<<< Updated upstream
+    <select id="getStuInfo" resultType="com.jwsystem.entity.user.Student">
+=======
+    <select id="getStuInfo" resultType="com.jwsystem.entity.userVO.Student">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
             student
         WHERE
             number = #{number}
+    </select>
+
+    <!--根据学院查询是否存在学生-->
+    <select id="getStuByCollegeName" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM student WHERE college = #{college_name} and status = "studying"
+    </select>
+
+    <!--根据专业查询是否存在学生-->
+    <select id="getStuByMajor" resultType="java.lang.Integer">
+        SELECT count(*)
+<<<<<<< Updated upstream
+        FROM student WHERE major = #{major} and status = "studying"
+=======
+        FROM student WHERE majorDTO = #{majorDTO} and status = "studying"
+>>>>>>> Stashed changes
     </select>
 
     <!-- 删除学生 -->

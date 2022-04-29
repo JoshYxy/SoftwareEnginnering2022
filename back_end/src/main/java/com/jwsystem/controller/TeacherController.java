@@ -1,15 +1,15 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Teacher;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.RequestDTO;
+import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.TeaService;
 import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.CourseUtil;
-import com.jwsystem.vo.CourseRequest;
+import com.jwsystem.vo.CourseRequestVO;
 import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +47,7 @@ public class TeacherController extends MainController{
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
         String number = getNumByToken();
         //检查教师是否存在
-        Teacher teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teaService.selectTeaByNum(number);
 
         if(teacher == null){
             response.setStatus(NO_USER);
@@ -55,17 +55,17 @@ public class TeacherController extends MainController{
         }
 
         //根据教师工号查出全部的CoursePart，以list返回
-        List<Coursepart> coursepartList = courseServiceImp.getAllCoursepartByTeacherNum(number);
+        List<CoursepartDTO> coursepartDTOList = courseServiceImp.getAllCoursepartByTeacherNum(number);
 
         List<CourseVO> courseVOList = new ArrayList<>();
 
         //对每个CoursePart，根据课程的id找出对应的所有timePart部分
-        for (Coursepart c:
-                coursepartList) {
-            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
+        for (CoursepartDTO c:
+                coursepartDTOList) {
+            List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c, timepartList);
+            CourseVO tempVO = courseUtil.transToVO(c, timepartDTOList);
 
             courseVOList.add(tempVO);
         }
@@ -79,18 +79,18 @@ public class TeacherController extends MainController{
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
         String number = getNumByToken();
         //检查教师是否存在
-        Teacher teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teaService.selectTeaByNum(number);
 
         if(teacher == null){
             response.setStatus(NO_USER);
             return Result.fail("教师不存在");
         }
 
-        List<Timepart> timepartList = courseServiceImp.getAllTimeByTea(number);
+        List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimeByTea(number);
 
         int[][] time = new int[7][];
-        for (Timepart t:
-                timepartList) {
+        for (TimepartDTO t:
+                timepartDTOList) {
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");
@@ -132,27 +132,29 @@ public class TeacherController extends MainController{
 
     //教师提交课程维护申请
     @PostMapping("/courseRequest")
-    public Result addRequest(@RequestBody CourseRequest courseRequest){
+    public Result addRequest(@RequestBody CourseRequestVO courseRequestVO){
 
-        Request request = new Request(
-                courseRequest.getRequestId(),
-                courseRequest.getType(),
-                courseRequest.getCourseVO().getCourseId(),
-                courseRequest.getCourseVO().getTeacherNum(),
-                courseRequest.getCourseVO().getBuilding(),
-                courseRequest.getCourseVO().getRoomNum(),
-                courseRequest.isExamined(),
-                courseRequest.isPassed()
+
+        RequestDTO requestDTO = new RequestDTO(
+                courseRequestVO.getRequestId(),
+                courseRequestVO.getType(),
+                courseRequestVO.getCourseVO().getCourseId(),
+                courseRequestVO.getCourseVO().getTeacherNum(),
+                courseRequestVO.getCourseVO().getBuilding(),
+                courseRequestVO.getCourseVO().getRoomNum(),
+                courseRequestVO.isExamined(),
+                courseRequestVO.isPassed()
         );
 
         //把申请插入申请表，返回requestId给我
-        courseRequestImp.insertRequest(request);
-        int requestId = request.getRequestId();
+        courseRequestImp.insertRequest(requestDTO);
+        int requestId = requestDTO.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 
-        CourseVO courseVO = courseRequest.getCourseVO();
-        Coursepart coursePart = new Coursepart(
+        CourseVO courseVO = courseRequestVO.getCourseVO();
+
+        CoursepartDTO coursePart = new CoursepartDTO(
                 requestId,
                 courseVO.getCourseName(),
                 courseVO.getCourseNum(),
@@ -162,7 +164,10 @@ public class TeacherController extends MainController{
                 courseVO.getCollegeName(),
                 courseVO.getTeacherNum(),
                 courseVO.getTeacherName(),
-                courseVO.getCapacity());
+                courseVO.getCapacity(),
+                courseVO.getYear(),
+                courseVO.getSemester(),
+                courseVO.getIsGeneral());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里
         courseServiceImp.insertReqCoursepart(coursePart);
@@ -187,7 +192,7 @@ public class TeacherController extends MainController{
                     System.out.println(timeString);
 
                     //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
-                    Timepart timePart = new Timepart(
+                    TimepartDTO timePart = new TimepartDTO(
                             null,
                             requestId,
                             courseVO.getTeacherNum(),

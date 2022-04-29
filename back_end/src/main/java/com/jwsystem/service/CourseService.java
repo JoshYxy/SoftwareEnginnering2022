@@ -1,35 +1,40 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Timepart;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.course.Timepart;
+=======
+import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.TimepartDTO;
+>>>>>>> Stashed changes
 
 import java.util.List;
 
 public interface CourseService {
 
-    Coursepart getCoursepartByCourseId(Integer courseId);
+    CoursepartDTO getCoursepartByCourseId(Integer courseId);
 
-    List<Coursepart> getAllCoursepart();
+    List<CoursepartDTO> getAllCoursepart();
 
-    List<Timepart> getAllTimepartByCourseId(Integer courseId);
+    List<TimepartDTO> getAllTimepartByCourseId(Integer courseId);
 
-    int insertCoursepart(Coursepart coursepart);
+    int insertCoursepart(CoursepartDTO coursepartDTO);
 
-    boolean insertTimepart(Timepart timepart);
+    boolean insertTimepart(TimepartDTO timepartDTO);
 
     int deleteCoursepartByCourseId(int courseId);
 
-    List<Coursepart> getCoursepartByCollege(String collegeName);
+    List<CoursepartDTO> getCoursepartByCollege(String collegeName);
 
-    List<Coursepart> getAllCoursepartByTeacherNum(String teacherNum);
+    List<CoursepartDTO> getAllCoursepartByTeacherNum(String teacherNum);
 
-    void insertReqCoursepart(Coursepart coursepart);
+    void insertReqCoursepart(CoursepartDTO coursepartDTO);
 
-    void insertReqTimepart(Timepart timepart);
+    void insertReqTimepart(TimepartDTO timepartDTO);
 
-    List<Timepart> getAllTimeByRoom(String building, String roomNum);
+    List<TimepartDTO> getAllTimeByRoom(String building, String roomNum);
 
-    List<Timepart> getAllTimeByTea(String number);
+    List<TimepartDTO> getAllTimeByTea(String number);
 
     //根据楼在timepart和req_timepart里对应的所有的course_id和request_id
     List<Integer> getCourseIdByBuilding(String building);

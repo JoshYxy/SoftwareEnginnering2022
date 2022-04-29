@@ -24,4 +24,7 @@ public class CourseVO {
     private String roomNum;     //教室号
     private String capacity;    //选课容量
     private String courseTime;  //上课时间的字符串表示（前端处理）
+    private String year;
+    private String semester;
+    private String isGeneral;
 }

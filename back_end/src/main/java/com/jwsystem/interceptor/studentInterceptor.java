@@ -1,8 +1,8 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.entity.Student;
 import com.jwsystem.service.StuService;
 import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.UserVO;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,7 +32,7 @@ public class studentInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();
-        Student student = stuService.selectStuByNum(number);
+        UserVO student = stuService.selectStuByNum(number);
 
         if(student==null){
             System.out.println("非学生账号!");

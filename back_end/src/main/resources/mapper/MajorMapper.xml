@@ -3,21 +3,29 @@
 <mapper namespace="com.jwsystem.dao.MajorDao">
     <!-- 新增专业 -->
     <insert id="insertMajor">
-        INSERT INTO major ( name, college_name )
+        INSERT INTO majorDTO ( name, college_name )
         VALUES (#{name},#{college_name})
     </insert>
     <!-- 根据学院name查询该学院下的所有专业 -->
-    <select id="findMajorByCollegeName" resultType="map">
-        SELECT major_id,name
+    <select id="findMajorByCollegeName" resultType="int">
+        SELECT count(*)
         FROM MAJOR WHERE college_name = #{college_name}
     </select>
     <!--根据id查询某专业是否存在 -->
-    <select id="findMajorById" resultType="com.jwsystem.entity.Major">
+<<<<<<< Updated upstream
+    <select id="findMajorById" resultType="com.jwsystem.entity.college.Major">
+=======
+    <select id="findMajorById" resultType="com.jwsystem.dto.MajorDTO">
+>>>>>>> Stashed changes
         SELECT *
         FROM MAJOR WHERE major_id = #{major_id}
     </select>
     <!--根据name查询某专业是否存在 -->
-    <select id="findMajorByName" resultType="com.jwsystem.entity.Major">
+<<<<<<< Updated upstream
+    <select id="findMajorByName" resultType="com.jwsystem.entity.college.Major">
+=======
+    <select id="findMajorByName" resultType="com.jwsystem.dto.MajorDTO">
+>>>>>>> Stashed changes
         SELECT *
         FROM MAJOR WHERE name = #{name}
     </select>

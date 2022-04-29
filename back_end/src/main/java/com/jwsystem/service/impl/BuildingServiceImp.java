@@ -2,8 +2,12 @@ package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.BuildingDao;
 import com.jwsystem.dao.ClassroomDao;
-import com.jwsystem.entity.Building;
-import com.jwsystem.entity.Classroom;
+import com.jwsystem.entity.affair.Building;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.affair.Classroom;
+=======
+import com.jwsystem.entity.affair.ClassroomVO;
+>>>>>>> Stashed changes
 import com.jwsystem.service.BuildingService;
 import com.jwsystem.vo.BuildingVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +34,8 @@ public class BuildingServiceImp implements BuildingService {
         List<BuildingVO> buildingVOList = new ArrayList<>();
         List<Building> buildings = buildingDao.getAllBuildings();
         for(Building b:buildings){
-            List<Classroom> classrooms = classroomDao.getClassroomsByBuilding(b.getAbbrName());
-            BuildingVO buildingVO = new BuildingVO(b.getId(),b.getFullName(),b.getAbbrName(),classrooms);
+            List<ClassroomVO> classroomVOS = classroomDao.getClassroomsByBuilding(b.getAbbrName());
+            BuildingVO buildingVO = new BuildingVO(b.getId(),b.getFullName(),b.getAbbrName(), classroomVOS);
             buildingVOList.add(buildingVO);
         }
         return buildingVOList;

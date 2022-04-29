@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.AdminDao">
     <!-- 得到admin信息 -->
-    <select id="getUserByNumber" resultType="com.jwsystem.dto.User">
+    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">
         SELECT
             role,
             number,

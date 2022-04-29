@@ -2,11 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.CoursepartDao">
     <!-- 插入课程主体信息部分并返回自增主键 -->
-    <insert id="insertCoursepart" parameterType="com.jwsystem.entity.Coursepart" useGeneratedKeys="true" keyProperty="relationId">
+<<<<<<< Updated upstream
+    <insert id="insertCoursepart" parameterType="com.jwsystem.entity.course.Coursepart" useGeneratedKeys="true" keyProperty="relationId">
+=======
+    <insert id="insertCoursepart" parameterType="com.jwsystem.dto.CoursepartDTO" useGeneratedKeys="true" keyProperty="relationId">
+>>>>>>> Stashed changes
 <!--        <selectKey resultType="integer" order="AFTER" keyProperty="relationId">-->
 <!--            SELECT LAST_INSERT_ID()-->
 <!--        </selectKey>-->
-        insert into coursepart(
+        insert into coursepartDTO(
             course_id,
             course_name,
             course_num,
@@ -35,10 +39,14 @@
 <!--        </selectKey>-->
     </insert>
 <!--    <select id="getLatestCourseId">-->
-<!--        select max(course_id) from coursepart-->
+<!--        select max(course_id) from coursepartDTO-->
 <!--    </select>-->
     <!-- 插入申请的课程主体信息部分 -->
-    <insert id="insertReqCoursepart" parameterType="com.jwsystem.entity.Coursepart">
+<<<<<<< Updated upstream
+    <insert id="insertReqCoursepart" parameterType="com.jwsystem.entity.course.Coursepart">
+=======
+    <insert id="insertReqCoursepart" parameterType="com.jwsystem.dto.CoursepartDTO">
+>>>>>>> Stashed changes
         insert into req_coursepart(
             request_id,
             course_name,
@@ -65,7 +73,11 @@
               )
     </insert>
     <!-- 查询所有课程信息 -->
-    <resultMap id="CoursepartMapping" type="com.jwsystem.entity.Coursepart">
+<<<<<<< Updated upstream
+    <resultMap id="CoursepartMapping" type="com.jwsystem.entity.course.Coursepart">
+=======
+    <resultMap id="CoursepartMapping" type="com.jwsystem.dto.CoursepartDTO">
+>>>>>>> Stashed changes
         <!-- id属性来映射主键字段 -->
         <id column="course_id" property="relationId"/>
         <!-- result属性映射非主键字段 -->
@@ -81,17 +93,17 @@
     </resultMap>
     <select id="getCoursepartInfos" resultMap="CoursepartMapping">
         SELECT *
-        FROM coursepart
+        FROM coursepartDTO
     </select>
 <!--    根据学院名查询课程信息-->
     <select id="getCoursepartByCollege" resultMap="CoursepartMapping">
         SELECT *
-        FROM coursepart where college_name = #{college_name}
+        FROM coursepartDTO where college_name = #{college_name}
     </select>
 
     <select id="getAllCoursepartByTeacherNum" resultMap="CoursepartMapping">
         SELECT *
-        FROM coursepart where teacher_num = #{teacher_num}
+        FROM coursepartDTO where teacher_num = #{teacher_num}
     </select>
 
     <!--查询所有未审核课程信息-->
@@ -102,10 +114,14 @@
 
     <select id="getCoursepartByCourseId" resultMap="CoursepartMapping">
         SELECT *
-        FROM coursepart where course_id = #{relationId}
+        FROM coursepartDTO where course_id = #{relationId}
     </select>
 
-    <resultMap id="ReqCoursepartMapping" type="com.jwsystem.entity.Coursepart">
+<<<<<<< Updated upstream
+    <resultMap id="ReqCoursepartMapping" type="com.jwsystem.entity.course.Coursepart">
+=======
+    <resultMap id="ReqCoursepartMapping" type="com.jwsystem.dto.CoursepartDTO">
+>>>>>>> Stashed changes
         <!-- id属性来映射主键字段 -->
         <id column="request_id" property="relationId"/>
         <!-- result属性映射非主键字段 -->
@@ -122,7 +138,7 @@
 
     <!-- 删除 Coursepart-->
     <delete id="deleteCoursepartByCourseId">
-        DELETE FROM coursepart WHERE course_id = #{course_id}
+        DELETE FROM coursepartDTO WHERE course_id = #{course_id}
     </delete>
     <delete id="deleteReqCourseByRequestId">
         DELETE FROM req_coursepart WHERE request_id = #{request_id}

@@ -1,8 +1,9 @@
 package com.jwsystem.util;
 
-import com.jwsystem.entity.Coursepart;
+
+import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.vo.CourseVO;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.dto.TimepartDTO;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Component
 public class CourseUtil {
 
-    public CourseVO transToVO(Coursepart coursePart, List<Timepart> timepartList){
+    public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList){
 
         CourseVO VO = new CourseVO();
 
@@ -26,14 +27,14 @@ public class CourseUtil {
         VO.setTeacherNum(coursePart.getTeacherNum());
         VO.setTeacherName(coursePart.getTeacherName());
         VO.setCourseInfo(coursePart.getCourseInfo());
-        VO.setBuilding(timepartList.get(0).getBuilding());
-        VO.setRoomNum(timepartList.get(0).getRoomNum());
+        VO.setBuilding(timepartDTOList.get(0).getBuilding());
+        VO.setRoomNum(timepartDTOList.get(0).getRoomNum());
         VO.setCapacity(coursePart.getCapacity());
 
         //设置时间部分
         int[][] time = new int[7][];
-        for (Timepart t:
-                timepartList) {
+        for (TimepartDTO t:
+                timepartDTOList) {
             int i = t.getWeekday();
             //转字符串为int数组
             String[] s = t.getSection().split(" ");

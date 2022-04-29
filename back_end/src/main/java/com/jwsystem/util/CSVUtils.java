@@ -2,12 +2,7 @@ package com.jwsystem.util;
 
 
 import com.jwsystem.dto.CourseDTO;
-import com.jwsystem.dto.User;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import com.jwsystem.vo.UserVO;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Data
@@ -30,8 +24,8 @@ public class CSVUtils {
      */
 
     //对list的处理user.setlist;
-    public static List<User> getUserByCsv(MultipartFile file) {
-        ArrayList<User> users = new ArrayList<>();
+    public static List<UserVO> getUserByCsv(MultipartFile file) {
+        ArrayList<UserVO> userVOS = new ArrayList<>();
 
         InputStreamReader in = null;
         try{
@@ -41,18 +35,18 @@ public class CSVUtils {
                 String line = null;
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] split = line.split(",");
-                    User user = new User();
-                    user.setRole(splitResult(split[0]));
-                    user.setNumber(splitResult(split[1]));
-                    user.setId(splitResult(split[2]));
-                    user.setName(splitResult(split[3]));
-                    user.setPassword(splitResult(split[4]));
-                    user.setPhone(splitResult(split[5]));
-                    user.setEmail(splitResult(split[6]));
-                    user.setStatus(splitResult(split[7]));
-                    user.setMajor(splitResult(split[8]));
-                    user.setCollege(splitResult(split[9]));
-                    users.add(user);
+                    UserVO userVO = new UserVO();
+                    userVO.setRole(splitResult(split[0]));
+                    userVO.setNumber(splitResult(split[1]));
+                    userVO.setId(splitResult(split[2]));
+                    userVO.setName(splitResult(split[3]));
+                    userVO.setPassword(splitResult(split[4]));
+                    userVO.setPhone(splitResult(split[5]));
+                    userVO.setEmail(splitResult(split[6]));
+                    userVO.setStatus(splitResult(split[7]));
+                    userVO.setMajor(splitResult(split[8]));
+                    userVO.setCollege(splitResult(split[9]));
+                    userVOS.add(userVO);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -65,7 +59,7 @@ public class CSVUtils {
         finally{
 
         }
-        return users;
+        return userVOS;
     }
 
     public static List<CourseDTO> getCourseByCsv(MultipartFile file) throws IOException {
@@ -97,6 +91,9 @@ public class CSVUtils {
                 courseDTO.setFri(splitResult(split[15]));
                 courseDTO.setSat(splitResult(split[16]));
                 courseDTO.setSun(splitResult(split[17]));
+                courseDTO.setYear(splitResult(split[18]));
+                courseDTO.setSemester(splitResult(split[19]));
+                courseDTO.setIsGeneral(splitResult(split[20]));
                 courses.add(courseDTO);
             }
         } catch (IOException e) {

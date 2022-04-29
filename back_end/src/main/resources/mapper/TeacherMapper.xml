@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jwsystem.dao.TeacherDao">
     <!-- 新增老师 -->
-    <insert id="insertUser" parameterType="com.jwsystem.dto.User">
+    <insert id="insertUser" parameterType="com.jwsystem.vo.UserVO">
         insert into teacher
             (role,
              number,
@@ -12,14 +12,14 @@
              phone,
              email,
              status,
-             major,
+             majorDTO,
              college)
         values
-            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{major},#{college})
+            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{majorDTO},#{college})
     </insert>
 
     <!-- 老师修改手机号、邮箱、登陆密码 -->
-    <update id="updateTeaInfoByUser" parameterType="com.jwsystem.dto.User">
+    <update id="updateTeaInfoByUser" parameterType="com.jwsystem.vo.UserVO">
         UPDATE teacher
         SET password = #{password},
             phone = #{phone},
@@ -29,7 +29,7 @@
     </update>
 
     <!-- 管理员修改除学工号以外的信息 -->
-    <update id="updateTeaInfoByAdmin" parameterType="com.jwsystem.dto.User">
+    <update id="updateTeaInfoByAdmin" parameterType="com.jwsystem.vo.UserVO">
         UPDATE teacher
         SET role = #{role},
             id = #{id},
@@ -38,7 +38,7 @@
             phone = #{phone},
             email = #{email},
             status = #{status},
-            major = #{major},
+            majorDTO = #{majorDTO},
             college = #{college}
         WHERE
             number = #{number}
@@ -52,7 +52,7 @@
     </update>
 
     <!--查看所有教师信息-->
-        <select id="getAllTea" resultType="com.jwsystem.dto.User">
+        <select id="getAllTea" resultType="com.jwsystem.vo.UserVO">
         SELECT
             role,
             number,
@@ -62,14 +62,18 @@
             phone,
             email,
             status,
-            major,
+            majorDTO,
             college
         FROM
             teacher
     </select>
 
     <!--根据身份证号查找-->
-    <select id="selectById" resultType="com.jwsystem.entity.Teacher">
+<<<<<<< Updated upstream
+    <select id="selectById" resultType="com.jwsystem.entity.user.Teacher">
+=======
+    <select id="selectById" resultType="com.jwsystem.entity.userVO.Teacher">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
@@ -79,7 +83,11 @@
     </select>
 
     <!--根据工号查找-->
-    <select id="selectByNum" resultType="com.jwsystem.entity.Teacher">
+<<<<<<< Updated upstream
+    <select id="selectByNum" resultType="com.jwsystem.entity.user.Teacher">
+=======
+    <select id="selectByNum" resultType="com.jwsystem.entity.userVO.Teacher">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
@@ -89,7 +97,7 @@
     </select>
 
     <!--查看教师信息-->
-    <select id="getUserByNumber" resultType="com.jwsystem.dto.User">
+    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">
         SELECT
             role,
             number,
@@ -99,7 +107,7 @@
             phone,
             email,
             status,
-            major,
+            majorDTO,
             college
         FROM
             teacher
@@ -108,7 +116,11 @@
     </select>
 
     <!--教师查看个人信息-->
-    <select id="getTeaInfo" resultType="com.jwsystem.entity.Teacher">
+<<<<<<< Updated upstream
+    <select id="getTeaInfo" resultType="com.jwsystem.entity.user.Teacher">
+=======
+    <select id="getTeaInfo" resultType="com.jwsystem.entity.userVO.Teacher">
+>>>>>>> Stashed changes
         SELECT
             role,
             number,
@@ -118,7 +130,7 @@
             phone,
             email,
             status,
-            major,
+            majorDTO,
             college
         FROM
             teacher
@@ -133,12 +145,30 @@
     </delete>
 
     <!-- 根据学院名得到老师信息 -->
-    <select id="getTeacherByCollegeName" resultType="com.jwsystem.entity.Teacher">
+<<<<<<< Updated upstream
+    <select id="getTeacherByCollegeName" resultType="com.jwsystem.entity.user.Teacher">
+=======
+    <select id="getTeacherByCollegeName" resultType="com.jwsystem.entity.userVO.Teacher">
+>>>>>>> Stashed changes
         SELECT
             *
         FROM
             teacher
         WHERE
             college = #{college} and status = "working"
+    </select>
+
+    <!--根据专业得到在职老师数量-->
+    <select id="getTeacherByMajor" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            teacher
+        WHERE
+<<<<<<< Updated upstream
+            major = #{major} and status = "working"
+=======
+            majorDTO = #{majorDTO} and status = "working"
+>>>>>>> Stashed changes
     </select>
 </mapper>

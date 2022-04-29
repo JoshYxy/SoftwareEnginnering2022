@@ -1,20 +1,26 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Request;
-import com.jwsystem.entity.Timepart;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.request.Request;
+import com.jwsystem.entity.course.Timepart;
+=======
+import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.RequestDTO;
+import com.jwsystem.dto.TimepartDTO;
+>>>>>>> Stashed changes
 
 import java.util.List;
 
 public interface RequestService {
 
-    List<Request> getAllRequests();
+    List<RequestDTO> getAllRequests();
 
-    Coursepart getReqCoursepartByRequestId(int requestId);
+    CoursepartDTO getReqCoursepartByRequestId(int requestId);
 
-    List<Timepart> getAllReqTimepartByRequestId(int requestId);
+    List<TimepartDTO> getAllReqTimepartByRequestId(int requestId);
 
-    Request selectRequestById(int requestId);
+    RequestDTO selectRequestById(int requestId);
 
     void examinedById(int requestId, boolean examined, boolean passed);
 }

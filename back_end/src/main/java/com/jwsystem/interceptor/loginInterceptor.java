@@ -1,6 +1,6 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.dto.User;
+import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.jwsystem.controller.UserController.*;
-import static com.jwsystem.dto.User.GRADUATED;
-import static com.jwsystem.dto.User.QUIT;
+import static com.jwsystem.vo.UserVO.GRADUATED;
+import static com.jwsystem.vo.UserVO.QUIT;
 import static com.jwsystem.interceptor.adminInterceptor.adminNum;
 
 //登陆状态拦截器
@@ -70,23 +70,23 @@ public class loginInterceptor implements HandlerInterceptor {
 
         String number = claims.getSubject();
 
-        User user;
+        UserVO userVO;
         if(number.length()==TEACHER_NUM_LENGTH){
             //老师
-            user = teaServiceImp.getUserByNumber(number);
+            userVO = teaServiceImp.getUserByNumber(number);
 
         } else if(number.length()==STUDENT_NUM_LENGTH){
             //学生
-            user = stuServiceImp.getUserByNumber(number);
+            userVO = stuServiceImp.getUserByNumber(number);
         } else if(number.equals(adminNum)){
-            user = adminServiceImp.getUserByNumber(number);
+            userVO = adminServiceImp.getUserByNumber(number);
         } else{
             System.out.println("用户身份有误！不属于教师、学生或管理员");
             return false;
         }
 
         if(!number.equals(adminNum)){
-            if(user.getStatus().equals(GRADUATED) || user.getStatus().equals(QUIT)){
+            if(userVO.getStatus().equals(GRADUATED) || userVO.getStatus().equals(QUIT)){
                 System.out.println("用户状态非法");
                 return false;
             }

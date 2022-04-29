@@ -2,8 +2,12 @@ package com.jwsystem.service.impl;
 
 import com.jwsystem.dao.MajorDao;
 import com.jwsystem.dao.StudentDao;
-import com.jwsystem.entity.Student;
+import com.jwsystem.entity.user.Student;
+<<<<<<< Updated upstream
 import com.jwsystem.dto.User;
+=======
+import com.jwsystem.vo.UserVO;
+>>>>>>> Stashed changes
 import com.jwsystem.service.StuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +26,12 @@ public class StuServiceImp implements StuService {
     MajorDao majorDao;
 
     @Override
-    public Boolean insertUser(User user) {
-        return studentDao.insertUser(user) != 0;
+    public Boolean insertUser(UserVO userVO) {
+        return studentDao.insertUser(userVO) != 0;
     }
 
     @Override
-    public User getUserByNumber(String number) {
+    public UserVO getUserByNumber(String number) {
         return studentDao.getUserByNumber(number);
     }
 
@@ -42,7 +46,7 @@ public class StuServiceImp implements StuService {
     }
 
     @Override
-    public List<User> getAllUserInfos() {
+    public List<UserVO> getAllUserInfos() {
         return studentDao.getAllStu();
     }
 
@@ -51,13 +55,13 @@ public class StuServiceImp implements StuService {
         studentDao.updatePwdByNumber(password, number);
     }
     @Override
-    public Boolean updateStuInfoByUser(User user){
-        return studentDao.updateStuInfoByUser(user) != 0;
+    public Boolean updateStuInfoByUser(UserVO userVO){
+        return studentDao.updateStuInfoByUser(userVO) != 0;
     }
 
     @Override
-    public void updateStuInfoByAdmin(User user) {
-        studentDao.updateStuInfoByAdmin(user);
+    public void updateStuInfoByAdmin(UserVO userVO) {
+        studentDao.updateStuInfoByAdmin(userVO);
     }
 
     @Override

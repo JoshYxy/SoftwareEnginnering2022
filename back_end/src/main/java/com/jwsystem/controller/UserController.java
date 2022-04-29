@@ -1,12 +1,13 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.dto.User;
-import com.jwsystem.entity.Times;
+
+import com.jwsystem.entity.affair.TimesPO;
+import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.JwtUtils;
 import com.jwsystem.vo.BuildingVO;
-import com.jwsystem.vo.TeacherData;
+import com.jwsystem.vo.TeacherDataVO;
 import com.mysql.jdbc.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static com.jwsystem.dto.User.STUDYING;
-import static com.jwsystem.dto.User.WORKING;
+import static com.jwsystem.vo.UserVO.STUDYING;
+import static com.jwsystem.vo.UserVO.WORKING;
 
 @RestController
 @RequestMapping("/user")
@@ -49,40 +50,40 @@ public class UserController extends MainController{
 
     //登陆请求
     @PostMapping("")
-    public Result login (@RequestBody User tempUser){
+    public Result login (@RequestBody UserVO tempUserVO){
 
-        String number = tempUser.getNumber();
-        String password = tempUser.getPassword();
+        String number = tempUserVO.getNumber();
+        String password = tempUserVO.getPassword();
 
         //用Dao，以number为键去数据库查询有没有对应的用户
-        User user;
+        UserVO userVO;
 
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
-            user = teaServiceImp.getUserByNumber(number);
-            if( !user.getStatus().equals(WORKING) ) {
+            userVO = teaServiceImp.getUserByNumber(number);
+            if( !userVO.getStatus().equals(WORKING) ) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已离职教师无权登陆");
             }
         }
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-            user = stuServiceImp.getUserByNumber(number);
-            if( !user.getStatus().equals(STUDYING)) {
+            userVO = stuServiceImp.getUserByNumber(number);
+            if( !userVO.getStatus().equals(STUDYING)) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已毕业学生无权登陆");
             }
         }
         else{
-            user = adminServiceImp.getUserByNumber(number);
+            userVO = adminServiceImp.getUserByNumber(number);
         }
 
-        if(user==null){
+        if(userVO ==null){
             response.setStatus(NO_USER);
             return Result.fail("用户不存在");
         }
 
-        if(!user.getPassword().equals(password)){
+        if(!userVO.getPassword().equals(password)){
             response.setStatus(WRONG_PSWD);
             return Result.fail("密码错误");
         }
@@ -93,7 +94,7 @@ public class UserController extends MainController{
             response.setHeader(jwtUtils.getHeader(),token);
         }
 
-        String role = user.getRole();
+        String role = userVO.getRole();
         response.addHeader("Access-Control-Expose-Headers","role");
         response.setHeader("role",role);
 
@@ -102,16 +103,16 @@ public class UserController extends MainController{
 
     //第一次登陆修改密码
     @PostMapping("/password")
-    public Result reset(@RequestBody User tempUser) {
+    public Result reset(@RequestBody UserVO tempUserVO) {
         String number = getNumByToken();
 
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
-            teaServiceImp.updatePwdByNumber(tempUser.getPassword(),number);
+            teaServiceImp.updatePwdByNumber(tempUserVO.getPassword(),number);
         }
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-            stuServiceImp.updatePwdByNumber(tempUser.getPassword(),number);
+            stuServiceImp.updatePwdByNumber(tempUserVO.getPassword(),number);
         }
         else{
             response.setStatus(WRONG_DATA);
@@ -126,19 +127,19 @@ public class UserController extends MainController{
     public Result getInfo(){
         String number = getNumByToken();
         //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
-        User user;
+        UserVO userVO;
         if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-                 user = stuServiceImp.getUserByNumber(number);
+                 userVO = stuServiceImp.getUserByNumber(number);
         } else {
             //老师
-                user = teaServiceImp.getUserByNumber(number);
+                userVO = teaServiceImp.getUserByNumber(number);
         }
-        if(user == null){
+        if(userVO == null){
             response.setStatus(NO_USER);
             return Result.fail("用户不存在！");
         }
-        return Result.succ(user);
+        return Result.succ(userVO);
     }
 
 
@@ -146,28 +147,27 @@ public class UserController extends MainController{
     //前端一定要返回完整的User对象
     //判断密码重复
     @PostMapping("/info")
-    public Result changeInfo(@RequestBody User tempUser){
-        String number = getNumByToken();
-        //根据number长度判断登陆用户是老师还是学生，再到对应的表中去查
-        if(tempUser.getRole().equals("student")){
+    public Result changeInfo(@RequestBody UserVO tempUserVO){
+        //判断登陆用户是老师还是学生，再到对应的表中去查
+        if(tempUserVO.getRole().equals("student")){
             //学生
-            boolean res = stuServiceImp.updateStuInfoByUser(tempUser);
-            if(res == false){
+            boolean res = stuServiceImp.updateStuInfoByUser(tempUserVO);
+            if(!res){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");
             }
         }
-        else if(tempUser.getRole().equals("teacher")){
+        else if(tempUserVO.getRole().equals("teacher")){
             //老师
-            boolean res = teaServiceImp.updateTeaInfoByUser(tempUser);
-            if (res == false){
+            boolean res = teaServiceImp.updateTeaInfoByUser(tempUserVO);
+            if (!res){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");
             }
         }
         else {
             response.setStatus(WRONG_DATA);
-            return Result.fail("无效的用户role",tempUser);
+            return Result.fail("无效的用户role", tempUserVO);
         }
         return Result.succ("用户信息修改成功！");
     }
@@ -183,15 +183,15 @@ public class UserController extends MainController{
     @GetMapping("/course/new")
     public Result getCourseInfo(){
         //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
-        List<TeacherData> teacherDataList = teaServiceImp.getAllTeachersWithCollege();
+        List<TeacherDataVO> teacherDataVOList = teaServiceImp.getAllTeachersWithCollege();
 
         //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
         List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
 
         //上课时间信息
-        List<Times> times = timesServiceImp.getAllTimes();
+        List<TimesPO> times = timesServiceImp.getAllTimes();
 
-        return Result.succ3(teacherDataList,buildingVOList,times);
+        return Result.succ3(teacherDataVOList,buildingVOList,times);
     }
 
 }

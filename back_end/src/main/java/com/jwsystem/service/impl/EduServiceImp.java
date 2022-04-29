@@ -1,10 +1,18 @@
 package com.jwsystem.service.impl;
 
-import com.jwsystem.dao.CollegeDao;
-import com.jwsystem.dao.MajorDao;
-import com.jwsystem.entity.College;
+import com.jwsystem.dao.*;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.college.College;
+import com.jwsystem.entity.course.Coursepart;
+import com.jwsystem.entity.user.Teacher;
 import com.jwsystem.vo.CollegeVO;
-import com.jwsystem.entity.Major;
+import com.jwsystem.entity.college.Major;
+=======
+import com.jwsystem.dto.MajorDTO;
+import com.jwsystem.entity.college.College;
+import com.jwsystem.entity.user.Teacher;
+import com.jwsystem.vo.CollegeVO;
+>>>>>>> Stashed changes
 import com.jwsystem.service.EduService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +26,15 @@ public class EduServiceImp implements EduService {
 
     @Autowired
     MajorDao majorDao;
+
+    @Autowired
+    TeacherDao teacherDao;
+
+    @Autowired
+    StudentDao studentDao;
+
+    @Autowired
+    CoursepartDao coursepartDao;
 
     @Override
     public List<CollegeVO> getEduInfo() {
@@ -34,11 +51,11 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public Boolean insertMajor(Major major) {
-        if(majorDao.findMajorByName(major.getName()) != null){
+    public Boolean insertMajor(MajorDTO majorDTO) {
+        if(majorDao.findMajorByName(majorDTO.getName()) != null){
             return false;
         }else
-            return majorDao.insertMajor(major.getName(),major.getCollegeName()) != 0;
+            return majorDao.insertMajor(majorDTO.getName(), majorDTO.getCollegeName()) != 0;
     }
 
     @Override
@@ -57,18 +74,18 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public Major selectMajorByName(Major major) {
-        return majorDao.findMajorByName(major.getName());
+    public MajorDTO selectMajorByName(MajorDTO majorDTO) {
+        return majorDao.findMajorByName(majorDTO.getName());
     }
 
     @Override
-    public Boolean findMajorById(Major major) {
-        return majorDao.findMajorById(major.getMajorId()) != null;
+    public Boolean findMajorById(MajorDTO majorDTO) {
+        return majorDao.findMajorById(majorDTO.getMajorId()) != null;
     }
 
     @Override
-    public Boolean findMajorByName(Major major) {
-        return majorDao.findMajorByName(major.getName()) != null;
+    public Boolean findMajorByName(MajorDTO majorDTO) {
+        return majorDao.findMajorByName(majorDTO.getName()) != null;
     }
 
     @Override
@@ -87,8 +104,8 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public void updateMajor(Major major) {
-        majorDao.updateMajorNameById(major.getMajorId(), major.getName());
+    public void updateMajor(MajorDTO majorDTO) {
+        majorDao.updateMajorNameById(majorDTO.getMajorId(), majorDTO.getName());
     }
 
     @Override
@@ -97,7 +114,85 @@ public class EduServiceImp implements EduService {
     }
 
     @Override
-    public void deleteMajor(Major major) {
-        majorDao.deleteMajor(major.getName());
+    public void deleteMajor(MajorDTO majorDTO) {
+        majorDao.deleteMajor(majorDTO.getName());
+    }
+
+    @Override
+    public boolean findOthersByCollege(College college) {
+        boolean res = false;
+        //根据学院找专业
+        if(majorDao.findMajorByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找老师
+        else if(!teacherDao.getTeacherByCollegeName(college.getName()).isEmpty()){
+            res=true;
+        }
+        //根据学院找学生，返回学生数量
+        else if(studentDao.getStuByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找课程
+        else if(!coursepartDao.getCoursepartByCollege(college.getName()).isEmpty()){
+            res=true;
+        }
+
+        return res;
+    }
+
+    @Override
+    public boolean findOthersByMajor(MajorDTO majorDTO) {
+        boolean res = false;
+
+        //根据专业找老师
+        if(teacherDao.getTeacherByMajor(majorDTO.getName()) != 0){
+            res=true;
+        }
+        //根据专业找学生，返回学生数量
+        else if(studentDao.getStuByMajor(majorDTO.getName())!=0){
+            res=true;
+        }
+
+        return res;
+    }
+
+    @Override
+    public boolean findOthersByCollege(College college) {
+        boolean res = false;
+        //根据学院找专业
+        if(majorDao.findMajorByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找老师
+        else if(!teacherDao.getTeacherByCollegeName(college.getName()).isEmpty()){
+            res=true;
+        }
+        //根据学院找学生，返回学生数量
+        else if(studentDao.getStuByCollegeName(college.getName())!=0){
+            res=true;
+        }
+        //根据学院找课程
+        else if(!coursepartDao.getCoursepartByCollege(college.getName()).isEmpty()){
+            res=true;
+        }
+
+        return res;
+    }
+
+    @Override
+    public boolean findOthersByMajor(Major major) {
+        boolean res = false;
+
+        //根据专业找老师
+        if(teacherDao.getTeacherByMajor(major.getName()) != 0){
+            res=true;
+        }
+        //根据专业找学生，返回学生数量
+        else if(studentDao.getStuByMajor(major.getName())!=0){
+            res=true;
+        }
+
+        return res;
     }
 }

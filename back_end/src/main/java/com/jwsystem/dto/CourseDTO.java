@@ -47,6 +47,12 @@ public class CourseDTO {
     private String Sat;
     @CsvBindByName(column = "Sun")
     private String Sun;
+    @CsvBindByName(column = "year")
+    private String year;
+    @CsvBindByName(column = "semester")
+    private String semester;
+    @CsvBindByName(column = "isGeneral")
+    private String isGeneral;
 }
 
 

@@ -1,19 +1,28 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.Classroom;
+<<<<<<< Updated upstream
+import com.jwsystem.entity.affair.Classroom;
+=======
+import com.jwsystem.entity.affair.ClassroomVO;
+>>>>>>> Stashed changes
 
 import java.util.List;
 
 public interface ClassroomService {
 
-    Classroom findByBuildingAndNum(String building, String roomNum);
+    ClassroomVO findByBuildingAndNum(String building, String roomNum);
 
-    void add(Classroom classRoom);
+    void add(ClassroomVO classRoom);
 
-    Classroom findById(Integer roomId);
+    ClassroomVO findById(Integer roomId);
 
     void deleteByBuildingAndRoomNum(String building, String roomNum);
 
-    void changeById(Classroom classRoom);
+    void changeById(ClassroomVO classRoom);
 
+<<<<<<< Updated upstream
+    List<Classroom> getClassroomsByBuilding(String building);
+=======
+    List<ClassroomVO> getClassroomsByBuilding(String building);
+>>>>>>> Stashed changes
 }

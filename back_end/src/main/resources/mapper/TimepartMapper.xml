@@ -3,9 +3,13 @@
 <mapper namespace="com.jwsystem.dao.TimepartDao">
     <select id="getAllTimepart" resultMap="TimepartMapping">
         SELECT *
-        FROM timepart WHERE course_id = #{course_id}
+        FROM timepartDTO WHERE course_id = #{course_id}
     </select>
-    <resultMap id="TimepartMapping" type="com.jwsystem.entity.Timepart">
+<<<<<<< Updated upstream
+    <resultMap id="TimepartMapping" type="com.jwsystem.entity.course.Timepart">
+=======
+    <resultMap id="TimepartMapping" type="com.jwsystem.dto.TimepartDTO">
+>>>>>>> Stashed changes
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->
@@ -22,7 +26,11 @@
         FROM req_timepart WHERE request_id = #{request_id}
     </select>
 
-    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.Timepart">
+<<<<<<< Updated upstream
+    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.course.Timepart">
+=======
+    <resultMap id="ReqTimepartMapping" type="com.jwsystem.dto.TimepartDTO">
+>>>>>>> Stashed changes
         <!-- id属性来映射主键字段 -->
         <id column="id" property="id"/>
         <!-- result属性映射非主键字段 -->
@@ -36,27 +44,31 @@
 
     <select id="selectSectionByTea" resultType="string">
         SELECT section
-        FROM timepart WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
+        FROM timepartDTO WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
     </select>
 
     <select id="selectSectionByRoom" resultType="string">
         SELECT section
-        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
+        FROM timepartDTO WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
     </select>
 
     <select id="getAllTimeByRoom" resultMap="TimepartMapping">
         SELECT *
-        FROM timepart WHERE building = #{building} and room_num = #{room_num}
+        FROM timepartDTO WHERE building = #{building} and room_num = #{room_num}
     </select>
 
-    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.Timepart">
+<<<<<<< Updated upstream
+    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.course.Timepart">
+=======
+    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.dto.TimepartDTO">
+>>>>>>> Stashed changes
         SELECT *
-        FROM timepart WHERE teacher_num = #{teacher_num}
+        FROM timepartDTO WHERE teacher_num = #{teacher_num}
     </select>
 
     <select id="getCourseIdByBuilding" resultType="java.lang.Integer">
         SELECT course_id
-        FROM timepart WHERE building = #{building}
+        FROM timepartDTO WHERE building = #{building}
     </select>
 
     <select id="getRequestIdByBuilding" resultType="java.lang.Integer">
@@ -66,7 +78,7 @@
 
     <select id="getCourseIdByRoom" resultType="java.lang.Integer">
         SELECT course_id
-        FROM timepart WHERE building = #{building} and room_num = #{room_num}
+        FROM timepartDTO WHERE building = #{building} and room_num = #{room_num}
     </select>
 
     <select id="getRequestIdByRoom" resultType="java.lang.Integer">
@@ -82,11 +94,16 @@
         SELECT
             section
         FROM
-            timepart
+            timepartDTO
     </select>
 
-    <insert id="insertTimepart" parameterType="com.jwsystem.entity.Timepart">
+<<<<<<< Updated upstream
+    <insert id="insertTimepart" parameterType="com.jwsystem.entity.course.Timepart">
         insert into timepart(
+=======
+    <insert id="insertTimepart" parameterType="com.jwsystem.dto.TimepartDTO">
+        insert into timepartDTO(
+>>>>>>> Stashed changes
             id,
             course_id,
             teacher_num,
@@ -106,7 +123,11 @@
               )
     </insert>
 
-    <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.Timepart">
+<<<<<<< Updated upstream
+    <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.course.Timepart">
+=======
+    <insert id="insertReqTimepart" parameterType="com.jwsystem.dto.TimepartDTO">
+>>>>>>> Stashed changes
         insert into req_timepart(
             id,
             request_id,

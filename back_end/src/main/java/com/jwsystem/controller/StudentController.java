@@ -1,9 +1,9 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.entity.Coursepart;
-import com.jwsystem.entity.Student;
-import com.jwsystem.entity.Timepart;
+import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.StuService;
 import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.CourseRequestImp;
@@ -51,21 +51,21 @@ public class StudentController extends MainController{
         }
 
         String number = getNumByToken();
-        Student student = stuService.selectStuByNum(number);
+        UserVO student = stuService.selectStuByNum(number);
         String collegeName = student.getCollege();
 
         //暂定该专业可选课程为专业所属学院的课程
         //取出该学生所属学院开设的全部课程
         List<CourseVO> courses = new ArrayList<>();
         //根据学院名称取出对应的全部coursePart部分
-        List<Coursepart> coursepartList = courseServiceImp.getCoursepartByCollege(collegeName);
+        List<CoursepartDTO> coursepartDTOList = courseServiceImp.getCoursepartByCollege(collegeName);
 
-        for (Coursepart c:
-                coursepartList) {
-            List<Timepart> timepartList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
+        for (CoursepartDTO c:
+                coursepartDTOList) {
+            List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c, timepartList);
+            CourseVO tempVO = courseUtil.transToVO(c, timepartDTOList);
 
             courses.add(tempVO);
         }

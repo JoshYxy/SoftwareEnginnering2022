@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.ReqStudentDaoMP">
+
+    <!-- 通用查询映射结果 -->
+<<<<<<< Updated upstream
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.ReqStudentPO">
+=======
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.request.ReqStudentPO">
+>>>>>>> Stashed changes
+        <id column="id" property="id" />
+        <result column="course_id" property="courseId" />
+        <result column="student_num" property="studentNum" />
+        <result column="reason" property="reason" />
+        <result column="time" property="time" />
+        <result column="dealt" property="dealt" />
+        <result column="approved" property="approved" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, course_id, student_num, reason, time, dealt, approved
+    </sql>
+
+</mapper>

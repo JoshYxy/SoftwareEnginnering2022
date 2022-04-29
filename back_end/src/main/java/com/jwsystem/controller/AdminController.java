@@ -1,11 +1,9 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
-import com.jwsystem.dto.User;
-import com.jwsystem.entity.College;
-import com.jwsystem.entity.Major;
-import com.jwsystem.entity.Student;
-import com.jwsystem.entity.Teacher;
+import com.jwsystem.dto.MajorDTO;
+import com.jwsystem.entity.college.CollegePO;
+import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.EduServiceImp;
 import com.jwsystem.service.impl.StuServiceImp;
 import com.jwsystem.service.impl.TeaServiceImp;
@@ -20,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static com.jwsystem.controller.UserController.ID_LENGTH;
-import static com.jwsystem.dto.User.*;
+import static com.jwsystem.vo.UserVO.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -42,23 +40,33 @@ public class AdminController extends MainController{
 
 
     //用户信息合规性检验函数
-    boolean verifyUser (User tempUser){
+    boolean verifyUser (UserVO tempUserVO){
 
         boolean valid = true;
 
+        String role = tempUserVO.getRole();
+        String id = tempUserVO.getId();
+        String status = tempUserVO.getStatus();
+
         //role检验：是否为老师或学生
-        String role = tempUser.getRole();
-        if(!role.equals("student") && !role.equals("teacher")) valid = false;
+        if(!role.equals("student") && !role.equals("teacher")){
+            valid = false;
+        }
 
         //number检验：学工号非空判断和数字判断、位数判断
-        if(role.equals("student") && !stuServiceImp.legalNumber(tempUser.getNumber())) valid = false;
-        if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUser.getNumber())) valid = false;
+        else if(role.equals("student") && !stuServiceImp.legalNumber(tempUserVO.getNumber())){
+            valid = false;
+        }
+        else if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUserVO.getNumber())){
+            valid = false;
+        }
 
         //id检验:非空判断和数字判断、位数判断
-        String id = tempUser.getId();
         //先检验长度是否为18
-        if(id.length() != ID_LENGTH) valid = false;
-        else{
+        else if(id.length() != ID_LENGTH) {
+            valid = false;
+        }
+        else if(id.length() == ID_LENGTH){
             //长度正确的情况下检验前17位为数字，第18位为数字或者X
             String shortId = id.substring(0,17);
             String last = id.substring(17);
@@ -69,68 +77,67 @@ public class AdminController extends MainController{
         }
 
         //name检验
-        if(tempUser.getName().isEmpty()) valid = false;
+        else if(tempUserVO.getName().isEmpty()) valid = false;
 
         //password检验
-        if(tempUser.getPassword().isEmpty()) valid = false;
+        else if(tempUserVO.getPassword().isEmpty()) valid = false;
 
         //status检验
-        String status = tempUser.getStatus();
-        if(!status.equals(GRADUATED)
+        else if(!status.equals(GRADUATED)
                 && !status.equals(QUIT)
                 && !status.equals(STUDYING)
                 && !status.equals(WORKING)
         ) valid = false;
 
         //major检验
-        if(tempUser.getMajor().isEmpty()) valid = false;
+        else if(tempUserVO.getMajor().isEmpty()) valid = false;
 
         //college检验
-        if(tempUser.getCollege().isEmpty()) valid = false;
+        else if(tempUserVO.getCollege().isEmpty()) valid = false;
 
         return valid;
     }
 
     //用户信息有效性检验函数
-    boolean verifyData(User tempUser, String type){
+    boolean verifyData(UserVO tempUserVO, String type){
 
         boolean valid = true;
 
         if(type.equals("add")){
             //number非重复检验
-            String number = tempUser.getNumber();
+            String number = tempUserVO.getNumber();
             if(stuServiceImp.getUserByNumber(number) != null || teaServiceImp.getUserByNumber(number) != null) valid = false;
         }
 
         //id非重复检验
-        String id = tempUser.getId();
+        String id = tempUserVO.getId();
         if(type.equals("add")){
             if(stuServiceImp.selectStuById(id) != null || teaServiceImp.selectTeaById(id) != null) valid = false;
         }
         else if(type.equals("change")){
-            Student temp1 = stuServiceImp.selectStuById(tempUser.getId());
-            Teacher temp2 = teaServiceImp.selectTeaById(tempUser.getId());
+            UserVO temp1 = stuServiceImp.selectStuById(tempUserVO.getId());
+            UserVO temp2 = teaServiceImp.selectTeaById(tempUserVO.getId());
 
             if(temp1!=null){
                 String tempNum = temp1.getNumber();
-                if(!tempNum.equals(tempUser.getNumber())){
+                if(!tempNum.equals(tempUserVO.getNumber())){
                     valid = false;
                 }
             }
 
             if(temp2!=null){
                 String tempNum = temp2.getNumber();
-                if(!tempNum.equals(tempUser.getNumber())){
+                if(!tempNum.equals(tempUserVO.getNumber())){
                     valid = false;
                 }
             }
         }
 
         //major存在性检验
-        if(!eduServiceImp.findMajorByStringName(tempUser.getMajor())) valid = false;
+        if(!eduServiceImp.findMajorByStringName(tempUserVO.getMajor())) valid = false;
 
         //college存在性检验
-        if(!eduServiceImp.judgeMajorAndCollege(tempUser.getMajor(),tempUser.getCollege())) valid = false;
+        if(!eduServiceImp.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
 
         return valid;
     }
@@ -148,34 +155,34 @@ public class AdminController extends MainController{
     //管理员查看全部用户信息
     @GetMapping("/users")
     public Result getAll(){
-        List<User> users = teaServiceImp.getAllUserInfos();
-        List<User> students = stuServiceImp.getAllUserInfos();
-        users.addAll(students);
-        return Result.succ("查询成功",users);
+        List<UserVO> userVOS = teaServiceImp.getAllUserInfos();
+        List<UserVO> students = stuServiceImp.getAllUserInfos();
+        userVOS.addAll(students);
+        return Result.succ("查询成功", userVOS);
     }
 
     //管理员单条录入信息
     @PostMapping("/new")
-    public Result register(@RequestBody User tempUser){
+    public Result register(@RequestBody UserVO tempUserVO){
         System.out.println("进入了register...");
 
         //数据格式检查
-        if(!verifyUser(tempUser)){
+        if(!verifyUser(tempUserVO)){
             response.setStatus(WRONG_DATA);
             return Result.fail("用户数据格式不符合规定！");
         }
 
         //数据有效性检查
-        if(!verifyData(tempUser,"add")){
+        if(!verifyData(tempUserVO,"add")){
             response.setStatus(WRONG_DATA);
             return Result.fail("用户数据内容无效！");
         }
 
-        if(tempUser.getRole().equals("student")) stuServiceImp.insertUser(tempUser);
+        if(tempUserVO.getRole().equals("student")) stuServiceImp.insertUser(tempUserVO);
 
-        else if(tempUser.getRole().equals("teacher")) teaServiceImp.insertUser(tempUser);
+        else if(tempUserVO.getRole().equals("teacher")) teaServiceImp.insertUser(tempUserVO);
 
-        return Result.succ("录入信息成功",tempUser);
+        return Result.succ("录入信息成功", tempUserVO);
     }
 
     //管理员批量导入用户信息
@@ -195,8 +202,8 @@ public class AdminController extends MainController{
         System.out.println("接收文件成功");
 
         //从CSV文件批量获取User对象
-        List<User> users = CSVUtils.getUserByCsv(multipartFile);
-        if(users == null){
+        List<UserVO> userVOS = CSVUtils.getUserByCsv(multipartFile);
+        if(userVOS == null){
             //csv文件为空
             response.setStatus(WRONG_RES);
             return Result.fail("csv文件读取失败！请检查文件格式或文件是否为空！");
@@ -205,7 +212,7 @@ public class AdminController extends MainController{
         //循环完成批量插入
         //加入如果中途插入失败了，跳过错过的该条，并且返回错误总数
         int cnt =0;
-        for (User temp : users) {
+        for (UserVO temp : userVOS) {
             Result res = register(temp);
             String s = res.getMsg();
             if(!s.equals("录入信息成功")) cnt++;
@@ -223,27 +230,27 @@ public class AdminController extends MainController{
     //加入身份证重复的判断
     //加入学院专业是否存在的检测
     @PostMapping("/user/info")
-    public Result changeUserInfo(@RequestBody User tempUser){
+    public Result changeUserInfo(@RequestBody UserVO tempUserVO){
         //管理员可以修改用户除学工号以外的所有信息
 
         //数据格式检查
-        if(!verifyUser(tempUser)){
+        if(!verifyUser(tempUserVO)){
             response.setStatus(WRONG_DATA);
             return Result.fail("修改后数据格式不符合规定！");
         }
 
         //数据有效性检查
-        if(!verifyData(tempUser,"change")){
+        if(!verifyData(tempUserVO,"change")){
             response.setStatus(WRONG_DATA);
             return Result.fail("修改后数据内容无效！");
         }
 
-        if(tempUser.getRole().equals("student")){
+        if(tempUserVO.getRole().equals("student")){
             //学生
-            stuServiceImp.updateStuInfoByAdmin(tempUser);
-        } else if(tempUser.getRole().equals("teacher")){
+            stuServiceImp.updateStuInfoByAdmin(tempUserVO);
+        } else if(tempUserVO.getRole().equals("teacher")){
             //老师
-            teaServiceImp.updateTeaInfoByAdmin(tempUser);
+            teaServiceImp.updateTeaInfoByAdmin(tempUserVO);
         }
 
         return Result.succ("修改成功");
@@ -268,9 +275,9 @@ public class AdminController extends MainController{
 
     //管理员增加新的学院
     @PostMapping("/edu/college/new")
-    public Result addCollege(@RequestBody College college){
+    public Result addCollege(@RequestBody CollegePO college){
         if(eduServiceImp.insertCollege(college)){
-            College inserted = eduServiceImp.selectCollegeByName(college);
+            CollegePO inserted = eduServiceImp.selectCollegeByName(college);
             return Result.succ("增加成功",inserted.getCollegeId());
         }else {
             response.setStatus(COLLEGE_CONFLICT);
@@ -280,9 +287,9 @@ public class AdminController extends MainController{
 
     //管理员增加新的专业
     @PostMapping("/edu/major/new")
-    public Result addMajor(@RequestBody Major major){
-        if(eduServiceImp.insertMajor(major)) {
-            Major inserted = eduServiceImp.selectMajorByName(major);
+    public Result addMajor(@RequestBody MajorDTO majorDTO){
+        if(eduServiceImp.insertMajor(majorDTO)) {
+            MajorDTO inserted = eduServiceImp.selectMajorByName(majorDTO);
             return Result.succ("增加成功",inserted.getMajorId());
         }else{
             response.setStatus(MAJOR_CONFLICT);
@@ -292,11 +299,14 @@ public class AdminController extends MainController{
 
     //管理员删除已有学院
     @DeleteMapping("/edu/college")
-    public Result deleteCollege(@RequestBody College college){
+    public Result deleteCollege(@RequestBody CollegePO college){
         //先查询是否存在该学院
-        boolean exist = eduServiceImp.findCollegeByName(college);
-        //存在，进行删除，并且删除对应的所有专业
-        if(exist){
+        boolean existCollege = eduServiceImp.findCollegeByName(college);
+        //存在学院，判断是否有对应的专业、学生和老师，如果有就不删，没有才进行删除
+        //存在对应信息时返回true
+        boolean existOthers = eduServiceImp.findOthersByCollege(college);
+        if(existCollege && !existOthers){
+            //存在学院且不存在老师、学生、课程和专业，可以删除学院
             eduServiceImp.deleteCollege(college);
         }
         else{
@@ -308,12 +318,13 @@ public class AdminController extends MainController{
 
     //管理员删除已有专业
     @DeleteMapping("/edu/major")
-    public Result deleteMajor(@RequestBody Major major){
+    public Result deleteMajor(@RequestBody MajorDTO majorDTO){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajorByName(major);
-        //存在，进行删除，并且删除对应的所有专业
-        if(exist){
-            eduServiceImp.deleteMajor(major);
+        boolean existMajor = eduServiceImp.findMajorByName(majorDTO);
+        //存在，查询是否有其他相关的学生、老师，没有的话进行删除
+        boolean existOthers = eduServiceImp.findOthersByMajor(majorDTO);
+        if(existMajor && !existOthers){
+            eduServiceImp.deleteMajor(majorDTO);
         }
         else{
             response.setStatus(NO_MAJOR);
@@ -326,7 +337,7 @@ public class AdminController extends MainController{
     //前端必须传id
     //加入了重名判断
     @PostMapping("/edu/college")
-    public Result changeCollege(@RequestBody College college){
+    public Result changeCollege(@RequestBody CollegePO college){
         //先查询是否存在该学院id
         boolean exist = eduServiceImp.findCollegeById(college);
         //存在，进行修改
@@ -349,17 +360,17 @@ public class AdminController extends MainController{
     //前端必须传id
     //加入了重名判断
     @PostMapping("/edu/major")
-    public Result changeMajor(@RequestBody Major major){
+    public Result changeMajor(@RequestBody MajorDTO majorDTO){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajorById(major);
+        boolean exist = eduServiceImp.findMajorById(majorDTO);
         //存在，进行修改
         if(exist){
-            boolean sameName = eduServiceImp.findMajorByName(major);
+            boolean sameName = eduServiceImp.findMajorByName(majorDTO);
             if(sameName){
                 response.setStatus(MAJOR_CONFLICT);
                 return Result.fail("已有同名专业，修改失败！");
             }
-            eduServiceImp.updateMajor(major);
+            eduServiceImp.updateMajor(majorDTO);
         }
         else{
             response.setStatus(NO_MAJOR);

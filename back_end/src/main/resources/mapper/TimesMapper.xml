@@ -16,12 +16,12 @@
         DELETE FROM times
     </delete>
     <!-- 得到所有楼宇信息 -->
-    <select id="getAllTimes" resultType="com.jwsystem.entity.Times">
+    <select id="getAllTimes" resultType="com.jwsystem.entity.affair.Times">
         SELECT *
         FROM times
     </select>
 
-    <select id="findTimesByName" resultType="com.jwsystem.entity.Times">
+    <select id="findTimesByName" resultType="com.jwsystem.entity.affair.Times">
         SELECT *
         FROM times
         where name = #{name}

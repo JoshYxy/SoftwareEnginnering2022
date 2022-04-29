@@ -1,8 +1,8 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.entity.Teacher;
 import com.jwsystem.service.TeaService;
 import com.jwsystem.util.JwtUtils;
+import com.jwsystem.vo.UserVO;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,7 +32,7 @@ public class teacherInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();
-        Teacher teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teaService.selectTeaByNum(number);
 
         if(teacher==null){
             System.out.println("非教师账号!");
