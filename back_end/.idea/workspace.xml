@@ -5,7 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1b7417ae-6d8a-4ad6-98e0-979430890236" name="变更" comment="变更">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/BuildingController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ClassroomController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CollegeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/CoursepartController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/MajorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/RelaCourseMajorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/RelaCourseStudentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqCoursepartController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqStudentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqTeacherController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/ReqTimepartController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/TimepartController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/jwsystem/controller/TimesController.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
