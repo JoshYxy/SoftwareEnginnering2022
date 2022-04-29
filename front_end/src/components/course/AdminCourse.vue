@@ -12,6 +12,14 @@
     <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px" @filter-change="filterChang">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
+        <el-table-column fixed v-if="courseStatus != CLOSE" prop="selected" label="选课人数" width="150" >
+            <template #default="scope">
+                <div class="namelist">
+                    <span>{{scope.row.selected}}</span>
+                    <el-button class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="year,semester" label="开课学期" width="180"
             :filter-multiple="true"
             :filters="yearFilters"
@@ -80,8 +88,9 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
         <template #default="scope">
-            <el-button v-if="scope.row.type != 'deleted'" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button v-if="scope.row.type != 'deleted'" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+            <el-button v-if="courseStatus != CLOSE" @click="editCapacity(scope.$index)">修改容量</el-button>
+            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             <el-dialog 
                 width="70%"
                 v-model="editTableVisible[scope.$index]" 
@@ -179,7 +188,13 @@
         </template>
         </el-table-column>
     </el-table>  
-    
+    <el-dialog v-model="listTableVisible" title="选课名单" :append-to-body="true">
+        <el-table :data="namelist" stripe max-height="450px">
+            <el-table-column prop="name" label="姓名" />
+            <el-table-column prop="number" label="学号" />
+            <el-table-column prop="major" label="专业" />
+        </el-table>
+    </el-dialog>
 </template>
 
 <script>
@@ -251,12 +266,20 @@ export default {
             buildingToAbbr: global_.buildingToAbbr,
             semesters: global_.semesters,
             years: global_.years,
+            CLOSE: global_.CLOSE,
+            ONE_OFF: global_.ONE_OFF,
+            ONE_ON: global_.ONE_ON,
+            TWO_OFF: global_.TWO_OFF,
+            TWO_ON: global_.TWO_ON,
             editTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
             dialogTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
             majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
+            listTableVisible: false,
             selectTime:[[]],
             searchContent: '',
             popVisible: false,
+            courseStatus: '1',
+            namelist: [],
             collegeData: [
                 { 
                     id: 1,
@@ -437,7 +460,8 @@ export default {
                                 ['软件工程学院','软件工程']
                             ],
                     year:'2021-2022',
-                    semester:'春'
+                    semester:'春',
+                    selected: '100',
                 },
                 {
                     courseId: 2,
@@ -464,7 +488,8 @@ export default {
                     commonCourse: '通选课程',
                     majors: [],
                     year:'2020-2021',
-                    semester:'秋'
+                    semester:'秋',
+                    selected: '80',
                 }
             ],
             editCourse: {
@@ -535,13 +560,27 @@ export default {
             if(this.editCourse.selectRoom == null) return 0
             for(let i = 0; i < this.classroom.length; i++){
                 for(let j = 0; j < this.classroom[i].room.length; j++) {
-                    if(this.editCourse.selectRoom[1] == this.classroom[i].room[j].name) {
+                    if(this.editCourse.selectRoom[1] == this.classroom[i].room[j].name 
+                    && this.editCourse.selectRoom[0] == this.classroom[i].aka) {
                         return this.classroom[i].room[j].capacity
                     }
                 }
             }
             return 0
-        }
+        },
+        roomCapa() {
+            return(index => {
+                for(let i = 0; i < this.classroom.length; i++){
+                    for(let j = 0; j < this.classroom[i].room.length; j++) {
+                        if(this.courses[index].roomNum == this.classroom[i].room[j].name 
+                        && this.courses[index].building == this.classroom[i].aka) {
+                            return this.classroom[i].room[j].capacity
+                        }
+                    }
+                }
+                return 0
+            })
+        },
     },
     methods: {
         filterChang() {
@@ -581,6 +620,53 @@ export default {
         },
         clearFilter() {
             this.$refs['coursesData'].clearFilter()
+        },
+
+        editCapacity(index) {
+            console.log(index)
+            var cap = this.roomCapa(index)
+            var sel = this.courses[index].selected
+            ElMessageBox.prompt('教室容量：'+cap+', 选课人数：'+this.courses[index].selected, '修改课程容量', {
+                confirmButtonText: '确认',
+                cancelButtonText: '取消',
+                inputPlaceholder: '课程容量',
+                inputPattern: /^[1-9]\d*$/,
+                inputValidator: function(value) {if(parseInt(value)>parseInt(cap) || parseInt(value)<parseInt(sel)) return '课程容量不能大于教室容量，小于选课人数'},
+                inputErrorMessage: '请输入正整数',
+            })
+                .then(({value}) => {
+                    //axios
+                    this.courses[index].capacity = value
+                    ElMessage({
+                        type: 'success',
+                        message: '修改容量成功',
+                    })
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: 'info',
+                        message: '修改取消',
+                    })
+                })
+        },
+        openList(index) {
+            //axios courses[index].courseId
+            console.log(index)
+            this.listTableVisible = true
+            this.namelist = [
+                {name:'与',number:'220000',major:'软工'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+            ]
         },
         // eslint-disable-next-line
         tableRowClassName(row, rowIndex) {//根据该行课程的状态动态显示该行表格颜色
@@ -819,6 +905,13 @@ export default {
         
     },
     // async created() {
+            // axios.get('http://localhost:8081/user/curriculaVariable')
+            // .then(res => {
+            //     this.courseStatus = res.data.data1
+            // })
+            // .catch(error => {
+            //     console.dir(error)
+            // })
     //     await axios.get('http://localhost:8081/user/course/new')
     //     .then(res => {
     //         this.teacherData = res.data.data1

@@ -1,6 +1,8 @@
 <template>
-    <div v-if="!courseOpen"> <h2>选课时间未到</h2></div>
-    <div v-if="courseOpen">
+    <div v-if="courseStatus == CLOSE"> <h2>选课时间未到</h2></div>
+    <div v-if="courseStatus == ONE_OFF"> <h2>第一轮选课已结束，请等待第二轮选课开始</h2></div>
+    <div v-if="courseStatus == TWO_OFF"> <h2>第二轮选课已结束</h2></div>
+    <div v-if="courseStatus == ONE_ON || courseStatus == TWO_ON">
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
             <el-tab-pane label="可选课程" name="available">
                 <h2>可选课程</h2>
@@ -172,6 +174,11 @@ export default {
     },
     data() {
         return {
+            CLOSE: global_.CLOSE,
+            ONE_OFF: global_.ONE_OFF,
+            ONE_ON: global_.ONE_ON,
+            TWO_OFF: global_.TWO_OFF,
+            TWO_ON: global_.TWO_ON,
             dialogAvlVis:[false,false,false,false,false,false,false,false,],
             majorAvlVis:[false,false,false,false,false,false,false,false,false,false,false,false,],
             dialogSelVis:[false,false,false,false,false,false,false,false,],
@@ -182,7 +189,7 @@ export default {
             years: global_.years,
             activeName: 'available',
             searchContent: '',
-            courseOpen: true,
+            courseStatus: '1',
             courses: [
                 {
                     courseId: 1,
@@ -405,7 +412,7 @@ export default {
     async created() {
         axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
-            this.courseOpen = res.data.data1
+            this.courseStatus = res.data.data1
         })
         .catch(error => {
             console.dir(error)

@@ -5,6 +5,14 @@
     <el-table class="tea-course-table" ref="course-table" :data="courses" :row-class-name="tableRowClassName">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
+        <el-table-column v-if="courseStatus != CLOSE" prop="selected" label="选课人数" width="150" >
+            <template #default="scope">
+                <div class="namelist">
+                    <span>{{scope.row.selected}}</span>
+                    <el-button class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
+                </div>
+            </template>
+        </el-table-column>
         <el-table-column prop="year,semester" label="开课学期" width="180">
             <template #default="scope">
                 {{scope.row.year}}{{scope.row.semester}}
@@ -41,7 +49,7 @@
                 </el-dialog>
             </template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="180">
+        <el-table-column v-if="courseStatus == CLOSE" fixed="right" label="操作" width="180">
         <template #default="scope">
             <el-button v-if="scope.row.type != 'add'" size="small" @click="handleEdit(scope.$index, scope.row)">申请修改</el-button>
             <el-button v-if="scope.row.type != 'add'" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">申请删除</el-button>
@@ -165,6 +173,13 @@
             </span>
         </template>
     </el-dialog>
+    <el-dialog v-model="listTableVisible" title="选课名单" :append-to-body="true">
+        <el-table :data="namelist" stripe max-height="450px">
+            <el-table-column prop="name" label="姓名" />
+            <el-table-column prop="number" label="学号" />
+            <el-table-column prop="major" label="专业" />
+        </el-table>
+    </el-dialog>
 </template>
 
 <script>
@@ -229,12 +244,19 @@ export default {
                 multiple: true
             },
             periods: global_.periods,
+            CLOSE: global_.CLOSE,
+            ONE_OFF: global_.ONE_OFF,
+            ONE_ON: global_.ONE_ON,
+            TWO_OFF: global_.TWO_OFF,
+            TWO_ON: global_.TWO_ON,
+            courseStatus: '0',
             operateStatus: '',//操作状态new代表在新增，change代表在修改
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
             editTableVisible:[false,false,false,false,false,false,false,false,],//传入时数量与课程数需一直
             dialogTableVisible:[false,false,false,false,false,false,false,false,],
             majorTableVisible:[false,false,false,false,false,false,false,false,false,false,false,false,],
+            listTableVisible: false,
             newTableVisible: false,
             editCapacity: '',
             selectTime:[[]],
@@ -243,6 +265,8 @@ export default {
                 label: 'name',
                 value: 'name'
             },
+            namelist: [
+            ],
             classroom: [
                 {
                     name: '第三教学楼',
@@ -412,7 +436,8 @@ export default {
                                 ['软件工程学院','软件工程']
                             ],
                     year: '2021-2022',
-                    semester: '春'
+                    semester: '春',
+                    selected: '100',
                 },
                 {
                     courseId: 2,
@@ -444,7 +469,8 @@ export default {
                                 ['软件工程学院','软件工程']
                             ],
                     year: '2021-2022',
-                    semester: '春'      
+                    semester: '春',
+                    selected: '80',      
                 }
             ],
             editCourse: {
@@ -525,6 +551,25 @@ export default {
             this.setAvalTime()
             this.newTableVisible = true
             // this.newCourse = {}
+        },
+        openList(index) {
+            //axios courses[index].courseId
+            console.log(index)
+            this.listTableVisible = true
+            this.namelist = [
+                {name:'与',number:'220000',major:'软工'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+                {name:'我',number:'220001',major:'计算机'},
+            ]
         },
         handleDelete(index, data){
             ElMessageBox.confirm(
@@ -763,6 +808,13 @@ export default {
     },
     async created() {
         //课程时间，可用教师获取
+        axios.get('http://localhost:8081/user/curriculaVariable')
+        .then(res => {
+            this.courseStatus = res.data.data1
+        })
+        .catch(error => {
+            console.dir(error)
+        })
         axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.classroom = res.data.data2
@@ -828,6 +880,17 @@ export default {
 </script>
 
 <style>
+.namelist {
+    display: flex;
+}
+.namelist span {
+    align-self: center;
+}
+.namelist .namelist-button {
+    /* flex: 1; */
+    margin-left: auto;
+    margin-right: 20px;
+}
 .tea-course-table .el-table__header {
     display: inline-block;
     vertical-align: middle;

@@ -2,16 +2,13 @@
     <div >
         <h2>选课状态设置</h2>
         <el-radio-group v-model="courseStatus" @change="courseChange">
-            <el-radio :label='0'>关闭选课</el-radio>
-            <el-radio :label="1">第一轮选课</el-radio>
-            <el-radio :label="2">第二轮选课</el-radio>
+            <el-radio :label="CLOSE">关闭选课</el-radio>
+            <el-radio :label="ONE_ON">开始第一轮选课</el-radio>
+            <el-radio :label="ONE_OFF">结束第一轮选课</el-radio>
+            <el-radio :label="TWO_ON">开始第二轮选课</el-radio>
+            <el-radio :label="TWO_OFF">结束第二轮选课</el-radio>
         </el-radio-group>
 
-        <!-- <el-switch    
-            v-model="courseOpen"
-            active-text="开始选课"
-            inactive-text="停止选课" 
-            :before-change="courseChange"/> -->
         <h2>教学时间设置</h2>
         <el-button @click="addCourse(-1)">增加第一节课</el-button>
         <el-button type='primary' @click="submitCourse">提交修改</el-button>
@@ -102,12 +99,17 @@
 <script>
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import global_ from '../jsComponents/global'
 export default {
     data() {
         return {
-
-            courseOpen: true,
+            CLOSE: global_.CLOSE,
+            ONE_OFF: global_.ONE_OFF,
+            ONE_ON: global_.ONE_ON,
+            TWO_OFF: global_.TWO_OFF,
+            TWO_ON: global_.TWO_ON,
             courseStatus: '0',
+            courseStatus_b: '0', 
             onDeleteAll: false,//是否有card进入删除状态
             onDelete: [false],//特定card是否进入删除教室状态
             checkGroup: [],
@@ -149,12 +151,32 @@ export default {
     },
     methods: {
         courseChange() {
-            axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:!this.courseOpen}})
-            ElMessage({
-                type: 'success',
-                message: '修改完成',
+            ElMessageBox.confirm(
+                '是否改变选课状态',
+                'Warning',
+                {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning',
+                }
+            )
+            .then(() => {
+                axios.post('http://localhost:8081/affair/curriculaVariable',null,{params:{choice:this.courseStatus}})
+                ElMessage({
+                    type: 'success',
+                    message: '修改完成',
+                })
+                this.courseStatus_b = this.courseStatus
+                console.log(this.courseStatus)
             })
-            console.log(this.courseStatus)
+            .catch(() => {
+                ElMessage({
+                    type: 'info',
+                    message: '修改取消',
+                })
+                this.courseStatus = this.courseStatus_b
+            })
+
         },
         deleteCourse(index) {
             this.startTime.splice(index,1)
@@ -310,6 +332,7 @@ export default {
         axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
             this.courseStatus = res.data.data1
+            this.courseStatus_b = this.courseStatus
         })
         .catch(error => {
             console.dir(error)

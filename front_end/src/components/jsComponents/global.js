@@ -34,11 +34,21 @@ const years = [
     '2020-2021',
     '2021-2022'
 ]
+const CLOSE = '0'
+const ONE_ON = '1'
+const ONE_OFF = '2'
+const TWO_ON = '3'
+const TWO_OFF = '4'
 export default
 {
     buildingToAbbr,
     abbrToBuilding,
     periods,
     semesters,
-    years
+    years,
+    CLOSE,
+    ONE_OFF,
+    ONE_ON,
+    TWO_OFF,
+    TWO_ON
 }
