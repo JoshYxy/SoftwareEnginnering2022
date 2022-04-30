@@ -8,7 +8,7 @@ import com.jwsystem.service.StuService;
 import com.jwsystem.service.impl.AdminServiceImp;
 import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
-import com.jwsystem.util.CourseUtil;
+import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +27,7 @@ public class StudentController extends MainController{
     private HttpServletResponse response;
 
     @Autowired
-    private CourseUtil courseUtil;
+    private TransUtil transUtil;
 
     @Autowired
     private StuService stuService;
@@ -65,7 +65,7 @@ public class StudentController extends MainController{
             List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c, timepartDTOList);
+            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList);
 
             courses.add(tempVO);
         }

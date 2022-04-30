@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TimepartDTO {
-    private Integer id;
     private Integer relationId; //courseId或requestId
     private String teacherNum;  //教师工号
     private String building;    //上课楼

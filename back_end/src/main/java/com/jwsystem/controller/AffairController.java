@@ -282,9 +282,9 @@ public class AffairController extends MainController{
         return Result.succ("删除成功");
     }
 
-    //修改选课权限
+    //修改选课状态
     @PostMapping("/curriculaVariable")
-    public Result changeCurrVariable(@RequestParam("choice") boolean choice){
+    public Result changeCurrVariable(@RequestParam("choice") String choice){
         adminServiceImp.setCurr(choice);
         return Result.succ("修改选课权限成功");
     }

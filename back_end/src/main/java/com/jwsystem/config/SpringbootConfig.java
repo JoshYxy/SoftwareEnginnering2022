@@ -52,7 +52,7 @@ public class SpringbootConfig implements WebMvcConfigurer {
 
     //跨域配置
 
-    static final String ORIGINS[] = new String[] { "GET", "POST", "PUT", "DELETE" };
+    static final String[] ORIGINS = new String[] { "GET", "POST", "PUT", "DELETE" };
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
