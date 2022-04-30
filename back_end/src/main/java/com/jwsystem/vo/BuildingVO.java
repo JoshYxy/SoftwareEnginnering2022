@@ -15,7 +15,7 @@ public class BuildingVO extends BuildingPO {
     private Integer id;
     private String fullName;
     private String abbrName;
-//<<<<<<< Updated upstream
+
 //    private List<ClassroomPO> room;
 //
 //    public BuildingVO(BuildingPO b) {
@@ -24,12 +24,11 @@ public class BuildingVO extends BuildingPO {
 //        this.abbrName = b.getAbbrName();
 //    }
 
-//    public BuildingVO(BuildingPO b) {
-//        id = b.getId();
-//        this.fullName = b.getFullName();
-//        this.abbrName = b.getAbbrName();
-//    }
-//=======
+    public BuildingVO(BuildingPO b) {
+        id = b.getId();
+        this.fullName = b.getFullName();
+        this.abbrName = b.getAbbrName();
+    }
+
     private List<ClassroomVO> room;
-//>>>>>>> Stashed changes
 }

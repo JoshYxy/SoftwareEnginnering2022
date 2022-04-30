@@ -1,6 +1,9 @@
 package com.jwsystem.vo;
 
+import com.jwsystem.dao.TeacherDaoMP;
 import com.jwsystem.entity.user.AdminPO;
+import com.jwsystem.entity.user.StudentPO;
+import com.jwsystem.entity.user.TeacherPO;
 import com.opencsv.bean.CsvBindByName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +46,18 @@ public class UserVO {
         this.number = a.getNumber();
         this.password = a.getPassword();
     }
+
+    public UserVO(StudentPO s) {
+        this.role = s.getRole();
+        this.number = s.getNumber();
+        this.id = s.getId();
+        this.name = s.getName();
+        this.password = s.getPassword();
+        this.phone = s.getPhone();
+        this.email = s.getEmail();
+        this.status = s.getStatus();
+    }
+
 
     /*
             用户角色:role

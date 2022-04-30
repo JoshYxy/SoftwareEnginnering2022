@@ -1,12 +1,13 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.TimepartPO;
-=======
+
 import com.jwsystem.entity.course.TimepartPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,5 +19,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TimepartDaoMP extends BaseMapper<TimepartPO> {
-
+    List<String> selectAllSections();
+    List<String> selectSectionByTea(@Param("teacher_num") String teacherNum, Integer weekday);
+    List<String> selectSectionByRoom(@Param("room_num")String roomNum,Integer weekday,String building);
 }

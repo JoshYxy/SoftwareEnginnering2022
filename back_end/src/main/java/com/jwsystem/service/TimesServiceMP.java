@@ -1,10 +1,7 @@
 package com.jwsystem.service;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.TimesPO;
-=======
+
 import com.jwsystem.entity.affair.TimesPO;
->>>>>>> Stashed changes
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -16,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-04-29
  */
 public interface TimesServiceMP extends IService<TimesPO> {
-
+    TimesPO selectTimesByName(String name);
+    void updateTimesByName(String name,String startTime,String endTime);
+    void deleteTimesByName(String name);
 }

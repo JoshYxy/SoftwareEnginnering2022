@@ -1,10 +1,10 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.CoursepartPO;
-=======
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.course.CoursepartPO;
->>>>>>> Stashed changes
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,5 +18,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CoursepartDaoMP extends BaseMapper<CoursepartPO> {
+    //coursepartpo转成coursepartdto
+    CoursepartDTO coursepartPO2DTO();
 
 }

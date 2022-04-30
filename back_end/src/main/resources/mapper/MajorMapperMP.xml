@@ -3,11 +3,8 @@
 <mapper namespace="com.jwsystem.dao.MajorDaoMP">
 
     <!-- 通用查询映射结果 -->
-<<<<<<< Updated upstream
-    <resultMap id="BaseResultMap" type="com.jwsystem.entity.MajorPO">
-=======
+
     <resultMap id="BaseResultMap" type="com.jwsystem.entity.college.MajorPO">
->>>>>>> Stashed changes
         <id column="major_id" property="majorId" />
         <result column="name" property="name" />
         <result column="college_id" property="collegeId" />

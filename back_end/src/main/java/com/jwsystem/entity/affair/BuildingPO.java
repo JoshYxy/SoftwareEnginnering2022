@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.stream.DoubleStream;
+
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -18,6 +19,9 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 @TableName("building")
 public class BuildingPO implements Serializable {

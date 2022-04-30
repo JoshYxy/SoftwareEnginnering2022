@@ -1,12 +1,12 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.StudentPO;
-=======
+
 import com.jwsystem.entity.user.StudentPO;
->>>>>>> Stashed changes
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jwsystem.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,5 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface StudentDaoMP extends BaseMapper<StudentPO> {
-
+    //查看所有学生信息
+    List<UserVO> selectAllUserInfos();
 }

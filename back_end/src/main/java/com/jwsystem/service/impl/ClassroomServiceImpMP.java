@@ -1,8 +1,8 @@
 package com.jwsystem.service.impl;
 
-<<<<<<< Updated upstream
+
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.entity.ClassroomPO;
+
 import com.jwsystem.dao.ClassroomDaoMP;
 import com.jwsystem.service.ClassroomServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-=======
+
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.dao.ClassroomDaoMP;
 import com.jwsystem.service.ClassroomServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
->>>>>>> Stashed changes
+
 /**
  * <p>
  *  服务实现类
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClassroomServiceImpMP extends ServiceImpl<ClassroomDaoMP, ClassroomPO> implements ClassroomServiceMP {
 
-<<<<<<< Updated upstream
+
     @Autowired
     ClassroomDaoMP classroomDaoMP;
 
@@ -63,6 +63,5 @@ public class ClassroomServiceImpMP extends ServiceImpl<ClassroomDaoMP, Classroom
         map.put("roomNum", roomNum);
         return classroomDaoMP.deleteByMap(map);
     }
-=======
->>>>>>> Stashed changes
+
 }

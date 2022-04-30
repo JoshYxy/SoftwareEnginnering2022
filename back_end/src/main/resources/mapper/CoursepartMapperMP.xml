@@ -3,11 +3,8 @@
 <mapper namespace="com.jwsystem.dao.CoursepartDaoMP">
 
     <!-- 通用查询映射结果 -->
-<<<<<<< Updated upstream
-    <resultMap id="BaseResultMap" type="com.jwsystem.entity.CoursepartPO">
-=======
+
     <resultMap id="BaseResultMap" type="com.jwsystem.entity.course.CoursepartPO">
->>>>>>> Stashed changes
         <id column="course_id" property="courseId" />
         <result column="course_num" property="courseNum" />
         <result column="course_name" property="courseName" />

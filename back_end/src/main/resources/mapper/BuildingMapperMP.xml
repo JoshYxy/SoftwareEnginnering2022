@@ -3,11 +3,8 @@
 <mapper namespace="com.jwsystem.dao.BuildingDaoMP">
 
     <!-- 通用查询映射结果 -->
-<<<<<<< Updated upstream
-    <resultMap id="BaseResultMap" type="com.jwsystem.entity.BuildingPO">
-=======
+
     <resultMap id="BaseResultMap" type="com.jwsystem.entity.affair.BuildingPO">
->>>>>>> Stashed changes
         <id column="id" property="id" />
         <result column="full_name" property="fullName" />
         <result column="abbr_name" property="abbrName" />

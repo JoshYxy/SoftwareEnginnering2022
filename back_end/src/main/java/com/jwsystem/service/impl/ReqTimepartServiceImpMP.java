@@ -1,10 +1,8 @@
 package com.jwsystem.service.impl;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.ReqTimepartPO;
-=======
+
 import com.jwsystem.entity.request.ReqTimepartPO;
->>>>>>> Stashed changes
+
 import com.jwsystem.dao.ReqTimepartDaoMP;
 import com.jwsystem.service.ReqTimepartServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

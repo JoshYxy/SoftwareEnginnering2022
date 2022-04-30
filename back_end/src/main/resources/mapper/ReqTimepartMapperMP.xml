@@ -3,11 +3,8 @@
 <mapper namespace="com.jwsystem.dao.ReqTimepartDaoMP">
 
     <!-- 通用查询映射结果 -->
-<<<<<<< Updated upstream
-    <resultMap id="BaseResultMap" type="com.jwsystem.entity.ReqTimepartPO">
-=======
+
     <resultMap id="BaseResultMap" type="com.jwsystem.entity.request.ReqTimepartPO">
->>>>>>> Stashed changes
         <id column="id" property="id" />
         <result column="request_id" property="requestId" />
         <result column="teacher_num" property="teacherNum" />

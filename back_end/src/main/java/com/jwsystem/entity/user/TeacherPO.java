@@ -55,5 +55,5 @@ public class TeacherPO implements Serializable {
      */
     private Integer majorId;
 
-
+    private Integer collegeId;
 }

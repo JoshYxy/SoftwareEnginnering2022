@@ -52,5 +52,6 @@ public class StudentPO implements Serializable {
 
     private Integer majorId;
 
+    private Integer collegeId;
 
 }

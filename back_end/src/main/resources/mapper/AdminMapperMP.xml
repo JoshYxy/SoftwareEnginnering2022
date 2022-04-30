@@ -3,11 +3,8 @@
 <mapper namespace="com.jwsystem.dao.AdminDaoMP">
 
     <!-- 通用查询映射结果 -->
-<<<<<<< Updated upstream
-    <resultMap id="BaseResultMap" type="com.jwsystem.entity.AdminPO">
-=======
+
     <resultMap id="BaseResultMap" type="com.jwsystem.entity.user.AdminPO">
->>>>>>> Stashed changes
         <id column="number" property="number" />
         <result column="role" property="role" />
         <result column="password" property="password" />

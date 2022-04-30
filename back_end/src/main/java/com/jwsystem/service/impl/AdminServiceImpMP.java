@@ -1,28 +1,22 @@
 package com.jwsystem.service.impl;
 
-<<<<<<< Updated upstream
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.dao.AdminDao;
-import com.jwsystem.dto.User;
-import com.jwsystem.entity.AdminPO;
+
 import com.jwsystem.dao.AdminDaoMP;
-import com.jwsystem.entity.user.Admin;
+
 import com.jwsystem.service.AdminServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-=======
-import com.jwsystem.entity.user.AdminPO;
-import com.jwsystem.dao.AdminDaoMP;
-import com.jwsystem.service.AdminServiceMP;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 
->>>>>>> Stashed changes
+import com.jwsystem.entity.user.AdminPO;
+
 /**
  * <p>
  *  服务实现类
@@ -34,16 +28,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminServiceImpMP extends ServiceImpl<AdminDaoMP, AdminPO> implements AdminServiceMP {
 
-<<<<<<< Updated upstream
+
     @Autowired
     AdminDaoMP adminDaoMP;
 
     @Override
-    public User selectAdminUserByNumber(String number) {
+    public UserVO selectAdminUserByNumber(String number) {
         LambdaQueryWrapper<AdminPO> wrapper = Wrappers.lambdaQuery(AdminPO.class)
                 .eq(AdminPO::getNumber,number);
         AdminPO adminPO = adminDaoMP.selectOne(wrapper);
-        User user = Optional.ofNullable(adminPO).map(User::new).orElse(null);
+        UserVO user = Optional.ofNullable(adminPO).map(UserVO::new).orElse(null);
         return user;
     }
 
@@ -60,6 +54,5 @@ public class AdminServiceImpMP extends ServiceImpl<AdminDaoMP, AdminPO> implemen
                 .select(AdminPO::getCurricularVariable);
         adminDaoMP.selectOne(wrapper).setCurricularVariable(curricularVariable);
     }
-=======
->>>>>>> Stashed changes
+
 }

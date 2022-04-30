@@ -93,6 +93,8 @@ public class EduServiceImp implements EduService {
         return majorDao.findMajorByName(majorName) != null;
     }
 
+    /////这上面三个函数咋一摸一样我晕
+
     @Override
     public Boolean judgeMajorAndCollege(String majorName,String collegeName) {
         return majorDao.findCollegeByMajorName(majorName).equals(collegeName);

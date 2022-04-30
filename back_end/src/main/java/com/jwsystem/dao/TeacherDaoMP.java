@@ -1,12 +1,13 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.TeacherPO;
-=======
+
 import com.jwsystem.entity.user.TeacherPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jwsystem.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,4 +20,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TeacherDaoMP extends BaseMapper<TeacherPO> {
 
+    List<UserVO> selectAllUserInfos();
 }
