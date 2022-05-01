@@ -58,11 +58,7 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         return timepartDTOList;
     }
 
-    @Override
-    public List<TimepartDTO> selectAllReqTimepartByRequestId(int requestId) {
-        reqTimepartDaoMP.selectById(requestId);
-        return null;
-    }
+
 
     @Override
     public boolean insertTimepart(TimepartDTO timepartDTO) {
@@ -87,13 +83,10 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
                 if (result > -1) return false;
             }
         }
+
         return timepartDaoMP.insert(timepartPO) != 0;
     }
 
-    @Override
-    public void insertReqTimepart(TimepartDTO timepartDTO) {
-        return reqTimepartDaoMP.insert(timepartPO) != 0;
-    }
 
     @Override
     public List<TimepartDTO> selectAllTimepartByRoom(String building, String roomNum) {
@@ -128,21 +121,7 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         return courseIds;
     }
 
-    @Override
-    public List<Integer> selectRequestIdByBuilding(String building) {
-        int buildingId = buildingDaoMP.selectOne(Wrappers.lambdaQuery(BuildingPO.class)
-                .eq(BuildingPO::getAbbrName,building)).getId();
-        List<ClassroomPO> classroomPOList = classroomDaoMP.selectList(Wrappers.lambdaQuery(ClassroomPO.class)
-                .eq(ClassroomPO::getBuildingId,buildingId));
-        List<Integer> roomIds = classroomPOList.stream().map(ClassroomPO::getRoomId).collect(Collectors.toList());
-        List<Integer> requestIds = new ArrayList<>();
-        for (Integer r:roomIds) {
-            List<ReqTimepartPO> reqTimepartPOList = reqTimepartDaoMP.selectList(Wrappers.lambdaQuery(ReqTimepartPO.class)
-                    .eq(ReqTimepartPO::getRoomId,r));
-            requestIds.addAll(reqTimepartPOList.stream().map(ReqTimepartPO::getRequestId).collect(Collectors.toList()));
-        }
-        return requestIds;
-    }
+
 
     @Override
     public List<Integer> selectCourseIdByRoom(String building, String roomNum) {
@@ -158,19 +137,7 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         return courseIds;
     }
 
-    @Override
-    public List<Integer> selectRequestIdByRoom(String building, String roomNum) {
-        Integer buildingId = buildingDaoMP.selectOne(Wrappers.lambdaQuery(BuildingPO.class)
-                .eq(BuildingPO::getAbbrName,building)).getId();
-        Integer roomId = classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
-                .eq(ClassroomPO::getBuildingId,buildingId)
-                .eq(ClassroomPO::getRoomNum,roomNum)).getRoomId();
-        List<Integer> requestIds = new ArrayList<>();
-        List<ReqTimepartPO> reqTimepartPOList = reqTimepartDaoMP.selectList(Wrappers.lambdaQuery(ReqTimepartPO.class)
-                .eq(ReqTimepartPO::getRoomId,roomId));
-        requestIds.addAll(reqTimepartPOList.stream().map(ReqTimepartPO::getRequestId).collect(Collectors.toList()));
-        return requestIds;
-    }
+
 
     @Override
     public boolean examineTimes(String[] s) {

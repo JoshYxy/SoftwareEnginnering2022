@@ -1,6 +1,7 @@
 package com.jwsystem.service;
 
 <<<<<<< Updated upstream
+import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.ReqCoursepartPO;
 =======
 import com.jwsystem.entity.request.ReqCoursepartPO;
@@ -17,4 +18,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ReqCoursepartServiceMP extends IService<ReqCoursepartPO> {
 
+    CoursepartDTO selectReqCoursepartByRequestId(int requestId);
+
+    int insertReqCoursepart(CoursepartDTO coursepartDTO);
 }

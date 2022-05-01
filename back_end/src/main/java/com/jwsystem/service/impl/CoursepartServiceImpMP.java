@@ -60,18 +60,7 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
         return coursepartDaoMP.insert(coursepartPO);
     }
 
-    @Override
-    public CoursepartDTO selectReqCoursepartByRequestId(int requestId) {
-        reqCoursepartDaoMP.selectById(requestId);
-        return null;
-    }
 
-    @Override
-    public int insertReqCoursepart(CoursepartDTO coursepartDTO) {
-        ReqCoursepartPO reqcoursepartPO = transUtil.CpDTOtoCpPO(coursepartDTO);
-        reqCoursepartDaoMP.insert(coursepartPO);
-        return 0;
-    }
 
     @Override
     public List<CoursepartDTO> selectCoursepartByCollege(String collegeName) {

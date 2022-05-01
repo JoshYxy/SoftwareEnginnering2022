@@ -4,6 +4,7 @@ import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.entity.request.ReqCoursepartPO;
 import com.jwsystem.service.*;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.CourseRequestImp;
@@ -52,6 +53,9 @@ public class TeacherController extends MainController{
     private TimepartServiceMP timepartServiceMP;
     //@Autowired
     //private CourseRequestImp courseRequestImp;
+
+    @Autowired
+    ReqTimepartServiceMP reqTimepartServiceMP;
 
 
     //教师获得自己开设的课程信息
@@ -183,7 +187,8 @@ public class TeacherController extends MainController{
                 courseVO.getIsGeneral());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里
-        reqCoursepartServiceMP.(coursePart);
+        ReqCoursepartPO reqCoursepartPO = transUtil.CpDTOtoReqCpPO(coursePart);
+        reqCoursepartServiceMP.save(reqCoursepartPO);
 
         try{
             for(int i=0;i<7;i++){
@@ -217,7 +222,7 @@ public class TeacherController extends MainController{
 
                    //因为是申请的课程信息，就不用判断是否冲突了
                     //存到req-timePart表里
-                    courseServiceImp.insertReqTimepart(timePart);
+                    reqTimepartServiceMP.insertReqTimepart(timePart);
                 }
             }
         } catch (IndexOutOfBoundsException e ){

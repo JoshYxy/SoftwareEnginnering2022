@@ -57,11 +57,11 @@ public class ClassroomServiceImpMP extends ServiceImpl<ClassroomDaoMP, Classroom
                 .eq(ClassroomPO::getBuildingId,buildingId));
     }
 
-    @Override
-    public int deleteByRoomNum(String roomNum) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("roomNum", roomNum);
-        return classroomDaoMP.deleteByMap(map);
-    }
+//    @Override
+//    public int deleteByRoomNum(String roomNum) {
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("roomNum", roomNum);
+//        return classroomDaoMP.deleteByMap(map);
+//    }
 
 }

@@ -23,10 +23,6 @@ public interface CoursepartServiceMP extends IService<CoursepartPO> {
     List<CoursepartDTO> getAllCoursepart();
     //插入课程
     int insertCoursepart(CoursepartDTO coursepartDTO);
-    //得到申请的课程部分
-    CoursepartDTO selectReqCoursepartByRequestId(int requestId);
-    //插入申请课程
-    int insertReqCoursepart(CoursepartDTO coursepartDTO);
     //根据Id删除 直接用service方法
     //根据学院名得到coursepartDTO
     List<CoursepartDTO> selectCoursepartByCollege(String collegeName);

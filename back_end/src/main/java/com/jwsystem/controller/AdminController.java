@@ -3,10 +3,10 @@ package com.jwsystem.controller;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.MajorDTO;
 import com.jwsystem.entity.college.CollegePO;
+import com.jwsystem.entity.user.StudentPO;
+import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.impl.*;
 import com.jwsystem.vo.UserVO;
-import com.jwsystem.service.impl.EduServiceImp;
-import com.jwsystem.service.impl.StuServiceImp;
-import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.vo.CollegeVO;
 import org.apache.commons.lang3.StringUtils;
@@ -28,14 +28,19 @@ public class AdminController extends MainController{
     private HttpServletResponse response;
 
     @Autowired
-    private EduServiceImp eduServiceImp;
+//    private EduServiceImp eduServiceImp;
+    private MajorServiceImpMP majorServiceImpMP;
 
     @Autowired
-    private TeaServiceImp teaServiceImp;
+    private CollegeServiceImpMP collegeServiceImpMP;
 
     @Autowired
-    private StuServiceImp stuServiceImp;
+//    private TeaServiceImp teaServiceImp;
+    private TeacherServiceImpMP teacherServiceImpMP;
 
+    @Autowired
+//    private StuServiceImp stuServiceImp;
+    private StudentServiceImpMP studentServiceImpMP;
 
 
 
@@ -54,10 +59,10 @@ public class AdminController extends MainController{
         }
 
         //number检验：学工号非空判断和数字判断、位数判断
-        else if(role.equals("student") && !stuServiceImp.legalNumber(tempUserVO.getNumber())){
+        else if(role.equals("student") && !studentServiceImpMP.legalNumber(tempUserVO.getNumber())){
             valid = false;
         }
-        else if(role.equals("teacher") && !teaServiceImp.legalNumber(tempUserVO.getNumber())){
+        else if(role.equals("teacher") && !teacherServiceImpMP.legalNumber(tempUserVO.getNumber())){
             valid = false;
         }
 
@@ -106,17 +111,17 @@ public class AdminController extends MainController{
         if(type.equals("add")){
             //number非重复检验
             String number = tempUserVO.getNumber();
-            if(stuServiceImp.getUserByNumber(number) != null || teaServiceImp.getUserByNumber(number) != null) valid = false;
+            if(studentServiceImpMP.selectUserByNumber(number) != null || teacherServiceImpMP.selectUserByNumber(number) != null) valid = false;
         }
 
         //id非重复检验
         String id = tempUserVO.getId();
         if(type.equals("add")){
-            if(stuServiceImp.selectStuById(id) != null || teaServiceImp.selectTeaById(id) != null) valid = false;
+            if(studentServiceImpMP.selectStuById(id) != null || teacherServiceImpMP.selectTeaById(id) != null) valid = false;
         }
         else if(type.equals("change")){
-            UserVO temp1 = stuServiceImp.selectStuById(tempUserVO.getId());
-            UserVO temp2 = teaServiceImp.selectTeaById(tempUserVO.getId());
+            StudentPO temp1 = studentServiceImpMP.selectStuById(tempUserVO.getId());
+            TeacherPO temp2 = teacherServiceImpMP.selectTeaById(tempUserVO.getId());
 
             if(temp1!=null){
                 String tempNum = temp1.getNumber();
@@ -134,10 +139,10 @@ public class AdminController extends MainController{
         }
 
         //major存在性检验
-        if(!eduServiceImp.findMajorByStringName(tempUserVO.getMajor())) valid = false;
+        if(majorServiceImpMP.selectMajorByName(tempUserVO.getMajor()) != null ) valid = false;
 
         //college存在性检验
-        if(!eduServiceImp.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
+        if(!majorServiceImpMP.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
 
         return valid;
     }
@@ -155,8 +160,8 @@ public class AdminController extends MainController{
     //管理员查看全部用户信息
     @GetMapping("/users")
     public Result getAll(){
-        List<UserVO> userVOS = teaServiceImp.getAllUserInfos();
-        List<UserVO> students = stuServiceImp.getAllUserInfos();
+        List<UserVO> userVOS = teacherServiceImpMP.selectAllUserInfos();
+        List<UserVO> students = studentServiceImpMP.selectAllUserInfos();
         userVOS.addAll(students);
         return Result.succ("查询成功", userVOS);
     }
@@ -178,9 +183,9 @@ public class AdminController extends MainController{
             return Result.fail("用户数据内容无效！");
         }
 
-        if(tempUserVO.getRole().equals("student")) stuServiceImp.insertUser(tempUserVO);
+        if(tempUserVO.getRole().equals("student")) studentServiceImpMP.insertUser(tempUserVO);
 
-        else if(tempUserVO.getRole().equals("teacher")) teaServiceImp.insertUser(tempUserVO);
+        else if(tempUserVO.getRole().equals("teacher")) teacherServiceImpMP.insertUser(tempUserVO);
 
         return Result.succ("录入信息成功", tempUserVO);
     }
@@ -247,10 +252,10 @@ public class AdminController extends MainController{
 
         if(tempUserVO.getRole().equals("student")){
             //学生
-            stuServiceImp.updateStuInfoByAdmin(tempUserVO);
+            studentServiceImpMP.updateStuInfoByAdmin(tempUserVO);
         } else if(tempUserVO.getRole().equals("teacher")){
             //老师
-            teaServiceImp.updateTeaInfoByAdmin(tempUserVO);
+            teacherServiceImpMP.updateTeaInfoByAdmin(tempUserVO);
         }
 
         return Result.succ("修改成功");
@@ -269,15 +274,15 @@ public class AdminController extends MainController{
     //管理员查看全部的学院和专业信息
     @GetMapping("/edu")
     public Result showInfo(){
-        List<CollegeVO> collegeList = eduServiceImp.getEduInfo();
+        List<CollegeVO> collegeList = collegeServiceImpMP.selectAllCollegeAndMajorByList();
         return Result.succ("查询成功",collegeList);
     }
 
     //管理员增加新的学院
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody CollegePO college){
-        if(eduServiceImp.insertCollege(college)){
-            CollegePO inserted = eduServiceImp.selectCollegeByName(college);
+        if(collegeServiceImpMP.insertCollege(college)){
+            CollegePO inserted = collegeServiceImpMP.selectCollegeByName(college.getName());
             return Result.succ("增加成功",inserted.getCollegeId());
         }else {
             response.setStatus(COLLEGE_CONFLICT);
@@ -288,8 +293,8 @@ public class AdminController extends MainController{
     //管理员增加新的专业
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody MajorDTO majorDTO){
-        if(eduServiceImp.insertMajor(majorDTO)) {
-            MajorDTO inserted = eduServiceImp.selectMajorByName(majorDTO);
+        if(majorServiceImpMP.insertMajor(majorDTO)) {
+            MajorDTO inserted = majorServiceImpMP.selectMajorByName(majorDTO.getName());
             return Result.succ("增加成功",inserted.getMajorId());
         }else{
             response.setStatus(MAJOR_CONFLICT);
@@ -301,13 +306,13 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody CollegePO college){
         //先查询是否存在该学院
-        boolean existCollege = eduServiceImp.findCollegeByName(college);
+        boolean existCollege = (collegeServiceImpMP.selectCollegeByName(college.getName()) != null);
         //存在学院，判断是否有对应的专业、学生和老师，如果有就不删，没有才进行删除
         //存在对应信息时返回true
-        boolean existOthers = eduServiceImp.findOthersByCollege(college);
+        boolean existOthers = collegeServiceImpMP.findOthersByCollege(college);
         if(existCollege && !existOthers){
             //存在学院且不存在老师、学生、课程和专业，可以删除学院
-            eduServiceImp.deleteCollege(college);
+            collegeServiceImpMP.removeById(college.getCollegeId());
         }
         else{
             response.setStatus(NO_COLLEGE);
@@ -320,11 +325,11 @@ public class AdminController extends MainController{
     @DeleteMapping("/edu/major")
     public Result deleteMajor(@RequestBody MajorDTO majorDTO){
         //先查询是否存在该专业
-        boolean existMajor = eduServiceImp.findMajorByName(majorDTO);
+        boolean existMajor = (majorServiceImpMP.selectMajorByName(majorDTO.getName()) != null);
         //存在，查询是否有其他相关的学生、老师，没有的话进行删除
-        boolean existOthers = eduServiceImp.findOthersByMajor(majorDTO);
+        boolean existOthers = majorServiceImpMP.findOthersByMajor(majorDTO);
         if(existMajor && !existOthers){
-            eduServiceImp.deleteMajor(majorDTO);
+            majorServiceImpMP.deleteMajor(majorDTO);
         }
         else{
             response.setStatus(NO_MAJOR);
@@ -338,16 +343,16 @@ public class AdminController extends MainController{
     //加入了重名判断
     @PostMapping("/edu/college")
     public Result changeCollege(@RequestBody CollegePO college){
-        //先查询是否存在该学院id
-        boolean exist = eduServiceImp.findCollegeById(college);
+        //先根据id查询是否存在对应的学院
+        boolean exist = (collegeServiceImpMP.getById(college.getCollegeId()) != null);
         //存在，进行修改
         if(exist){
-            boolean sameName = eduServiceImp.findCollegeByName(college);
+            boolean sameName = (collegeServiceImpMP.selectCollegeByName(college.getName()) != null);
             if(sameName){
                 response.setStatus(COLLEGE_CONFLICT);
                 return Result.fail("已有同名学院，修改失败！");
             }
-            eduServiceImp.updateCollege(college);
+            collegeServiceImpMP.update(college,null);
         }
         else{
             response.setStatus(NO_COLLEGE);
@@ -362,15 +367,15 @@ public class AdminController extends MainController{
     @PostMapping("/edu/major")
     public Result changeMajor(@RequestBody MajorDTO majorDTO){
         //先查询是否存在该专业
-        boolean exist = eduServiceImp.findMajorById(majorDTO);
+        boolean exist = ( majorServiceImpMP.getById(majorDTO.getMajorId()) != null);
         //存在，进行修改
         if(exist){
-            boolean sameName = eduServiceImp.findMajorByName(majorDTO);
+            boolean sameName = (majorServiceImpMP.selectMajorByName(majorDTO.getName()) != null);
             if(sameName){
                 response.setStatus(MAJOR_CONFLICT);
                 return Result.fail("已有同名专业，修改失败！");
             }
-            eduServiceImp.updateMajor(majorDTO);
+            majorServiceImpMP.updateMajor(majorDTO);
         }
         else{
             response.setStatus(NO_MAJOR);

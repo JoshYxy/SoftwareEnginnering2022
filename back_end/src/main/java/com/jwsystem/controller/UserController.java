@@ -30,19 +30,24 @@ public class UserController extends MainController{
     private JwtUtils jwtUtils;
 
     @Autowired
-    StuServiceImp stuServiceImp;
+//    StuServiceImp stuServiceImp;
+    private StudentServiceImpMP studentServiceImpMP;
 
     @Autowired
-    private AdminServiceImp adminServiceImp;
+//    private AdminServiceImp adminServiceImp;
+    private AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
-    private TeaServiceImp teaServiceImp;
+//    private TeaServiceImp teaServiceImp;
+    private TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
-    private BuildingServiceImp buildingServiceImp;
+//    private BuildingServiceImp buildingServiceImp;
+    private BuildingServiceImpMP buildingServiceImpMP;
 
     @Autowired
-    private TimesServiceImp timesServiceImp;
+//    private TimesServiceImp timesServiceImp;
+    private TimesServiceImpMP timesServiceImpMP;
 
     public static int TEACHER_NUM_LENGTH = 8;
     public static int STUDENT_NUM_LENGTH = 6;
@@ -60,7 +65,7 @@ public class UserController extends MainController{
 
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
-            userVO = teaServiceImp.getUserByNumber(number);
+            userVO = teacherServiceImpMP.selectUserByNumber(number);
             if( !userVO.getStatus().equals(WORKING) ) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已离职教师无权登陆");
@@ -68,14 +73,14 @@ public class UserController extends MainController{
         }
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-            userVO = stuServiceImp.getUserByNumber(number);
+            userVO = studentServiceImpMP.selectUserByNumber(number);
             if( !userVO.getStatus().equals(STUDYING)) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已毕业学生无权登陆");
             }
         }
         else{
-            userVO = adminServiceImp.getUserByNumber(number);
+            userVO = adminServiceImpMP.selectAdminUserByNumber(number);
         }
 
         if(userVO ==null){
@@ -108,11 +113,11 @@ public class UserController extends MainController{
 
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
-            teaServiceImp.updatePwdByNumber(tempUserVO.getPassword(),number);
+            teacherServiceImpMP.updatePwdByNumber(tempUserVO.getPassword(),number);
         }
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-            stuServiceImp.updatePwdByNumber(tempUserVO.getPassword(),number);
+            studentServiceImpMP.updatePwdByNumber(tempUserVO.getPassword(),number);
         }
         else{
             response.setStatus(WRONG_DATA);
@@ -130,10 +135,10 @@ public class UserController extends MainController{
         UserVO userVO;
         if(number.length() == STUDENT_NUM_LENGTH){
             //学生
-                 userVO = stuServiceImp.getUserByNumber(number);
+                 userVO = studentServiceImpMP.selectUserByNumber(number);
         } else {
             //老师
-                userVO = teaServiceImp.getUserByNumber(number);
+                userVO = teacherServiceImpMP.selectUserByNumber(number);
         }
         if(userVO == null){
             response.setStatus(NO_USER);
@@ -151,7 +156,7 @@ public class UserController extends MainController{
         //判断登陆用户是老师还是学生，再到对应的表中去查
         if(tempUserVO.getRole().equals("student")){
             //学生
-            boolean res = stuServiceImp.updateStuInfoByUser(tempUserVO);
+            boolean res = (studentServiceImpMP.updateStuInfoByUser(tempUserVO) != 0);
             if(!res){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");
@@ -159,7 +164,7 @@ public class UserController extends MainController{
         }
         else if(tempUserVO.getRole().equals("teacher")){
             //老师
-            boolean res = teaServiceImp.updateTeaInfoByUser(tempUserVO);
+            boolean res = (teacherServiceImpMP.updateTeaInfoByUser(tempUserVO) != 0);
             if (!res){
                 response.setStatus(WRONG_RES);
                 return Result.fail("修改信息失败，service层操作没有正确执行");
@@ -175,7 +180,7 @@ public class UserController extends MainController{
     //获得选课权限
     @GetMapping("/curriculaVariable")
     public Result getCurrVariable(){
-        boolean curr = adminServiceImp.getCurr();
+        String curr = adminServiceImpMP.getCur();
         return Result.succ("获取选课状态成功",curr);
     }
 
@@ -183,13 +188,13 @@ public class UserController extends MainController{
     @GetMapping("/course/new")
     public Result getCourseInfo(){
         //返回教师信息：按照学院分类，将每个学院的老师都取出来，以teacherData的List返回
-        List<TeacherDataVO> teacherDataVOList = teaServiceImp.getAllTeachersWithCollege();
+        List<TeacherDataVO> teacherDataVOList = teacherServiceImpMP.getAllTeachersWithCollege();
 
         //返回教室信息：按照楼分类，将每个楼里的教室都取出来，以classroom list的形式返回
-        List<BuildingVO> buildingVOList = buildingServiceImp.getAllRooms();
+        List<BuildingVO> buildingVOList = buildingServiceImpMP.selectAllBuildingAndRoomByList();
 
         //上课时间信息
-        List<TimesPO> times = timesServiceImp.getAllTimes();
+        List<TimesPO> times = timesServiceImpMP.list();
 
         return Result.succ3(teacherDataVOList,buildingVOList,times);
     }

@@ -25,6 +25,6 @@ public interface ClassroomServiceMP extends IService<ClassroomPO> {
     //查找是否有该名教室存在
     ClassroomPO selectByRoomNum(int buildingId, String roomNum);
     //根据名字删教室
-    int deleteByRoomNum(String roomNum);
+//    int deleteByRoomNum(String roomNum);
 
 }

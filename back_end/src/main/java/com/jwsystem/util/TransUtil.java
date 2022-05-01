@@ -18,10 +18,7 @@ import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.service.MajorServiceMP;
 import com.jwsystem.service.StudentServiceMP;
-import com.jwsystem.service.impl.BuildingServiceImpMP;
-import com.jwsystem.service.impl.ClassroomServiceImpMP;
-import com.jwsystem.service.impl.CollegeServiceImpMP;
-import com.jwsystem.service.impl.TeacherServiceImpMP;
+import com.jwsystem.service.impl.*;
 import com.jwsystem.vo.CourseVO;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.vo.UserVO;
@@ -53,6 +50,9 @@ public class TransUtil {
 
     @Autowired
     MajorServiceMP majorServiceMP;
+
+    @Autowired
+    CoursepartServiceImpMP coursepartServiceImpMP;
 
 //    @Autowired
 //    CollegeServiceMP collegeServiceMP;
@@ -168,7 +168,8 @@ public class TransUtil {
         );
 
         //根据学院id查询学院名字并且插入
-        String collegeName = xxx.(coursepartPO.getCollegeId())// TODO: 2022/4/30 根据学院id查询学院名;
+        CollegePO collegePO = collegeServiceImpMP.getById(coursepartPO.getCollegeId());
+        String collegeName = collegePO.getName();// TODO: 2022/4/30 根据学院id查询学院名;
         coursepartDTO.setCollegeName(collegeName);
 
         //根据老师工号查询老师姓名并且插入
@@ -199,7 +200,8 @@ public class TransUtil {
         );
 
         //根据学院id查询学院名字并且插入
-        String collegeName = xxx.(reqCoursepartPO.getCollegeId())// TODO: 2022/4/30 根据学院id查询学院名;
+        CollegePO collegePO = collegeServiceImpMP.getById(reqCoursepartPO.getCollegeId());
+        String collegeName = collegePO.getName();// TODO: 2022/4/30 根据学院id查询学院名;
         coursepartDTO.setCollegeName(collegeName);
 
         //根据老师工号查询老师姓名并且插入
@@ -265,8 +267,10 @@ public class TransUtil {
         );
 
         //根据roomid查出building（简称）和roomNum，然后插入
-        String building = xxx.(timepartPO.getRoomId())// TODO: 2022/4/30 根据roomid查出building简写; 
-        String roomNum = xxx.(timepartPO.getRoomId())// TODO: 2022/4/30 根据roomid查出roomNum;
+        ClassroomPO classroomPO = classroomServiceImpMP.getById(timepartPO.getRoomId());
+        BuildingPO buildingPO = buildingServiceImpMP.getById(classroomPO.getBuildingId());
+        String building = buildingPO.getAbbrName();// TODO: 2022/4/30 根据roomid查出building简写;
+        String roomNum = classroomPO.getRoomNum();// TODO: 2022/4/30 根据roomid查出roomNum;
         timepartDTO.setBuilding(building);
         timepartDTO.setRoomNum(roomNum);
 
@@ -286,8 +290,10 @@ public class TransUtil {
         );
 
         //根据roomid查出building（简称）和roomNum，然后插入
-        String building = xxx.(reqTimepartPO.getRoomId())// TODO: 2022/4/30 根据roomid查出building简写;
-        String roomNum = xxx.(reqTimepartPO.getRoomId())// TODO: 2022/4/30 根据roomid查出roomNum;
+        ClassroomPO classroomPO = classroomServiceImpMP.getById(reqTimepartPO.getRoomId());
+        BuildingPO buildingPO = buildingServiceImpMP.getById(classroomPO.getBuildingId());
+        String building = buildingPO.getAbbrName();// TODO: 2022/4/30 根据roomid查出building简写;
+        String roomNum = classroomPO.getRoomNum();// TODO: 2022/4/30 根据roomid查出roomNum;
         timepartDTO.setBuilding(building);
         timepartDTO.setRoomNum(roomNum);
 
@@ -322,7 +328,8 @@ public class TransUtil {
         );
 
         //根据collegeId查到collegeName然后插入
-        String collegeName = xxx.(majorPO.getCollegeId())// TODO: 2022/4/30 根据collegeId查到collegeName;
+        CollegePO collegePO = collegeServiceImpMP.getById(majorPO.getCollegeId());
+        String collegeName = collegePO.getName();// TODO: 2022/4/30 根据学院id查询学院名;
         majorDTO.setCollegeName(collegeName);
 
         return majorDTO;
@@ -365,8 +372,10 @@ public class TransUtil {
         );
 
         //根据roomid查出building（简称）和roomNum，然后插入
-        String building = xxx.(reqTeacherPO.getRoomId())// TODO: 2022/4/30 根据roomid查出building简写;
-        String roomNum = xxx.(reqTeacherPO.getRoomId())// TODO: 2022/4/30 根据roomid查出roomNum;
+        ClassroomPO classroomPO = classroomServiceImpMP.getById(reqTeacherPO.getRoomId());
+        BuildingPO buildingPO = buildingServiceImpMP.getById(classroomPO.getBuildingId());
+        String building = buildingPO.getAbbrName();// TODO: 2022/4/30 根据roomid查出building简写;
+        String roomNum = classroomPO.getRoomNum();// TODO: 2022/4/30 根据roomid查出roomNum;
         requestDTO.setBuilding(building);
         requestDTO.setRoomNum(roomNum);
 
