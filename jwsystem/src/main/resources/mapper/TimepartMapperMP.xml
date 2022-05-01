@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.TimepartDaoMP">
+    <select id="selectAllSections" resultType="java.lang.String">
+        SELECT
+            section
+        FROM
+            timepart
+    </select>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.course.TimepartPO">
+        <id column="id" property="id" />
+        <result column="course_id" property="courseId" />
+        <result column="teacher_num" property="teacherNum" />
+        <result column="weekday" property="weekday" />
+        <result column="section" property="section" />
+        <result column="room_id" property="roomId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, course_id, teacher_num, weekday, section, room_id
+    </sql>
+
+    <select id="selectSectionByTea" resultType="string">
+        SELECT section
+        FROM timepartDTO WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
+    </select>
+
+    <select id="selectSectionByRoom" resultType="string">
+        SELECT section
+        FROM timepartDTO WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
+    </select>
+</mapper>

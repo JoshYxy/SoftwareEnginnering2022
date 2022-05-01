@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jwsystem.dao.StudentDaoMP">
+    <select id="selectAllUserInfos" resultType="com.jwsystem.vo.UserVO">
+        select
+            s.role,
+            s.number,
+            s.id,
+            s.name,
+            s.password,
+            s.phone,
+            s.email,
+            s.status,
+            m.name,
+            c.name
+        from student s
+    join major m
+        on s.major_id=m.major_id
+    join college c
+        on s.college_id=c.college_id
+    </select>
+
+    <!-- 通用查询映射结果 -->
+
+    <resultMap id="BaseResultMap" type="com.jwsystem.entity.user.StudentPO">
+        <id column="number" property="number" />
+        <result column="role" property="role" />
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="password" property="password" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="status" property="status" />
+        <result column="major_id" property="majorId" />
+        <result column="major_id" property="majorId" />
+        <result column="college_id" property="collegeId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        role, number, id, name, password, phone, email, status, major_id, college_id
+    </sql>
+
+</mapper>
