@@ -9,6 +9,7 @@ import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.dao.TeacherDaoMP;
 import com.jwsystem.service.TeacherServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.TeacherDataVO;
 import com.jwsystem.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
@@ -35,16 +36,18 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
     TeacherDaoMP teacherDaoMP;
     @Autowired
     CollegeDaoMP collegeDaoMP;
+    @Autowired
+    TransUtil transUtil;
     @Override
     public Boolean insertUser(UserVO userVO) {
-        teacherDaoMP.insert(teacherPO);
-        return null;
+        TeacherPO teacherPO = transUtil.UserVOtoTeacherPO(userVO);
+        return teacherDaoMP.insert(teacherPO) != 0;
     }
 
     @Override
     public UserVO selectUserByNumber(String number) {
-        teacherDaoMP.selectById(number);
-        return null;
+        UserVO userVO = transUtil.TeacherPOtoUserVO(teacherDaoMP.selectById(number));
+        return userVO;
     }
 
     @Override
@@ -76,8 +79,8 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
 
     @Override
     public int updateTeaInfoByAdmin(UserVO userVO) {
-        TeacherPO user
-        return teacherDaoMP.update(user);
+        TeacherPO teacherPO = transUtil.UserVOtoTeacherPO(userVO);
+        return teacherDaoMP.updateById(teacherPO);
     }
 
     @Override
@@ -85,7 +88,14 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
         List<TeacherDataVO> teacherDataVOList = new ArrayList<>();
         List<CollegePO> colleges = collegeDaoMP.selectList(null);
         for(CollegePO c:colleges){
-            TeacherDataVO td = new TeacherDataVO(c.getName(),teacherDaoMP.selectList(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,c.getCollegeId()))));
+            TeacherDataVO td = new TeacherDataVO();
+            List<TeacherPO> teacherPOList = teacherDaoMP.selectList(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,c.getCollegeId()));
+            List<UserVO> userVOList = new ArrayList<>();
+            for(TeacherPO t :teacherPOList) {
+                userVOList.add(transUtil.TeacherPOtoUserVO(t));
+            }
+            td.setCollegeName(c.getName());
+            td.setTeachers(userVOList);
             teacherDataVOList.add(td);
         }
         return teacherDataVOList;

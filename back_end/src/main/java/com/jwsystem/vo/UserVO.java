@@ -58,6 +58,10 @@ public class UserVO {
         this.status = s.getStatus();
     }
 
+    public UserVO(TeacherPO teacherPO) {
+
+    }
+
 
     /*
             用户角色:role

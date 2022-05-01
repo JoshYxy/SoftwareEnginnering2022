@@ -14,6 +14,10 @@ import com.jwsystem.entity.course.TimepartPO;
 import com.jwsystem.entity.request.ReqCoursepartPO;
 import com.jwsystem.entity.request.ReqTeacherPO;
 import com.jwsystem.entity.request.ReqTimepartPO;
+import com.jwsystem.entity.user.StudentPO;
+import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.MajorServiceMP;
+import com.jwsystem.service.StudentServiceMP;
 import com.jwsystem.service.impl.BuildingServiceImpMP;
 import com.jwsystem.service.impl.ClassroomServiceImpMP;
 import com.jwsystem.service.impl.CollegeServiceImpMP;
@@ -43,6 +47,15 @@ public class TransUtil {
 
     @Autowired
     BuildingServiceImpMP buildingServiceImpMP;
+
+    @Autowired
+    StudentServiceMP studentServiceMP;
+
+    @Autowired
+    MajorServiceMP majorServiceMP;
+
+//    @Autowired
+//    CollegeServiceMP collegeServiceMP;
 
     //CoursepartDTO和TimepartDTO转换成CourseVO
     public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList){
@@ -360,4 +373,95 @@ public class TransUtil {
         return requestDTO;
     }
 
+    //StudentPO转UserVO
+    public UserVO StudentPOtoUserVO(StudentPO studentPO){
+
+        UserVO userVO = new UserVO(
+                studentPO.getRole(),
+                studentPO.getNumber(),
+                studentPO.getId(),
+                studentPO.getName(),
+                studentPO.getPassword(),
+                studentPO.getPhone(),
+                studentPO.getEmail(),
+                studentPO.getStatus(),
+                null,
+                null
+        );
+        String major = majorServiceMP.getById(studentPO.getMajorId()).getName();
+        String college = collegeServiceImpMP.getById(studentPO.getCollegeId()).getName();
+        userVO.setMajor(major);
+        userVO.setCollege(college);
+
+        return userVO;
+    }
+
+    //UserVO转StudentPO
+    public StudentPO UserVOtoStudentPO(UserVO userVO){
+
+        StudentPO studentPO = new StudentPO(
+                userVO.getRole(),
+                userVO.getNumber(),
+                userVO.getId(),
+                userVO.getName(),
+                userVO.getPassword(),
+                userVO.getPhone(),
+                userVO.getEmail(),
+                userVO.getStatus(),
+                null,
+                null
+        );
+        Integer majorId = majorServiceMP.selectMajorByName(userVO.getName()).getMajorId();
+        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getName()).getCollegeId();
+        studentPO.setMajorId(majorId);
+        studentPO.setCollegeId(collegeId);
+
+        return studentPO;
+    }
+
+    //TeacherPO转UserVO
+    public UserVO TeacherPOtoUserVO(TeacherPO teacherPO){
+
+        UserVO userVO = new UserVO(
+                teacherPO.getRole(),
+                teacherPO.getNumber(),
+                teacherPO.getId(),
+                teacherPO.getName(),
+                teacherPO.getPassword(),
+                teacherPO.getPhone(),
+                teacherPO.getEmail(),
+                teacherPO.getStatus(),
+                null,
+                null
+        );
+        String major = majorServiceMP.getById(teacherPO.getMajorId()).getName();
+        String college = collegeServiceImpMP.getById(teacherPO.getCollegeId()).getName();
+        userVO.setMajor(major);
+        userVO.setCollege(college);
+
+        return userVO;
+    }
+
+    //UserVO转teacherPO
+    public TeacherPO UserVOtoTeacherPO(UserVO userVO){
+
+        TeacherPO teacherPO = new TeacherPO(
+                userVO.getRole(),
+                userVO.getNumber(),
+                userVO.getId(),
+                userVO.getName(),
+                userVO.getPassword(),
+                userVO.getPhone(),
+                userVO.getEmail(),
+                userVO.getStatus(),
+                null,
+                null
+        );
+        Integer majorId = majorServiceMP.selectMajorByName(userVO.getName()).getMajorId();
+        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getName()).getCollegeId();
+        teacherPO.setMajorId(majorId);
+        teacherPO.setCollegeId(collegeId);
+
+        return teacherPO;
+    }
 }

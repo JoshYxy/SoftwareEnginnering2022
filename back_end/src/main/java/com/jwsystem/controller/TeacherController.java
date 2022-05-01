@@ -4,8 +4,8 @@ import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.service.*;
 import com.jwsystem.vo.UserVO;
-import com.jwsystem.service.TeaService;
 import com.jwsystem.service.impl.CourseRequestImp;
 import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.TransUtil;
@@ -31,14 +31,27 @@ public class TeacherController extends MainController{
     @Autowired
     private TransUtil transUtil;
 
-    @Autowired
-    private TeaService teaService;
+    //@Autowired
+    //private TeaService teaService;
 
     @Autowired
-    private CourseServiceImp courseServiceImp;
+    private TeacherServiceMP teacherServiceMP;
+
+    //@Autowired
+    //private CourseServiceImp courseServiceImp;
+    @Autowired
+    private CoursepartServiceMP coursepartServiceMP;
 
     @Autowired
-    private CourseRequestImp courseRequestImp;
+    private ReqCoursepartServiceMP reqCoursepartServiceMP;
+
+    @Autowired
+    private ReqTeacherServiceMP reqTeacherServiceMP;
+
+    @Autowired
+    private TimepartServiceMP timepartServiceMP;
+    //@Autowired
+    //private CourseRequestImp courseRequestImp;
 
 
     //教师获得自己开设的课程信息
@@ -47,7 +60,7 @@ public class TeacherController extends MainController{
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
         String number = getNumByToken();
         //检查教师是否存在
-        UserVO teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teacherServiceMP.selectUserByNumber(number);
 
         if(teacher == null){
             response.setStatus(NO_USER);
@@ -55,14 +68,14 @@ public class TeacherController extends MainController{
         }
 
         //根据教师工号查出全部的CoursePart，以list返回
-        List<CoursepartDTO> coursepartDTOList = courseServiceImp.getAllCoursepartByTeacherNum(number);
+        List<CoursepartDTO> coursepartDTOList = coursepartServiceMP.selectAllCoursepartByTeacherNum(number);
 
         List<CourseVO> courseVOList = new ArrayList<>();
 
         //对每个CoursePart，根据课程的id找出对应的所有timePart部分
         for (CoursepartDTO c:
                 coursepartDTOList) {
-            List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
+            List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
             CourseVO tempVO = transUtil.transToVO(c, timepartDTOList);
@@ -79,14 +92,14 @@ public class TeacherController extends MainController{
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
         String number = getNumByToken();
         //检查教师是否存在
-        UserVO teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teacherServiceMP.selectUserByNumber(number);
 
         if(teacher == null){
             response.setStatus(NO_USER);
             return Result.fail("教师不存在");
         }
 
-        List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimeByTea(number);
+        List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByTea(number);
 
         int[][] time = new int[7][];
         for (TimepartDTO t:
@@ -147,7 +160,7 @@ public class TeacherController extends MainController{
         );
 
         //把申请插入申请表，返回requestId给我
-        courseRequestImp.insertRequest(requestDTO);
+        reqTeacherServiceMP.insertRequest(requestDTO);
         int requestId = requestDTO.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
@@ -170,7 +183,7 @@ public class TeacherController extends MainController{
                 courseVO.getIsGeneral());
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里
-        courseServiceImp.insertReqCoursepart(coursePart);
+        reqCoursepartServiceMP.(coursePart);
 
         try{
             for(int i=0;i<7;i++){
@@ -193,7 +206,7 @@ public class TeacherController extends MainController{
 
                     //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
                     TimepartDTO timePart = new TimepartDTO(
-                            null,
+                            //null,
                             requestId,
                             courseVO.getTeacherNum(),
                             courseVO.getBuilding(),

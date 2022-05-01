@@ -13,6 +13,7 @@ import com.jwsystem.entity.course.TimepartPO;
 import com.jwsystem.entity.request.ReqTimepartPO;
 import com.jwsystem.service.TimepartServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +44,18 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
     @Autowired
     BuildingDaoMP buildingDaoMP;
 
+    @Autowired
+    TransUtil transUtil;
+
     @Override
     public List<TimepartDTO> selectAllTimepartByCourseId(int courseId) {
-        timepartDaoMP.selectById(courseId);
-        return null;
+        List<TimepartPO> timepartPOList = timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
+                .eq(TimepartPO::getCourseId,courseId));
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+        for(TimepartPO t:timepartPOList){
+            timepartDTOList.add(transUtil.TpPOtoTpDTO(t));
+        }
+        return timepartDTOList;
     }
 
     @Override

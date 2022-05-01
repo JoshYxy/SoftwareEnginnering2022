@@ -7,6 +7,7 @@ import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.dao.StudentDaoMP;
 import com.jwsystem.service.StudentServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.UserVO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,19 @@ public class StudentServiceImpMP extends ServiceImpl<StudentDaoMP, StudentPO> im
 
     @Autowired
     StudentDaoMP studentDaoMP;
+    @Autowired
+    TransUtil transUtil;
 
     @Override
     public Boolean insertUser(UserVO userVO) {
-        studentDaoMP.insert(studentPO);
-        return null;
+        StudentPO studentPO = transUtil.UserVOtoStudentPO(userVO);
+        return studentDaoMP.insert(studentPO) != 0;
     }
 
     @Override
     public UserVO selectUserByNumber(String number) {
-        studentDaoMP.selectById(number);
-        return null;
+        UserVO userVO = transUtil.StudentPOtoUserVO(studentDaoMP.selectById(number));
+        return userVO;
     }
 
     @Override
@@ -75,8 +78,8 @@ public class StudentServiceImpMP extends ServiceImpl<StudentDaoMP, StudentPO> im
 
     @Override
     public int updateStuInfoByAdmin(UserVO userVO) {
-        StudentPO user
-        return studentDaoMP.update(user);
+        StudentPO studentPO = transUtil.UserVOtoStudentPO(userVO);
+        return studentDaoMP.updateById(studentPO);
     }
 
     @Override

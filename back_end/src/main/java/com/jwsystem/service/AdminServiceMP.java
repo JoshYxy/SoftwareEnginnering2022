@@ -20,5 +20,4 @@ public interface AdminServiceMP extends IService<AdminPO> {
     String getCur();
     //设置当前的选课状态
     void setCurr(String curricularVariable);
-
 }
