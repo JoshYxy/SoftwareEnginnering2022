@@ -1,0 +1,150 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.jwsystem.dao.TimepartDao">-->
+<!--    <select id="getAllTimepart" resultMap="TimepartMapping">-->
+<!--        SELECT *-->
+<!--        FROM timepartDTO WHERE course_id = #{course_id}-->
+<!--    </select>-->
+<!--<<<<<<< Updated upstream-->
+<!--    <resultMap id="TimepartMapping" type="com.jwsystem.entity.course.Timepart">-->
+<!--=======-->
+<!--    <resultMap id="TimepartMapping" type="com.jwsystem.dto.TimepartDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        &lt;!&ndash; id属性来映射主键字段 &ndash;&gt;-->
+<!--        <id column="id" property="id"/>-->
+<!--        &lt;!&ndash; result属性映射非主键字段 &ndash;&gt;-->
+<!--        <result column="course_id" property="relationId"/>-->
+<!--        <result column="teacher_num" property="teacherNum"/>-->
+<!--        <result column="building" property="building"/>-->
+<!--        <result column="room_num" property="roomNum"/>-->
+<!--        <result column="weekday" property="weekday"/>-->
+<!--        <result column="section" property="section"/>-->
+<!--    </resultMap>-->
+
+<!--    <select id="getAllReqTimepartByRequestId" resultMap="ReqTimepartMapping">-->
+<!--        SELECT *-->
+<!--        FROM req_timepart WHERE request_id = #{request_id}-->
+<!--    </select>-->
+
+<!--<<<<<<< Updated upstream-->
+<!--    <resultMap id="ReqTimepartMapping" type="com.jwsystem.entity.course.Timepart">-->
+<!--=======-->
+<!--    <resultMap id="ReqTimepartMapping" type="com.jwsystem.dto.TimepartDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        &lt;!&ndash; id属性来映射主键字段 &ndash;&gt;-->
+<!--        <id column="id" property="id"/>-->
+<!--        &lt;!&ndash; result属性映射非主键字段 &ndash;&gt;-->
+<!--        <result column="request_id" property="relationId"/>-->
+<!--        <result column="teacher_num" property="teacherNum"/>-->
+<!--        <result column="building" property="building"/>-->
+<!--        <result column="room_num" property="roomNum"/>-->
+<!--        <result column="weekday" property="weekday"/>-->
+<!--        <result column="section" property="section"/>-->
+<!--    </resultMap>-->
+
+<!--    <select id="selectSectionByTea" resultType="string">-->
+<!--        SELECT section-->
+<!--        FROM timepartDTO WHERE teacher_num = #{teacher_num} and weekday = #{weekday}-->
+<!--    </select>-->
+
+<!--    <select id="selectSectionByRoom" resultType="string">-->
+<!--        SELECT section-->
+<!--        FROM timepartDTO WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}-->
+<!--    </select>-->
+
+<!--    <select id="getAllTimeByRoom" resultMap="TimepartMapping">-->
+<!--        SELECT *-->
+<!--        FROM timepartDTO WHERE building = #{building} and room_num = #{room_num}-->
+<!--    </select>-->
+
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.entity.course.Timepart">-->
+<!--=======-->
+<!--    <select id="getAllTimeByTeacherNum" resultType="com.jwsystem.dto.TimepartDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT *-->
+<!--        FROM timepartDTO WHERE teacher_num = #{teacher_num}-->
+<!--    </select>-->
+
+<!--    <select id="getCourseIdByBuilding" resultType="java.lang.Integer">-->
+<!--        SELECT course_id-->
+<!--        FROM timepartDTO WHERE building = #{building}-->
+<!--    </select>-->
+
+<!--    <select id="getRequestIdByBuilding" resultType="java.lang.Integer">-->
+<!--        SELECT request_id-->
+<!--        FROM req_timepart WHERE building = #{building}-->
+<!--    </select>-->
+
+<!--    <select id="getCourseIdByRoom" resultType="java.lang.Integer">-->
+<!--        SELECT course_id-->
+<!--        FROM timepartDTO WHERE building = #{building} and room_num = #{room_num}-->
+<!--    </select>-->
+
+<!--    <select id="getRequestIdByRoom" resultType="java.lang.Integer">-->
+<!--        SELECT request_id-->
+<!--        FROM req_timepart WHERE building = #{building} and room_num = #{room_num}-->
+<!--    </select>-->
+
+<!--    <select id="getAllSections" resultType="java.lang.String">-->
+<!--        SELECT-->
+<!--            section-->
+<!--        FROM-->
+<!--            req_timepart UNION-->
+<!--        SELECT-->
+<!--            section-->
+<!--        FROM-->
+<!--            timepartDTO-->
+<!--    </select>-->
+
+<!--<<<<<<< Updated upstream-->
+<!--    <insert id="insertTimepart" parameterType="com.jwsystem.entity.course.Timepart">-->
+<!--        insert into timepart(-->
+<!--=======-->
+<!--    <insert id="insertTimepart" parameterType="com.jwsystem.dto.TimepartDTO">-->
+<!--        insert into timepartDTO(-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--            id,-->
+<!--            course_id,-->
+<!--            teacher_num,-->
+<!--            building,-->
+<!--            room_num,-->
+<!--            weekday,-->
+<!--            section-->
+<!--        )-->
+<!--        values(-->
+<!--                  #{id},-->
+<!--                  #{relationId},-->
+<!--                  #{teacherNum},-->
+<!--                  #{building},-->
+<!--                  #{roomNum},-->
+<!--                  #{weekday},-->
+<!--                  #{section}-->
+<!--              )-->
+<!--    </insert>-->
+
+<!--<<<<<<< Updated upstream-->
+<!--    <insert id="insertReqTimepart" parameterType="com.jwsystem.entity.course.Timepart">-->
+<!--=======-->
+<!--    <insert id="insertReqTimepart" parameterType="com.jwsystem.dto.TimepartDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        insert into req_timepart(-->
+<!--            id,-->
+<!--            request_id,-->
+<!--            teacher_num,-->
+<!--            building,-->
+<!--            room_num,-->
+<!--            weekday,-->
+<!--            section-->
+<!--        )-->
+<!--        values(-->
+<!--                  #{id},-->
+<!--                  #{relationId},-->
+<!--                  #{teacherNum},-->
+<!--                  #{building},-->
+<!--                  #{roomNum},-->
+<!--                  #{weekday},-->
+<!--                  #{section}-->
+<!--              )-->
+<!--    </insert>-->
+<!--</mapper>-->

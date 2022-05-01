@@ -7,6 +7,7 @@ import com.jwsystem.vo.BuildingVO;
 import java.util.List;
 
 import com.jwsystem.entity.affair.BuildingPO;
+import org.springframework.stereotype.Repository;
 
 
 /**
@@ -17,6 +18,7 @@ import com.jwsystem.entity.affair.BuildingPO;
  * @author 作者
  * @since 2022-04-29
  */
+@Repository
 public interface BuildingServiceMP extends IService<BuildingPO> {
 
     //得到BuildingVOList

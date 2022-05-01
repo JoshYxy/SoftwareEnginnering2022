@@ -1,11 +1,10 @@
 package com.jwsystem.service.impl;
 
-<<<<<<< Updated upstream
+
 import com.jwsystem.dto.CoursepartDTO;
-import com.jwsystem.entity.ReqCoursepartPO;
-=======
+
 import com.jwsystem.entity.request.ReqCoursepartPO;
->>>>>>> Stashed changes
+
 import com.jwsystem.dao.ReqCoursepartDaoMP;
 import com.jwsystem.service.ReqCoursepartServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,8 +31,7 @@ public class ReqCoursepartServiceImpMP extends ServiceImpl<ReqCoursepartDaoMP, R
 
     @Override
     public CoursepartDTO selectReqCoursepartByRequestId(int requestId) {
-        reqCoursepartDaoMP.selectById(requestId);
-        return null;
+        return transUtil.ReqCpPOtoCpDTO(reqCoursepartDaoMP.selectById(requestId));
     }
 
     @Override

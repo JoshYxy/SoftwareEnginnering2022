@@ -5,9 +5,6 @@ import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.service.*;
 import com.jwsystem.vo.UserVO;
-import com.jwsystem.service.impl.AdminServiceImp;
-import com.jwsystem.service.impl.CourseRequestImp;
-import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseVO;
 import org.apache.ibatis.jdbc.Null;
@@ -50,9 +47,6 @@ public class StudentController extends MainController{
 
     @Autowired
     private AdminServiceMP adminServiceMP;
-
-    @Autowired
-    private CourseRequestImp courseRequestImp;
 
     @GetMapping("/course")
     public Result avaliableCourse(){

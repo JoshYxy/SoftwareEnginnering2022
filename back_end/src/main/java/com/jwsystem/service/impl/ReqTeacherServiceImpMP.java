@@ -6,11 +6,14 @@ import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.entity.request.ReqTeacherPO;
 
 import com.jwsystem.dao.ReqTeacherDaoMP;
+import com.jwsystem.entity.request.ReqTimepartPO;
 import com.jwsystem.service.ReqTeacherServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,16 +29,22 @@ public class ReqTeacherServiceImpMP extends ServiceImpl<ReqTeacherDaoMP, ReqTeac
     @Autowired
     ReqTeacherDaoMP reqTeacherDaoMP;
 
+    @Autowired
+    TransUtil transUtil;
+
     @Override
     public List<RequestDTO> selectAllTeacherRequests() {
-        reqTeacherDaoMP.selectList(null);
-        return null;
+        List<ReqTeacherPO> reqTeacherPOList = reqTeacherDaoMP.selectList(null);
+        List<RequestDTO> requestDTOList = new ArrayList<>();
+        for (ReqTeacherPO r: reqTeacherPOList) {
+            requestDTOList.add(transUtil.ReqTeacherPOtoDTO(r));
+        }
+        return requestDTOList;
     }
 
     @Override
     public RequestDTO selectRequestById(int requestId) {
-        reqTeacherDaoMP.selectById(requestId);
-        return null;
+        return transUtil.ReqTeacherPOtoDTO(reqTeacherDaoMP.selectById(requestId));
     }
 
     @Override
@@ -48,7 +57,7 @@ public class ReqTeacherServiceImpMP extends ServiceImpl<ReqTeacherDaoMP, ReqTeac
 
     @Override
     public int insertRequest(RequestDTO requestDTO) {
-        reqTeacherDaoMP.insert(requestPO);
-        return 0;
+        ReqTeacherPO requestPO = transUtil.RequestDTOtoPO(requestDTO);
+        return reqTeacherDaoMP.insert(requestPO);
     }
 }

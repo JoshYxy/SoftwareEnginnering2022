@@ -1,11 +1,9 @@
 package com.jwsystem.service;
 
-<<<<<<< Updated upstream
+
 import com.jwsystem.dto.TimepartDTO;
-import com.jwsystem.entity.ReqTimepartPO;
-=======
 import com.jwsystem.entity.request.ReqTimepartPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -27,4 +25,6 @@ public interface ReqTimepartServiceMP extends IService<ReqTimepartPO> {
     List<Integer> selectRequestIdByBuilding(String building);
 
     List<Integer> selectRequestIdByRoom(String building, String roomNum);
+
+    boolean examineTimes(String[] s);
 }

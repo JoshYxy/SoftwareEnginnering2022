@@ -1,0 +1,153 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.jwsystem.dao.StudentDao">-->
+<!--    &lt;!&ndash; 新增学生 &ndash;&gt;-->
+<!--    <insert id="insertUser" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        insert into student-->
+<!--            (role,-->
+<!--             number,-->
+<!--             id,-->
+<!--             name,-->
+<!--             password,-->
+<!--             phone,-->
+<!--             email,-->
+<!--             status,-->
+<!--             majorDTO,-->
+<!--             college)-->
+<!--        values-->
+<!--            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{majorDTO},#{college})-->
+<!--    </insert>-->
+
+<!--    &lt;!&ndash; 学生修改手机号、邮箱、登陆密码 &ndash;&gt;-->
+<!--    <update id="updateStuInfoByUser" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        UPDATE student-->
+<!--        SET password = #{password},-->
+<!--            phone = #{phone},-->
+<!--            email = #{email}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash; 管理员修改除学工号以外的信息 &ndash;&gt;-->
+<!--    <update id="updateStuInfoByAdmin" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        UPDATE student-->
+<!--        SET role = #{role},-->
+<!--            id = #{id},-->
+<!--            name = #{name},-->
+<!--            password = #{password},-->
+<!--            phone = #{phone},-->
+<!--            email = #{email},-->
+<!--            status = #{status},-->
+<!--            majorDTO = #{majorDTO},-->
+<!--            college = #{college}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash;修改学生密码&ndash;&gt;-->
+<!--    <update id="updatePwdByNumber">-->
+<!--        UPDATE student-->
+<!--        SET password = #{password}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash;查看所有学生信息&ndash;&gt;-->
+<!--    <select id="getAllStu" resultType="com.jwsystem.vo.UserVO">-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            id,-->
+<!--            name,-->
+<!--            password,-->
+<!--            phone,-->
+<!--            email,-->
+<!--            status,-->
+<!--            majorDTO,-->
+<!--            college-->
+<!--        FROM-->
+<!--            student-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据身份证号查找&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="selectById" resultType="com.jwsystem.entity.user.Student">-->
+<!--=======-->
+<!--    <select id="selectById" resultType="com.jwsystem.entity.userVO.Student">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            student-->
+<!--        WHERE-->
+<!--            id = #{id}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据学号查找&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="selectByNum" resultType="com.jwsystem.entity.user.Student">-->
+<!--=======-->
+<!--    <select id="selectByNum" resultType="com.jwsystem.entity.userVO.Student">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            student-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;查看指定学生信息&ndash;&gt;-->
+<!--    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            id,-->
+<!--            name,-->
+<!--            password,-->
+<!--            phone,-->
+<!--            email,-->
+<!--            status,-->
+<!--            majorDTO,-->
+<!--            college-->
+<!--        FROM-->
+<!--            student-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;学生查看个人信息&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="getStuInfo" resultType="com.jwsystem.entity.user.Student">-->
+<!--=======-->
+<!--    <select id="getStuInfo" resultType="com.jwsystem.entity.userVO.Student">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            student-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据学院查询是否存在学生&ndash;&gt;-->
+<!--    <select id="getStuByCollegeName" resultType="java.lang.Integer">-->
+<!--        SELECT count(*)-->
+<!--        FROM student WHERE college = #{college_name} and status = "studying"-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据专业查询是否存在学生&ndash;&gt;-->
+<!--    <select id="getStuByMajor" resultType="java.lang.Integer">-->
+<!--        SELECT count(*)-->
+<!--<<<<<<< Updated upstream-->
+<!--        FROM student WHERE major = #{major} and status = "studying"-->
+<!--=======-->
+<!--        FROM student WHERE majorDTO = #{majorDTO} and status = "studying"-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 删除学生 &ndash;&gt;-->
+<!--    <delete id="deleteStuByNumber">-->
+<!--        DELETE FROM student WHERE number = #{number}-->
+<!--    </delete>-->
+<!--</mapper>-->

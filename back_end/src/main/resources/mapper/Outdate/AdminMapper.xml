@@ -1,0 +1,30 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.jwsystem.dao.AdminDao">-->
+<!--    &lt;!&ndash; 得到admin信息 &ndash;&gt;-->
+<!--    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            password-->
+<!--        FROM-->
+<!--            admin-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 得到选课功能状态 &ndash;&gt;-->
+<!--    <select id="getCurr" resultType="java.lang.Boolean">-->
+<!--        SELECT-->
+<!--            curricular_variable-->
+<!--        FROM-->
+<!--            admin-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash; 设置选课功能是否开启 &ndash;&gt;-->
+<!--    <update id="setCurr">-->
+<!--        UPDATE admin-->
+<!--        SET curricular_variable = #{curricular_variable}-->
+<!--    </update>-->
+
+<!--</mapper>-->

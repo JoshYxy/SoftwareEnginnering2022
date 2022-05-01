@@ -3,7 +3,6 @@ package com.jwsystem.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dao.CollegeDaoMP;
-import com.jwsystem.dao.CoursepartDao;
 import com.jwsystem.dao.ReqCoursepartDaoMP;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.college.CollegePO;

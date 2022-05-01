@@ -15,10 +15,6 @@ import java.util.Map;
 
 
 import com.jwsystem.entity.affair.ClassroomPO;
-import com.jwsystem.dao.ClassroomDaoMP;
-import com.jwsystem.service.ClassroomServiceMP;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 
 
 /**
@@ -55,6 +51,13 @@ public class ClassroomServiceImpMP extends ServiceImpl<ClassroomDaoMP, Classroom
         return classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
                 .eq(ClassroomPO::getRoomNum,roomNum)
                 .eq(ClassroomPO::getBuildingId,buildingId));
+    }
+
+    @Override
+    public void deleteByBuildingAndRoomNum(int buildingId, String roomNum) {
+        classroomDaoMP.delete(Wrappers.lambdaQuery(ClassroomPO.class)
+                .eq(ClassroomPO::getBuildingId,buildingId)
+                .eq(ClassroomPO::getRoomNum,roomNum));
     }
 
 //    @Override

@@ -8,6 +8,7 @@ import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.course.TimepartPO;
+import com.jwsystem.entity.request.ReqTeacherPO;
 import com.jwsystem.entity.request.ReqTimepartPO;
 
 import com.jwsystem.dao.ReqTimepartDaoMP;
@@ -46,8 +47,13 @@ public class ReqTimepartServiceImpMP extends ServiceImpl<ReqTimepartDaoMP, ReqTi
 
     @Override
     public List<TimepartDTO> selectAllReqTimepartByRequestId(int requestId) {
-        reqTimepartDaoMP.selectById(requestId);
-        return null;
+        List<ReqTimepartPO> reqTimepartPOList = reqTimepartDaoMP.selectList(Wrappers.lambdaQuery(ReqTimepartPO.class)
+                .eq(ReqTimepartPO::getRequestId,requestId));
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+        for (ReqTimepartPO t: reqTimepartPOList) {
+            timepartDTOList.add(transUtil.ReqTpPOtoTpDTO(t));
+        }
+        return timepartDTOList;
     }
 
     @Override
@@ -85,5 +91,18 @@ public class ReqTimepartServiceImpMP extends ServiceImpl<ReqTimepartDaoMP, ReqTi
                 .eq(ReqTimepartPO::getRoomId,roomId));
         requestIds.addAll(reqTimepartPOList.stream().map(ReqTimepartPO::getRequestId).collect(Collectors.toList()));
         return requestIds;
+    }
+
+    @Override
+    public boolean examineTimes(String[] s) {
+        List<String> allSections = reqTimepartDaoMP.selectAllSections();
+        for(String section:s){
+            for(String allSection:allSections) {
+                if(allSection.contains(section)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

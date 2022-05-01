@@ -83,7 +83,7 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
                 if (result > -1) return false;
             }
         }
-
+        TimepartPO timepartPO = transUtil.TpDTOtoTpPO(timepartDTO);
         return timepartDaoMP.insert(timepartPO) != 0;
     }
 
@@ -95,14 +95,24 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         int roomId = classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
                 .eq(ClassroomPO::getBuildingId,buildingId)
                 .eq(ClassroomPO::getRoomNum,roomNum)).getRoomId();
-        return timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
-                .eq(TimepartPO::getRoomId,roomId)).transfer2DTOList;
+        List<TimepartPO> timepartPOList = timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
+                .eq(TimepartPO::getRoomId,roomId));
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+        for(TimepartPO t : timepartPOList){
+            timepartDTOList.add(transUtil.TpPOtoTpDTO(t));
+        }
+        return timepartDTOList;
     }
 
     @Override
     public List<TimepartDTO> selectAllTimepartByTea(String number) {
-        return timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
-                .eq(TimepartPO::getTeacherNum,number)).transfer2DTOList;
+        List<TimepartPO> timepartPOList = timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
+                .eq(TimepartPO::getTeacherNum,number));
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+        for(TimepartPO t : timepartPOList){
+            timepartDTOList.add(transUtil.TpPOtoTpDTO(t));
+        }
+        return timepartDTOList;
     }
 
     @Override

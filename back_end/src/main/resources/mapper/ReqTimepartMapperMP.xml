@@ -17,5 +17,11 @@
     <sql id="Base_Column_List">
         id, request_id, teacher_num, weekday, section, room_id
     </sql>
+    <select id="selectAllSections" resultType="java.lang.String">
+        SELECT
+            section
+        FROM
+            req_timepart
+    </select>
 
 </mapper>

@@ -5,10 +5,6 @@
         SELECT
             section
         FROM
-            req_timepart UNION
-        SELECT
-            section
-        FROM
             timepart
     </select>
 

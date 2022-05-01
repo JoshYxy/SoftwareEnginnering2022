@@ -1,0 +1,45 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.jwsystem.dao.MajorDao">-->
+<!--    &lt;!&ndash; 新增专业 &ndash;&gt;-->
+<!--    <insert id="insertMajor">-->
+<!--        INSERT INTO majorDTO ( name, college_name )-->
+<!--        VALUES (#{name},#{college_name})-->
+<!--    </insert>-->
+<!--    &lt;!&ndash; 根据学院name查询该学院下的所有专业 &ndash;&gt;-->
+<!--    <select id="findMajorByCollegeName" resultType="int">-->
+<!--        SELECT count(*)-->
+<!--        FROM MAJOR WHERE college_name = #{college_name}-->
+<!--    </select>-->
+<!--    &lt;!&ndash;根据id查询某专业是否存在 &ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="findMajorById" resultType="com.jwsystem.entity.college.Major">-->
+<!--=======-->
+<!--    <select id="findMajorById" resultType="com.jwsystem.dto.MajorDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT *-->
+<!--        FROM MAJOR WHERE major_id = #{major_id}-->
+<!--    </select>-->
+<!--    &lt;!&ndash;根据name查询某专业是否存在 &ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="findMajorByName" resultType="com.jwsystem.entity.college.Major">-->
+<!--=======-->
+<!--    <select id="findMajorByName" resultType="com.jwsystem.dto.MajorDTO">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT *-->
+<!--        FROM MAJOR WHERE name = #{name}-->
+<!--    </select>-->
+<!--    &lt;!&ndash; 根据id修改某专业名 &ndash;&gt;-->
+<!--    <update id="updateMajorNameById">-->
+<!--        UPDATE MAJOR SET name = #{name}-->
+<!--        where major_id = #{major_id}-->
+<!--    </update>-->
+<!--    <select id="findCollegeByMajorName" resultType="String">-->
+<!--        SELECT college_name-->
+<!--        FROM MAJOR WHERE name = #{name}-->
+<!--    </select>-->
+<!--    &lt;!&ndash; 删除专业 &ndash;&gt;-->
+<!--    <delete id="deleteMajor">-->
+<!--        DELETE FROM Major WHERE name = #{name}-->
+<!--    </delete>-->
+<!--</mapper>-->

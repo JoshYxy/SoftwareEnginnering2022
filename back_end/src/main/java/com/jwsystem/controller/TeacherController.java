@@ -7,8 +7,6 @@ import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.request.ReqCoursepartPO;
 import com.jwsystem.service.*;
 import com.jwsystem.vo.UserVO;
-import com.jwsystem.service.impl.CourseRequestImp;
-import com.jwsystem.service.impl.CourseServiceImp;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseRequestVO;
 import com.jwsystem.vo.CourseVO;

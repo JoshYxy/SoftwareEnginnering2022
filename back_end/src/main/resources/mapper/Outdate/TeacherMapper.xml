@@ -1,0 +1,174 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.jwsystem.dao.TeacherDao">-->
+<!--    &lt;!&ndash; 新增老师 &ndash;&gt;-->
+<!--    <insert id="insertUser" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        insert into teacher-->
+<!--            (role,-->
+<!--             number,-->
+<!--             id,-->
+<!--             name,-->
+<!--             password,-->
+<!--             phone,-->
+<!--             email,-->
+<!--             status,-->
+<!--             majorDTO,-->
+<!--             college)-->
+<!--        values-->
+<!--            (#{role},#{number},#{id},#{name},#{password},#{phone},#{email},#{status},#{majorDTO},#{college})-->
+<!--    </insert>-->
+
+<!--    &lt;!&ndash; 老师修改手机号、邮箱、登陆密码 &ndash;&gt;-->
+<!--    <update id="updateTeaInfoByUser" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        UPDATE teacher-->
+<!--        SET password = #{password},-->
+<!--            phone = #{phone},-->
+<!--            email = #{email}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash; 管理员修改除学工号以外的信息 &ndash;&gt;-->
+<!--    <update id="updateTeaInfoByAdmin" parameterType="com.jwsystem.vo.UserVO">-->
+<!--        UPDATE teacher-->
+<!--        SET role = #{role},-->
+<!--            id = #{id},-->
+<!--            name = #{name},-->
+<!--            password = #{password},-->
+<!--            phone = #{phone},-->
+<!--            email = #{email},-->
+<!--            status = #{status},-->
+<!--            majorDTO = #{majorDTO},-->
+<!--            college = #{college}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    <update id="updatePwdByNumber">-->
+<!--        UPDATE teacher-->
+<!--        SET password = #{password}-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </update>-->
+
+<!--    &lt;!&ndash;查看所有教师信息&ndash;&gt;-->
+<!--        <select id="getAllTea" resultType="com.jwsystem.vo.UserVO">-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            id,-->
+<!--            name,-->
+<!--            password,-->
+<!--            phone,-->
+<!--            email,-->
+<!--            status,-->
+<!--            majorDTO,-->
+<!--            college-->
+<!--        FROM-->
+<!--            teacher-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据身份证号查找&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="selectById" resultType="com.jwsystem.entity.user.Teacher">-->
+<!--=======-->
+<!--    <select id="selectById" resultType="com.jwsystem.entity.userVO.Teacher">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--            id = #{id}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据工号查找&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="selectByNum" resultType="com.jwsystem.entity.user.Teacher">-->
+<!--=======-->
+<!--    <select id="selectByNum" resultType="com.jwsystem.entity.userVO.Teacher">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;查看教师信息&ndash;&gt;-->
+<!--    <select id="getUserByNumber" resultType="com.jwsystem.vo.UserVO">-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            id,-->
+<!--            name,-->
+<!--            password,-->
+<!--            phone,-->
+<!--            email,-->
+<!--            status,-->
+<!--            majorDTO,-->
+<!--            college-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;教师查看个人信息&ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="getTeaInfo" resultType="com.jwsystem.entity.user.Teacher">-->
+<!--=======-->
+<!--    <select id="getTeaInfo" resultType="com.jwsystem.entity.userVO.Teacher">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            role,-->
+<!--            number,-->
+<!--            id,-->
+<!--            name,-->
+<!--            password,-->
+<!--            phone,-->
+<!--            email,-->
+<!--            status,-->
+<!--            majorDTO,-->
+<!--            college-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--            number = #{number}-->
+<!--    </select>-->
+
+
+<!--    &lt;!&ndash; 删除老师 &ndash;&gt;-->
+<!--    <delete id="deleteTeaByNumber">-->
+<!--        DELETE FROM teacher WHERE number = #{number}-->
+<!--    </delete>-->
+
+<!--    &lt;!&ndash; 根据学院名得到老师信息 &ndash;&gt;-->
+<!--<<<<<<< Updated upstream-->
+<!--    <select id="getTeacherByCollegeName" resultType="com.jwsystem.entity.user.Teacher">-->
+<!--=======-->
+<!--    <select id="getTeacherByCollegeName" resultType="com.jwsystem.entity.userVO.Teacher">-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--            college = #{college} and status = "working"-->
+<!--    </select>-->
+
+<!--    &lt;!&ndash;根据专业得到在职老师数量&ndash;&gt;-->
+<!--    <select id="getTeacherByMajor" resultType="java.lang.Integer">-->
+<!--        SELECT-->
+<!--            count(*)-->
+<!--        FROM-->
+<!--            teacher-->
+<!--        WHERE-->
+<!--<<<<<<< Updated upstream-->
+<!--            major = #{major} and status = "working"-->
+<!--=======-->
+<!--            majorDTO = #{majorDTO} and status = "working"-->
+<!--&gt;>>>>>> Stashed changes-->
+<!--    </select>-->
+<!--</mapper>-->

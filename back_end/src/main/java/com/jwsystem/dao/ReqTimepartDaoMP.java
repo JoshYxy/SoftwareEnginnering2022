@@ -1,12 +1,11 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.ReqTimepartPO;
-=======
+
 import com.jwsystem.entity.request.ReqTimepartPO;
->>>>>>> Stashed changes
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,5 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ReqTimepartDaoMP extends BaseMapper<ReqTimepartPO> {
-
+    List<String> selectAllSections();
 }

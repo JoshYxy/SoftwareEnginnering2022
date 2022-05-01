@@ -5,6 +5,7 @@ import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.affair.TimesPO;
+import com.jwsystem.service.BuildingServiceMP;
 import com.jwsystem.vo.ClassroomVO;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.*;
@@ -33,8 +34,10 @@ public class AffairController extends MainController{
     TimepartServiceImpMP timepartServiceImpMP;
 
     @Autowired
-//    BuildingServiceImp buildingServiceImp;
-    BuildingServiceImpMP buildingServiceImpMP;
+    ReqTimepartServiceImpMP reqTimepartServiceImpMP;
+
+    @Autowired
+    BuildingServiceMP buildingServiceImpMP;
 
     @Autowired
 //    ClassroomServiceImp classroomServiceImp;
@@ -50,6 +53,7 @@ public class AffairController extends MainController{
 
     @Autowired
     HttpServletResponse response;
+
 
     //管理员获得教务信息
     @GetMapping("")
@@ -185,7 +189,9 @@ public class AffairController extends MainController{
             //得到timepart 和 req_timepart中所有的section，现在的TimepartServiceImplMP里只拿出了timepart的，没有拿出reqTimepart的
             //在reqTimepart里再加一个examineTimes，内部逻辑类似
             //把service里请求和课程的方法分开
-            boolean haveClass = courseServiceImp.examineTimes(s);
+            boolean haveClass = (timepartServiceImpMP.examineTimes(s)
+                    && reqTimepartServiceImpMP.examineTimes(s));
+
 
             if(haveClass){
                 response.setStatus(CONFLICT_TIME);
@@ -296,7 +302,8 @@ public class AffairController extends MainController{
         }
 
         //根据buildingPO拿到buildingid，然后删除
-        classroomServiceImp.deleteByBuildingAndRoomNum(classRoom.getBuilding(),classRoom.getRoomNum());
+        int buildingId = buildingPO.getId();
+        classroomServiceImpMP.deleteByBuildingAndRoomNum(buildingId,classRoom.getRoomNum());
         return Result.succ("删除成功");
     }
 
