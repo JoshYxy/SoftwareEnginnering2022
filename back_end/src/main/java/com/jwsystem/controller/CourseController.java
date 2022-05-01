@@ -7,7 +7,7 @@ import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.CSVUtils;
-import com.jwsystem.util.CourseUtil;
+import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseRequestVO;
 
 import com.jwsystem.vo.CourseVO;
@@ -32,7 +32,7 @@ public class CourseController extends MainController{
     private HttpServletResponse response;
 
     @Autowired
-    CourseUtil courseUtil;
+    TransUtil transUtil;
 
     @Autowired
     private CourseServiceImp courseServiceImp;
@@ -158,7 +158,7 @@ public class CourseController extends MainController{
                 courseRequestVO.setPassed(r.isPassed());
                 courseRequestVO.setExamined(r.isExamined());
 
-                CourseVO courseVO = courseUtil.transToVO(cp,tp);
+                CourseVO courseVO = transUtil.transToVO(cp,tp);
                 courseVO.setCourseId(r.getCourseId());
 
                 courseRequestVO.setCourseVO(courseVO);
@@ -195,7 +195,7 @@ public class CourseController extends MainController{
                 //新增课程：先从req-coursepart和req-timepart里取出对应数据
                 CoursepartDTO req_cp = courseRequestImp.getReqCoursepartByRequestId(r.getRequestId());
                 List<TimepartDTO> req_tp = courseRequestImp.getAllReqTimepartByRequestId(r.getRequestId());
-                CourseVO courseVO = courseUtil.transToVO(req_cp,req_tp);
+                CourseVO courseVO = transUtil.transToVO(req_cp,req_tp);
                 courseVO.setCourseId(r.getCourseId());
 
                 Result res = addCourse(courseVO);
@@ -237,14 +237,14 @@ public class CourseController extends MainController{
                 }
 
                 List<TimepartDTO> tempt = courseServiceImp.getAllTimepartByCourseId(courseId);
-                CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
+                CourseVO tempVO = transUtil.transToVO(tempc,tempt);
 
                 //删除coursepart表和coursetime表中courseId对应的相关的数据（设置成连带删除的）
                 int res = courseServiceImp.deleteCoursepartByCourseId(courseId);
                 if(res!=0){
                     CoursepartDTO req_cp = courseRequestImp.getReqCoursepartByRequestId(r.getRequestId());
                     List<TimepartDTO> req_tp = courseRequestImp.getAllReqTimepartByRequestId(r.getRequestId());
-                    CourseVO courseVO = courseUtil.transToVO(req_cp,req_tp);
+                    CourseVO courseVO = transUtil.transToVO(req_cp,req_tp);
                     courseVO.setCourseId(courseId);
                     //把修改后的数据按照一样的courseId插入进去
                     Result res2 = addCourse(courseVO);
@@ -283,7 +283,7 @@ public class CourseController extends MainController{
             List<TimepartDTO> timepartDTOList = courseServiceImp.getAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = courseUtil.transToVO(c, timepartDTOList);
+            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList);
 
             courses.add(tempVO);
         }
@@ -311,7 +311,7 @@ public class CourseController extends MainController{
         //先保存当前数据库内课程信息，并且转化成CourseVO对象
         CoursepartDTO tempc = courseServiceImp.getCoursepartByCourseId(courseVO.getCourseId());
         List<TimepartDTO> tempt = courseServiceImp.getAllTimepartByCourseId(courseVO.getCourseId());
-        CourseVO tempVO = courseUtil.transToVO(tempc,tempt);
+        CourseVO tempVO = transUtil.transToVO(tempc,tempt);
 
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
         int res = courseServiceImp.deleteCoursepartByCourseId(courseVO.getCourseId());

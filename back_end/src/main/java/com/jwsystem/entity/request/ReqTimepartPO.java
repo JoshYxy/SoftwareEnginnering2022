@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,6 +20,7 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @Accessors(chain = true)
 @TableName("req_timepart")
 public class ReqTimepartPO implements Serializable {

@@ -43,6 +43,7 @@ public class BuildingServiceImpMP extends ServiceImpl<BuildingDaoMP, BuildingPO>
                         .eq(ClassroomPO::getBuildingId,b.getId()));
                 List<ClassroomVO> classroomVOList = classroomPOList.stream().map(ClassroomVO::new).collect(toList());
                 classroomVOList.forEach(e -> e.setBuilding(b.getAbbrName()));
+                b.setRoom(classroomVOList);
             }
         }
         return buildingVOList;
