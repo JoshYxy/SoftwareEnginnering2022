@@ -3,14 +3,14 @@ package com.jwsystem.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jwsystem.dao.CollegeDaoMP;
-import com.jwsystem.dao.MajorDaoMP;
-import com.jwsystem.dao.StudentDaoMP;
-import com.jwsystem.dao.TeacherDaoMP;
+import com.jwsystem.dao.*;
 import com.jwsystem.dto.MajorDTO;
+import com.jwsystem.entity.course.CoursepartPO;
+import com.jwsystem.entity.user.StudentPO;
+import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.CollegeServiceMP;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.college.MajorPO;
-import com.jwsystem.service.CollegeServiceMP;
 import com.jwsystem.vo.CollegeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,8 @@ public class CollegeServiceImpMP extends ServiceImpl<CollegeDaoMP, CollegePO> im
     TeacherDaoMP teacherDaoMP;
     @Autowired
     StudentDaoMP studentDaoMP;
+    @Autowired
+    CoursepartDaoMP coursepartDaoMP;
     @Override
     public List<CollegeVO> selectAllCollegeAndMajorByList() {
         List<CollegePO> collegePOList = collegeDaoMP.selectList(Wrappers.emptyWrapper());
@@ -69,19 +71,19 @@ public class CollegeServiceImpMP extends ServiceImpl<CollegeDaoMP, CollegePO> im
         boolean res = false;
 
         //根据学院找专业
-        if(majorDaoMP.findMajorByCollegeName(college.getName())!=0){
+        if(majorDaoMP.selectOne(Wrappers.lambdaQuery(MajorPO.class).eq(MajorPO::getCollegeId,collegePO.getCollegeId())) != null){
             res=true;
         }
         //根据学院找老师
-        else if(!teacherDao.getTeacherByCollegeName(college.getName()).isEmpty()){
+        else if(teacherDaoMP.selectOne(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,collegePO.getCollegeId())) != null){
             res=true;
         }
         //根据学院找学生
-        else if(studentDao.getStuByCollegeName(college.getName())!=0){
+        else if(studentDaoMP.selectOne(Wrappers.lambdaQuery(StudentPO.class).eq(StudentPO::getCollegeId,collegePO.getCollegeId())) != null){
             res=true;
         }
         //根据学院找课程
-        else if(!coursepartDao.getCoursepartByCollege(college.getName()).isEmpty()){
+        else if((coursepartDaoMP.selectOne(Wrappers.lambdaQuery(CoursepartPO.class).eq(CoursepartPO::getCollegeId,collegePO.getCollegeId())) != null)){
             res=true;
         }
 

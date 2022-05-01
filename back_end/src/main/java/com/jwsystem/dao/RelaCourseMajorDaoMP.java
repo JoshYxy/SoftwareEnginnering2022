@@ -1,10 +1,8 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.RelaCourseMajorPO;
-=======
+
 import com.jwsystem.entity.course.RelaCourseMajorPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

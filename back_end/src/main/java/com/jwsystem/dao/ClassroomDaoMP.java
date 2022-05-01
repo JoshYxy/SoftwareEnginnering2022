@@ -1,10 +1,6 @@
 package com.jwsystem.dao;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.ClassroomPO;
-=======
 import com.jwsystem.entity.affair.ClassroomPO;
->>>>>>> Stashed changes
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

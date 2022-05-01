@@ -1,10 +1,8 @@
 package com.jwsystem.service;
 
-<<<<<<< Updated upstream
-import com.jwsystem.entity.RelaCourseStudentPO;
-=======
+
 import com.jwsystem.entity.course.RelaCourseStudentPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -5,6 +5,7 @@ import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.course.CoursepartPO;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @author 作者
  * @since 2022-04-29
  */
+
 public interface CoursepartServiceMP extends IService<CoursepartPO> {
     //得到已存在的课程部分
     CoursepartDTO selectCoursepartByCourseId(int courseId);

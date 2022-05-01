@@ -19,6 +19,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CoursepartDaoMP extends BaseMapper<CoursepartPO> {
     //coursepartpo转成coursepartdto
-    CoursepartDTO coursepartPO2DTO();
 
 }

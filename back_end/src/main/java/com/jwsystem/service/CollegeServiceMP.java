@@ -4,6 +4,7 @@ package com.jwsystem.service;
 import com.jwsystem.entity.college.CollegePO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jwsystem.vo.CollegeVO;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @author 作者
  * @since 2022-04-29
  */
+@Repository
 public interface CollegeServiceMP extends IService<CollegePO> {
     //得到所有的学院和专业
     List<CollegeVO> selectAllCollegeAndMajorByList();

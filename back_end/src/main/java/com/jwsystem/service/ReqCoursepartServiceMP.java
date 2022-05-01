@@ -1,11 +1,10 @@
 package com.jwsystem.service;
 
-<<<<<<< Updated upstream
+
 import com.jwsystem.dto.CoursepartDTO;
-import com.jwsystem.entity.ReqCoursepartPO;
-=======
+
 import com.jwsystem.entity.request.ReqCoursepartPO;
->>>>>>> Stashed changes
+
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
