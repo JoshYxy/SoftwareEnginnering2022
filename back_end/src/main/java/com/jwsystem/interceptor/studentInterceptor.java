@@ -1,6 +1,6 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.service.StuService;
+import com.jwsystem.service.impl.StudentServiceImpMP;
 import com.jwsystem.util.JwtUtils;
 import com.jwsystem.vo.UserVO;
 import io.jsonwebtoken.Claims;
@@ -16,7 +16,8 @@ public class studentInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-    StuService stuService;
+//    StuService stuService;
+    StudentServiceImpMP studentServiceImpMP;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -32,7 +33,7 @@ public class studentInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();
-        UserVO student = stuService.selectStuByNum(number);
+        UserVO student = studentServiceImpMP.selectUserByNumber(number);
 
         if(student==null){
             System.out.println("非学生账号!");

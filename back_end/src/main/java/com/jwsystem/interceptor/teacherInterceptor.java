@@ -1,6 +1,7 @@
 package com.jwsystem.interceptor;
 
-import com.jwsystem.service.TeaService;
+
+import com.jwsystem.service.impl.TeacherServiceImpMP;
 import com.jwsystem.util.JwtUtils;
 import com.jwsystem.vo.UserVO;
 import io.jsonwebtoken.Claims;
@@ -16,7 +17,8 @@ public class teacherInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-    TeaService teaService;
+//    TeaService teaService;
+    TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -32,7 +34,7 @@ public class teacherInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         Claims claims = jwtUtils.getCliamByToken(token);
         String number = claims.getSubject();
-        UserVO teacher = teaService.selectTeaByNum(number);
+        UserVO teacher = teacherServiceImpMP.selectUserByNumber(number);
 
         if(teacher==null){
             System.out.println("非教师账号!");

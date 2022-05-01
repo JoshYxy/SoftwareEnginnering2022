@@ -1,10 +1,5 @@
 package com.jwsystem.service.impl;
-
-<<<<<<< Updated upstream
-import com.jwsystem.entity.RelaCourseStudentPO;
-=======
 import com.jwsystem.entity.course.RelaCourseStudentPO;
->>>>>>> Stashed changes
 import com.jwsystem.dao.RelaCourseStudentDaoMP;
 import com.jwsystem.service.RelaCourseStudentServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

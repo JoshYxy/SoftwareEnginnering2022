@@ -11,6 +11,7 @@ import com.jwsystem.entity.college.MajorPO;
 import com.jwsystem.dao.MajorDaoMP;
 import com.jwsystem.service.MajorServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,15 +37,20 @@ public class MajorServiceImpMP extends ServiceImpl<MajorDaoMP, MajorPO> implemen
     TeacherDaoMP teacherDaoMP;
     @Autowired
     StudentDaoMP studentDaoMP;
+    @Autowired
+    TransUtil transUtil;
 
     @Override
     public Boolean insertMajor(MajorDTO majorDTO) {
+        MajorPO majorPO = transUtil.MajorDTOtoPO(majorDTO);
         return majorDaoMP.insert(majorPO)!=0;
     }
 
     @Override
     public MajorDTO selectMajorByName(String majorName) {
-        return (MajorDTO)majorDaoMP.selectOne(Wrappers.lambdaQuery(MajorPO.class).eq(MajorPO::getName,majorName));
+        MajorPO majorPO = majorDaoMP.selectOne(Wrappers.lambdaQuery(MajorPO.class).eq(MajorPO::getName,majorName));
+        MajorDTO majorDTO = transUtil.MajorPOtoDTO(majorPO);
+        return majorDTO;
     }
 
     @Override
@@ -56,12 +62,14 @@ public class MajorServiceImpMP extends ServiceImpl<MajorDaoMP, MajorPO> implemen
 
     @Override
     public void updateMajor(MajorDTO majorDTO) {
-        majorDaoMP.update(majorPO);
+        MajorPO majorPO = transUtil.MajorDTOtoPO(majorDTO);
+        majorDaoMP.updateById(majorPO);
     }
 
     @Override
     public void deleteMajor(MajorDTO majorDTO) {
-        majorDaoMP.delete(majorPO)
+        MajorPO majorPO = transUtil.MajorDTOtoPO(majorDTO);
+        majorDaoMP.deleteById(majorPO);
     }
 
     @Override

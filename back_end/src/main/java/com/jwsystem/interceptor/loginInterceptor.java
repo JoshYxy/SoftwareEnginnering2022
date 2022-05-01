@@ -1,9 +1,9 @@
 package com.jwsystem.interceptor;
 
+import com.jwsystem.service.impl.AdminServiceImpMP;
+import com.jwsystem.service.impl.StudentServiceImpMP;
+import com.jwsystem.service.impl.TeacherServiceImpMP;
 import com.jwsystem.vo.UserVO;
-import com.jwsystem.service.impl.AdminServiceImp;
-import com.jwsystem.service.impl.StuServiceImp;
-import com.jwsystem.service.impl.TeaServiceImp;
 import com.jwsystem.util.JwtUtils;
 import com.mysql.jdbc.StringUtils;
 import io.jsonwebtoken.Claims;
@@ -26,13 +26,16 @@ public class loginInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-    StuServiceImp stuServiceImp;
+//    StuServiceImp stuServiceImp;
+    StudentServiceImpMP studentServiceImpMP;
 
     @Autowired
-    TeaServiceImp teaServiceImp;
+//    TeaServiceImp teaServiceImp;
+    TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
-    AdminServiceImp adminServiceImp;
+//    AdminServiceImp adminServiceImp;
+    AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
     HttpServletRequest httpServletRequest;
@@ -73,13 +76,13 @@ public class loginInterceptor implements HandlerInterceptor {
         UserVO userVO;
         if(number.length()==TEACHER_NUM_LENGTH){
             //老师
-            userVO = teaServiceImp.getUserByNumber(number);
+            userVO = teacherServiceImpMP.selectUserByNumber(number);
 
         } else if(number.length()==STUDENT_NUM_LENGTH){
             //学生
-            userVO = stuServiceImp.getUserByNumber(number);
+            userVO = studentServiceImpMP.selectUserByNumber(number);
         } else if(number.equals(adminNum)){
-            userVO = adminServiceImp.getUserByNumber(number);
+            userVO = adminServiceImpMP.selectAdminUserByNumber(number);
         } else{
             System.out.println("用户身份有误！不属于教师、学生或管理员");
             return false;

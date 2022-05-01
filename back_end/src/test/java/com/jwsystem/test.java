@@ -1,8 +1,8 @@
 package com.jwsystem;
 
 import com.jwsystem.dto.MajorDTO;
-import com.jwsystem.service.impl.AdminServiceImp;
-import com.jwsystem.service.impl.EduServiceImp;
+import com.jwsystem.service.impl.AdminServiceImpMP;
+import com.jwsystem.service.impl.MajorServiceImpMP;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,10 +21,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class test {
 
     @Autowired
-    AdminServiceImp adminServiceImp;
+//    AdminServiceImp adminServiceImp;
+    AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
-    EduServiceImp eduServiceImp;
+//    EduServiceImp eduServiceImp;
+    MajorServiceImpMP majorServiceImpMP;
 
     @Before
     public void before(){
@@ -36,10 +38,10 @@ public class test {
         System.out.println("结束测试");
     }
 
-    @Test
-    public void test1(){
-        Assert.assertTrue(adminServiceImp.getCurr());
-    }
+//    @Test
+//    public void test1(){
+//        Assert.assertTrue(adminServiceImpMP.getCur());
+//    }
 
     @Test
     public void test2(){
@@ -55,9 +57,9 @@ public class test {
                 233,"经济学","经济学院"
         );
 
-        Assert.assertNull(eduServiceImp.selectMajorByName(mockMajor1));
-        System.out.println(eduServiceImp.selectMajorByName(mockMajor1));
-        Assert.assertEquals("有问题",result,eduServiceImp.selectMajorByName(mock2));
+        Assert.assertNull(majorServiceImpMP.selectMajorByName(mockMajor1.getName()));
+        System.out.println(majorServiceImpMP.selectMajorByName(mockMajor1.getName()));
+        Assert.assertEquals("有问题",result,majorServiceImpMP.selectMajorByName(mock2.getName()));
 
     }
 

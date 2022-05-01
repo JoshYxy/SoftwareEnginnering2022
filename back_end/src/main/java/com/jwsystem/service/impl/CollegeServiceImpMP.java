@@ -2,28 +2,20 @@ package com.jwsystem.service.impl;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.dao.CollegeDaoMP;
 import com.jwsystem.dao.MajorDaoMP;
 import com.jwsystem.dao.StudentDaoMP;
 import com.jwsystem.dao.TeacherDaoMP;
 import com.jwsystem.dto.MajorDTO;
-import com.jwsystem.dto.MajorDataDTO;
-import com.jwsystem.entity.affair.BuildingPO;
-import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.college.CollegePO;
-
-import com.jwsystem.dao.CollegeDaoMP;
 import com.jwsystem.entity.college.MajorPO;
 import com.jwsystem.service.CollegeServiceMP;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.jwsystem.vo.BuildingVO;
-import com.jwsystem.vo.ClassroomVO;
 import com.jwsystem.vo.CollegeVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
