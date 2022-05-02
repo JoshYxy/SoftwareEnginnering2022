@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 30/04/2022 22:47:29
+ Date: 02/05/2022 12:27:34
 */
 
 SET NAMES utf8mb4;
@@ -127,7 +127,9 @@ CREATE TABLE `coursepart`  (
   PRIMARY KEY (`course_id`) USING BTREE,
   UNIQUE INDEX `course_id`(`course_id`) USING BTREE,
   INDEX `fk_teacher_num`(`teacher_num`) USING BTREE,
-  CONSTRAINT `fk_tea_course` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `fk_course_college_id`(`college_id`) USING BTREE,
+  CONSTRAINT `fk_tea_course` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_course_college_id` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -218,7 +220,9 @@ CREATE TABLE `req_coursepart`  (
   `teacher_num` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '老师',
   UNIQUE INDEX `course_id`(`request_id`) USING BTREE,
   INDEX `fk_req_teacher_num`(`teacher_num`) USING BTREE,
-  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  INDEX `fk_req_college`(`college_id`) USING BTREE,
+  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_college` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -327,10 +331,10 @@ CREATE TABLE `student`  (
 -- ----------------------------
 -- Records of student
 -- ----------------------------
-INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', 1, NULL);
-INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', 1, NULL);
-INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 1, NULL);
-INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', 1, NULL);
+INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', 1, 1);
+INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', 2, 3);
+INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
+INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', 4, 2);
 
 -- ----------------------------
 -- Table structure for teacher
@@ -356,11 +360,11 @@ CREATE TABLE `teacher`  (
 -- ----------------------------
 -- Records of teacher
 -- ----------------------------
-INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '老师1', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 0, NULL);
-INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '老师2', '123456', '18958772236', 'pxx@163.com', 'working', 0, NULL);
-INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '老师3', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', 0, NULL);
-INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '老师4', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', 0, NULL);
-INSERT INTO `teacher` VALUES ('teacher', '20000005', '211298200110034567', '老师5', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 0, NULL);
+INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '老师1', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 1, 1);
+INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '老师2', '123456', '18958772236', 'pxx@163.com', 'working', 2, 3);
+INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '老师3', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', 3, 6);
+INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '老师4', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', 4, 2);
+INSERT INTO `teacher` VALUES ('teacher', '20000005', '211298200110034567', '老师5', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 1, 1);
 
 -- ----------------------------
 -- Table structure for timepart
