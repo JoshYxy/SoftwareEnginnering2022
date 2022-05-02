@@ -58,7 +58,12 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
 
     @Override
     public List<UserVO> selectAllUserInfos() {
-        return teacherDaoMP.selectAllUserInfos();
+        List<TeacherPO> teacherPOList = teacherDaoMP.selectList(Wrappers.emptyWrapper());
+        List<UserVO> userVOList = new ArrayList<>();
+        for (TeacherPO t:teacherPOList) {
+            userVOList.add(transUtil.TeacherPOtoUserVO(t));
+        }
+        return userVOList;
     }
 
     @Override

@@ -20,5 +20,5 @@ import java.util.List;
 @Mapper
 public interface TeacherDaoMP extends BaseMapper<TeacherPO> {
 
-    List<UserVO> selectAllUserInfos();
+    //List<UserVO> selectAllUserInfos();
 }

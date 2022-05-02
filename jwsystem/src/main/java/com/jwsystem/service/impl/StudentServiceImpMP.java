@@ -5,6 +5,7 @@ import com.jwsystem.dao.BuildingDaoMP;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.dao.StudentDaoMP;
+import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.service.StudentServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.util.TransUtil;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,7 +59,12 @@ public class StudentServiceImpMP extends ServiceImpl<StudentDaoMP, StudentPO> im
 
     @Override
     public List<UserVO> selectAllUserInfos() {
-        return studentDaoMP.selectAllUserInfos();
+        List<StudentPO> studentPOList = studentDaoMP.selectList(Wrappers.emptyWrapper());
+        List<UserVO> userVOList = new ArrayList<>();
+        for (StudentPO s:studentPOList) {
+            userVOList.add(transUtil.StudentPOtoUserVO(s));
+        }
+        return userVOList;
     }
 
     @Override

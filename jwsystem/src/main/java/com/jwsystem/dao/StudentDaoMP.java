@@ -19,5 +19,5 @@ import java.util.List;
 @Mapper
 public interface StudentDaoMP extends BaseMapper<StudentPO> {
     //查看所有学生信息
-    List<UserVO> selectAllUserInfos();
+    //List<UserVO> selectAllUserInfos();
 }
