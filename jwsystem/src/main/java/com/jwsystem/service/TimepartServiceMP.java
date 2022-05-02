@@ -31,4 +31,6 @@ public interface TimepartServiceMP extends IService<TimepartPO> {
     List<Integer> selectCourseIdByRoom(String building, String roomNum);
     //得到timepart 和 req_timepart中所有的section 检验section是否重合
     boolean examineTimes(String[] s);
+
+    int deleteTimepartByCourseId(int courseId);
 }

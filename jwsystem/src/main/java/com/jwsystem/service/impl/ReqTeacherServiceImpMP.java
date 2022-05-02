@@ -37,7 +37,9 @@ public class ReqTeacherServiceImpMP extends ServiceImpl<ReqTeacherDaoMP, ReqTeac
         List<ReqTeacherPO> reqTeacherPOList = reqTeacherDaoMP.selectList(null);
         List<RequestDTO> requestDTOList = new ArrayList<>();
         for (ReqTeacherPO r: reqTeacherPOList) {
-            requestDTOList.add(transUtil.ReqTeacherPOtoDTO(r));
+            if(!r.getExamined()) {
+                requestDTOList.add(transUtil.ReqTeacherPOtoDTO(r));
+            }
         }
         return requestDTOList;
     }

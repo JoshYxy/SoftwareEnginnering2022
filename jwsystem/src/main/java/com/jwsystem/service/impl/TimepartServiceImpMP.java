@@ -1,7 +1,6 @@
 package com.jwsystem.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dao.*;
 import com.jwsystem.dto.TimepartDTO;
@@ -10,7 +9,6 @@ import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.course.TimepartPO;
 
-import com.jwsystem.entity.request.ReqTimepartPO;
 import com.jwsystem.service.TimepartServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.util.TransUtil;
@@ -172,5 +170,11 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
             }
         }
         return false;
+    }
+
+    @Override
+    public int deleteTimepartByCourseId(int courseId){
+        return timepartDaoMP.delete(Wrappers.lambdaQuery(TimepartPO.class)
+                .eq(TimepartPO::getCourseId,courseId));
     }
 }
