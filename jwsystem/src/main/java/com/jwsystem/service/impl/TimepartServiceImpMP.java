@@ -76,7 +76,19 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         }
         //教室时间冲突
         //根据roomnum 和 weekday 找出一个section string 数组 比对有没有
-        List<String> sectionListByRoom = timepartDaoMP.selectSectionByRoom(timepartDTO.getRoomNum(), timepartDTO.getWeekday(), timepartDTO.getBuilding());
+        int buildingId = buildingDaoMP.selectOne(Wrappers.lambdaQuery(BuildingPO.class)
+                .eq(BuildingPO::getAbbrName,timepartDTO.getBuilding())).getId();
+        int roomId = classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
+                .eq(ClassroomPO::getRoomNum,timepartDTO.getRoomNum())
+                .eq(ClassroomPO::getBuildingId,buildingId)).getRoomId();
+        List<TimepartPO> timepartPOList = timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
+                .eq(TimepartPO::getRoomId,roomId)
+                .eq(TimepartPO::getWeekday,timepartDTO.getWeekday()));
+        List<String> sectionListByRoom = new ArrayList<>();
+        for (TimepartPO t:timepartPOList) {
+            sectionListByRoom.add(t.getSection());
+        }
+        //selectSectionByRoom(timepartDTO.getRoomNum(), timepartDTO.getWeekday(), timepartDTO.getBuilding());
         for(String sections : sectionListByRoom) {
             for (String s : sectionArray) {
                 int result = sections.indexOf(s);//在sections中c查找sectionArray中元素的位置，找不到则返回-1

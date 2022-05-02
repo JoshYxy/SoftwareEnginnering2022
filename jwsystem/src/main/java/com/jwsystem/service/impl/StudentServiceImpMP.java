@@ -68,19 +68,16 @@ public class StudentServiceImpMP extends ServiceImpl<StudentDaoMP, StudentPO> im
     }
 
     @Override
-    public int updatePwdByNumber(String password, String number) {
-        return studentDaoMP.update(null,Wrappers.lambdaUpdate(StudentPO.class)
-                .set(StudentPO::getPassword,password)
-                .eq(StudentPO::getId,number));
+    public void updatePwdByNumber(String password, String number) {
+        StudentPO studentPO = studentDaoMP.selectById(number);
+        studentPO.setPassword(password);
+        studentDaoMP.updateById(studentPO);
     }
 
     @Override
     public int updateStuInfoByUser(UserVO userVO) {
-        return studentDaoMP.update(null,Wrappers.lambdaUpdate(StudentPO.class)
-                .set(StudentPO::getPassword,userVO.getPassword())//密码
-                .set(StudentPO::getPhone,userVO.getPhone())//手机号
-                .set(StudentPO::getEmail,userVO.getEmail())//邮箱
-                .eq(StudentPO::getId,userVO.getNumber()));
+        StudentPO studentPO = transUtil.UserVOtoStudentPO(userVO);
+        return studentDaoMP.updateById(studentPO);
     }
 
     @Override

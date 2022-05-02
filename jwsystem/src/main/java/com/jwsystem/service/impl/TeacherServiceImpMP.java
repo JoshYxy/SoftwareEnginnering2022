@@ -68,19 +68,21 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
     }
 
     @Override
-    public int updatePwdByNumber(String password, String number) {
-         return teacherDaoMP.update(null,Wrappers.lambdaUpdate(TeacherPO.class)
-                .set(TeacherPO::getPassword,password)
-                .eq(TeacherPO::getId,number));
+    public void updatePwdByNumber(String password, String number) {
+         TeacherPO teacherPO = teacherDaoMP.selectById(number);
+         teacherPO.setPassword(password);
+         teacherDaoMP.updateById(teacherPO);
     }
 
     @Override
     public int updateTeaInfoByUser(UserVO userVO) {
-        return teacherDaoMP.update(null,Wrappers.lambdaUpdate(TeacherPO.class)
-                .set(TeacherPO::getPassword,userVO.getPassword())//密码
-                .set(TeacherPO::getPhone,userVO.getPhone())//手机号
-                .set(TeacherPO::getEmail,userVO.getEmail())//邮箱
-                .eq(TeacherPO::getId,userVO.getNumber()));
+        TeacherPO teacherPO = transUtil.UserVOtoTeacherPO(userVO);
+        return teacherDaoMP.updateById(teacherPO);
+//        return teacherDaoMP.update(null,Wrappers.lambdaUpdate(TeacherPO.class)
+//                .set(TeacherPO::getPassword,userVO.getPassword())//密码
+//                .set(TeacherPO::getPhone,userVO.getPhone())//手机号
+//                .set(TeacherPO::getEmail,userVO.getEmail())//邮箱
+//                .eq(TeacherPO::getId,userVO.getNumber()));
     }
 
     @Override

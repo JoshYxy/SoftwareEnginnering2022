@@ -8,7 +8,6 @@ import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.dao.CoursepartDaoMP;
-import com.jwsystem.entity.request.ReqCoursepartPO;
 import com.jwsystem.service.CoursepartServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.util.TransUtil;
@@ -56,10 +55,9 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
     @Override
     public int insertCoursepart(CoursepartDTO coursepartDTO) {
         CoursepartPO coursepartPO = transUtil.CpDTOtoCpPO(coursepartDTO);
-        return coursepartDaoMP.insert(coursepartPO);
+        coursepartDaoMP.insert(coursepartPO);
+        return coursepartPO.getCourseId();
     }
-
-
 
     @Override
     public List<CoursepartDTO> selectCoursepartByCollege(String collegeName) {

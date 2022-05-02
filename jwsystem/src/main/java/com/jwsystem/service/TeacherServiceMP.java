@@ -30,7 +30,7 @@ public interface TeacherServiceMP extends IService<TeacherPO> {
     //得到所有老师用户信息
     List<UserVO> selectAllUserInfos();
     //根据主键修改密码
-    int updatePwdByNumber(String password,String number);
+    void updatePwdByNumber(String password,String number);
     //用户更新信息
     int updateTeaInfoByUser(UserVO userVO);
     //管理员更新信息

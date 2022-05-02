@@ -25,11 +25,11 @@
 
     <select id="selectSectionByTea" resultType="string">
         SELECT section
-        FROM timepartDTO WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
+        FROM timepart WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
     </select>
 
-    <select id="selectSectionByRoom" resultType="string">
-        SELECT section
-        FROM timepartDTO WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
-    </select>
+<!--    <select id="selectSectionByRoom" resultType="string">-->
+<!--        SELECT section-->
+<!--        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}-->
+<!--    </select>-->
 </mapper>

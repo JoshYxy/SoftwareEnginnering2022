@@ -2,6 +2,7 @@ package com.jwsystem.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import com.jwsystem.dao.AdminDaoMP;
@@ -50,9 +51,9 @@ public class AdminServiceImpMP extends ServiceImpl<AdminDaoMP, AdminPO> implemen
 
     @Override
     public void setCurr(String curricularVariable) {
-        LambdaQueryWrapper<AdminPO> wrapper = Wrappers.lambdaQuery(AdminPO.class)
-                .select(AdminPO::getCurricularVariable);
-        adminDaoMP.selectOne(wrapper).setCurricularVariable(curricularVariable);
+        LambdaUpdateWrapper<AdminPO> wrapper = Wrappers.lambdaUpdate(AdminPO.class)
+                .set(AdminPO::getCurricularVariable,curricularVariable);
+        adminDaoMP.update(null,wrapper);
     }
 
 }

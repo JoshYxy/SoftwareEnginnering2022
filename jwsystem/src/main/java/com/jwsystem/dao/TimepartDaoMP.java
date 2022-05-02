@@ -21,5 +21,5 @@ import java.util.List;
 public interface TimepartDaoMP extends BaseMapper<TimepartPO> {
     List<String> selectAllSections();
     List<String> selectSectionByTea(@Param("teacher_num") String teacherNum, Integer weekday);
-    List<String> selectSectionByRoom(@Param("room_num")String roomNum,Integer weekday,String building);
+    //List<String> selectSectionByRoom(@Param("room_num")String roomNum,Integer weekday,String building);
 }

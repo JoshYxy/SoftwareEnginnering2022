@@ -85,8 +85,8 @@ public class CourseController extends MainController{
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //返回插入后自增得到的课程id给我
         //存到coursePart表里
-        coursepartServiceImpMP.insertCoursepart(coursePart);
-        int courseId = coursePart.getRelationId();
+        int courseId = coursepartServiceImpMP.insertCoursepart(coursePart);
+        //int courseId = coursePart.getRelationId();
       //          System.out.println("courseId="+courseId);
         try{
             for(int i=0;i<7;i++){

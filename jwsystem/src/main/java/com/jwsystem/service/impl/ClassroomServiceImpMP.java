@@ -41,7 +41,7 @@ public class ClassroomServiceImpMP extends ServiceImpl<ClassroomDaoMP, Classroom
     @Override
     public int deleteByBuildingId(int buildingId) {
         Map<String,Object> map = new HashMap<>();
-        map.put("buildingId", buildingId);
+        map.put("building_id", buildingId);
         return classroomDaoMP.deleteByMap(map);
     }
 

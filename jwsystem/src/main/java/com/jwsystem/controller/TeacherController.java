@@ -186,7 +186,7 @@ public class TeacherController extends MainController{
         //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
         //存到req-coursePart表里
         ReqCoursepartPO reqCoursepartPO = transUtil.CpDTOtoReqCpPO(coursePart);
-        reqCoursepartServiceMP.save(reqCoursepartPO);
+        reqCoursepartServiceMP.saveOrUpdate(reqCoursepartPO);
 
         try{
             for(int i=0;i<7;i++){

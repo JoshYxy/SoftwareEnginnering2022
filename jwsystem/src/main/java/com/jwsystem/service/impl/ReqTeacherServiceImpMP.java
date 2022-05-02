@@ -58,6 +58,7 @@ public class ReqTeacherServiceImpMP extends ServiceImpl<ReqTeacherDaoMP, ReqTeac
     @Override
     public int insertRequest(RequestDTO requestDTO) {
         ReqTeacherPO requestPO = transUtil.RequestDTOtoPO(requestDTO);
-        return reqTeacherDaoMP.insert(requestPO);
+        reqTeacherDaoMP.insert(requestPO);
+        return requestPO.getRequestId();
     }
 }
