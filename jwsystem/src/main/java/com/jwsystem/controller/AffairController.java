@@ -253,7 +253,7 @@ public class AffairController extends MainController{
     //管理员删除一栋楼里所有教室（但是不删楼）
     @DeleteMapping("/building/rooms")
     public Result deleteRoomsInBuilding(@RequestBody BuildingPO building){
-        if(buildingServiceImpMP.selectByFullName(building.getFullName())==null){
+        if(buildingServiceImpMP.selectByAbbrName(building.getAbbrName())==null){
             //不存在
             response.setStatus(WRONG_RES);
             return Result.fail("不存在此教学楼，无法删除");
@@ -278,6 +278,11 @@ public class AffairController extends MainController{
     @PostMapping("/room/new")
     public Result addRoom(@RequestBody ClassroomVO classRoom){
         BuildingPO buildingPO = buildingServiceImpMP.selectByAbbrName(classRoom.getBuilding());
+        if(buildingPO == null){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("不存在对应教学楼，无法添加");
+        }
+
         if(classroomServiceImpMP.selectByRoomNum(buildingPO.getId(),classRoom.getRoomNum())!=null){
             //存在同名教室
             response.setStatus(WRONG_RES);
@@ -292,6 +297,10 @@ public class AffairController extends MainController{
     @DeleteMapping("/room")
     public Result deleteRoom(@RequestBody ClassroomVO classRoom){
         BuildingPO buildingPO = buildingServiceImpMP.selectByAbbrName(classRoom.getBuilding());
+        if(buildingPO == null){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("不存在对应教学楼，无法添加");
+        }
         if(classroomServiceImpMP.selectByRoomNum(buildingPO.getId(),classRoom.getRoomNum())==null){
             //不存在
             response.setStatus(WRONG_RES);

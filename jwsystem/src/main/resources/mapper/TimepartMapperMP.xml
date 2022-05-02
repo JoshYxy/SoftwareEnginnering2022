@@ -28,8 +28,15 @@
         FROM timepart WHERE teacher_num = #{teacher_num} and weekday = #{weekday}
     </select>
 
+<<<<<<< Updated upstream
 <!--    <select id="selectSectionByRoom" resultType="string">-->
 <!--        SELECT section-->
 <!--        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}-->
 <!--    </select>-->
+=======
+    <select id="selectSectionByRoom" resultType="string">
+        SELECT section
+        FROM timepart WHERE room_num = #{room_num} and weekday = #{weekday} and building = #{building}
+    </select>
+>>>>>>> Stashed changes
 </mapper>

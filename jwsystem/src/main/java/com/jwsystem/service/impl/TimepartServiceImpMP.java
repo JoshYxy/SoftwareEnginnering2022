@@ -88,7 +88,7 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         for (TimepartPO t:timepartPOList) {
             sectionListByRoom.add(t.getSection());
         }
-        //selectSectionByRoom(timepartDTO.getRoomNum(), timepartDTO.getWeekday(), timepartDTO.getBuilding());
+
         for(String sections : sectionListByRoom) {
             for (String s : sectionArray) {
                 int result = sections.indexOf(s);//在sections中c查找sectionArray中元素的位置，找不到则返回-1

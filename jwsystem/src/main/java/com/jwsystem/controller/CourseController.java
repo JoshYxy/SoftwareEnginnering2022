@@ -87,7 +87,7 @@ public class CourseController extends MainController{
         //存到coursePart表里
         int courseId = coursepartServiceImpMP.insertCoursepart(coursePart);
         //int courseId = coursePart.getRelationId();
-      //          System.out.println("courseId="+courseId);
+        //System.out.println("courseId="+courseId);
         try{
             for(int i=0;i<7;i++){
                 //周i（从0到6，表示周天，周一到周六

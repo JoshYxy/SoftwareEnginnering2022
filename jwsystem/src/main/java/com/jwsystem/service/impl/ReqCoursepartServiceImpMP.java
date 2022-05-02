@@ -1,6 +1,7 @@
 package com.jwsystem.service.impl;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dto.CoursepartDTO;
 
 import com.jwsystem.entity.request.ReqCoursepartPO;
@@ -31,7 +32,8 @@ public class ReqCoursepartServiceImpMP extends ServiceImpl<ReqCoursepartDaoMP, R
 
     @Override
     public CoursepartDTO selectReqCoursepartByRequestId(int requestId) {
-        return transUtil.ReqCpPOtoCpDTO(reqCoursepartDaoMP.selectById(requestId));
+        return transUtil.ReqCpPOtoCpDTO(reqCoursepartDaoMP.selectOne(Wrappers.lambdaQuery(ReqCoursepartPO.class)
+                .eq(ReqCoursepartPO::getRequestId,requestId)));
     }
 
     @Override
