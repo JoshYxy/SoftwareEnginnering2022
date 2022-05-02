@@ -457,8 +457,8 @@ public class TransUtil {
                 null,
                 null
         );
-        Integer majorId = majorServiceMP.selectMajorByName(userVO.getName()).getMajorId();
-        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getName()).getCollegeId();
+        Integer majorId = majorServiceMP.selectMajorByName(userVO.getMajor()).getMajorId();
+        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getCollege()).getCollegeId();
         studentPO.setMajorId(majorId);
         studentPO.setCollegeId(collegeId);
 
@@ -507,8 +507,8 @@ public class TransUtil {
                 null,
                 null
         );
-        Integer majorId = majorServiceMP.selectMajorByName(userVO.getName()).getMajorId();
-        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getName()).getCollegeId();
+        Integer majorId = majorServiceMP.selectMajorByName(userVO.getMajor()).getMajorId();
+        Integer collegeId = collegeServiceImpMP.selectCollegeByName(userVO.getCollege()).getCollegeId();
         teacherPO.setMajorId(majorId);
         teacherPO.setCollegeId(collegeId);
 

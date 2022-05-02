@@ -12,9 +12,4 @@ public class MajorDTO {
     private Integer majorId;
     private String name;
     private String collegeName;
-
-    public MajorDTO(MajorPO majorPO) {
-        this.majorId = majorPO.getMajorId();
-        this.name = majorPO.getName();
-    }
 }

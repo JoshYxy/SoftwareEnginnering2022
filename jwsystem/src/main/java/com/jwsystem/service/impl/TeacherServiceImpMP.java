@@ -46,7 +46,8 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
 
     @Override
     public UserVO selectUserByNumber(String number) {
-        UserVO userVO = transUtil.TeacherPOtoUserVO(teacherDaoMP.selectById(number));
+        TeacherPO teacherPO = teacherDaoMP.selectById(number);
+        UserVO userVO = transUtil.TeacherPOtoUserVO(teacherPO);
         return userVO;
     }
 

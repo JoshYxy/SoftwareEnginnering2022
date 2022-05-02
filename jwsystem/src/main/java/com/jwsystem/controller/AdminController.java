@@ -140,7 +140,7 @@ public class AdminController extends MainController{
         }
 
         //major存在性检验
-        if(majorServiceImpMP.selectMajorByName(tempUserVO.getMajor()) != null ) valid = false;
+        if(majorServiceImpMP.selectMajorByName(tempUserVO.getMajor()) == null ) valid = false;
 
         //college存在性检验
         if(!majorServiceImpMP.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
@@ -282,28 +282,37 @@ public class AdminController extends MainController{
     //管理员增加新的学院
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody CollegePO college){
-        if(collegeServiceImpMP.insertCollege(college)){
+        if(collegeServiceImpMP.selectCollegeByName(college.getName())!=null){
+            response.setStatus(COLLEGE_CONFLICT);
+            return Result.fail("增加失败：已存在同名学院！");
+        }
+        else{
+            collegeServiceImpMP.insertCollege(college);
             CollegePO inserted = collegeServiceImpMP.selectCollegeByName(college.getName());
             return Result.succ("增加成功",inserted.getCollegeId());
-        }else {
-            response.setStatus(COLLEGE_CONFLICT);
-            return Result.fail("增加失败");
         }
     }
 
     //管理员增加新的专业
     @PostMapping("/edu/major/new")
     public Result addMajor(@RequestBody MajorDTO majorDTO){
-        if(majorServiceImpMP.insertMajor(majorDTO)) {
+        if(collegeServiceImpMP.selectCollegeByName(majorDTO.getCollegeName())==null){
+            response.setStatus(NO_COLLEGE);
+            return Result.fail("增加失败：不存在对应学院！");
+        }
+        else if(majorServiceImpMP.selectMajorByName(majorDTO.getName())!=null){
+            response.setStatus(MAJOR_CONFLICT);
+            return Result.fail("增加失败：已存在同名专业！");
+        }
+        else{
+            majorServiceImpMP.insertMajor(majorDTO);
             MajorDTO inserted = majorServiceImpMP.selectMajorByName(majorDTO.getName());
             return Result.succ("增加成功",inserted.getMajorId());
-        }else{
-            response.setStatus(MAJOR_CONFLICT);
-            return Result.fail("增加失败");
         }
     }
 
     //管理员删除已有学院
+    //前端必须传id
     @DeleteMapping("/edu/college")
     public Result deleteCollege(@RequestBody CollegePO college){
         //先查询是否存在该学院
@@ -323,6 +332,7 @@ public class AdminController extends MainController{
     }
 
     //管理员删除已有专业
+    //前端必须传id
     @DeleteMapping("/edu/major")
     public Result deleteMajor(@RequestBody MajorDTO majorDTO){
         //先查询是否存在该专业
@@ -353,14 +363,13 @@ public class AdminController extends MainController{
                 response.setStatus(COLLEGE_CONFLICT);
                 return Result.fail("已有同名学院，修改失败！");
             }
-            //collegeServiceImpMP.update(college,null);
+//            collegeServiceImpMP.update(college,null);
             collegeServiceImpMP.update(null, Wrappers.lambdaUpdate(CollegePO.class)
                     .set(CollegePO::getName,college.getName()).eq(CollegePO::getCollegeId,college.getCollegeId()));
-
         }
         else{
             response.setStatus(NO_COLLEGE);
-            return Result.fail("修改失败");
+            return Result.fail("修改失败：被修改学院不存在！");
         }
         return Result.succ("修改成功");
     }
@@ -383,7 +392,7 @@ public class AdminController extends MainController{
         }
         else{
             response.setStatus(NO_MAJOR);
-            return Result.fail("修改失败");
+            return Result.fail("修改失败：被修改专业不存在！");
         }
         return Result.succ("修改成功");
     }

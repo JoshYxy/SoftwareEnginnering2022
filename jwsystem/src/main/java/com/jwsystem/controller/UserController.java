@@ -61,6 +61,12 @@ public class UserController extends MainController{
         if(number.length() == TEACHER_NUM_LENGTH){
             //老师
             userVO = teacherServiceImpMP.selectUserByNumber(number);
+
+            if(userVO ==null){
+                response.setStatus(NO_USER);
+                return Result.fail("用户不存在");
+            }
+
             if( !userVO.getStatus().equals(WORKING) ) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已离职教师无权登陆");
@@ -69,6 +75,12 @@ public class UserController extends MainController{
         else if(number.length() == STUDENT_NUM_LENGTH){
             //学生
             userVO = studentServiceImpMP.selectUserByNumber(number);
+
+            if(userVO ==null){
+                response.setStatus(NO_USER);
+                return Result.fail("用户不存在");
+            }
+
             if( !userVO.getStatus().equals(STUDYING)) {
                 response.setStatus(WRONG_DATA);
                 return Result.fail("已毕业学生无权登陆");
@@ -76,11 +88,10 @@ public class UserController extends MainController{
         }
         else{
             userVO = adminServiceImpMP.selectAdminUserByNumber(number);
-        }
-
-        if(userVO ==null){
-            response.setStatus(NO_USER);
-            return Result.fail("用户不存在");
+            if(userVO ==null){
+                response.setStatus(NO_USER);
+                return Result.fail("用户不存在");
+            }
         }
 
         if(!userVO.getPassword().equals(password)){

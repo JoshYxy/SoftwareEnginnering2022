@@ -72,19 +72,19 @@ public class CollegeServiceImpMP extends ServiceImpl<CollegeDaoMP, CollegePO> im
         boolean res = false;
 
         //根据学院找专业
-        if(majorDaoMP.selectOne(Wrappers.lambdaQuery(MajorPO.class).eq(MajorPO::getCollegeId,collegePO.getCollegeId())) != null){
+        if(majorDaoMP.selectList(Wrappers.lambdaQuery(MajorPO.class).eq(MajorPO::getCollegeId,collegePO.getCollegeId())).size()!=0){
             res=true;
         }
         //根据学院找老师
-        else if(teacherDaoMP.selectOne(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,collegePO.getCollegeId())) != null){
+        else if(teacherDaoMP.selectList(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,collegePO.getCollegeId())).size()!=0){
             res=true;
         }
         //根据学院找学生
-        else if(studentDaoMP.selectOne(Wrappers.lambdaQuery(StudentPO.class).eq(StudentPO::getCollegeId,collegePO.getCollegeId())) != null){
+        else if(studentDaoMP.selectList(Wrappers.lambdaQuery(StudentPO.class).eq(StudentPO::getCollegeId,collegePO.getCollegeId())).size()!=0){
             res=true;
         }
         //根据学院找课程
-        else if((coursepartDaoMP.selectOne(Wrappers.lambdaQuery(CoursepartPO.class).eq(CoursepartPO::getCollegeId,collegePO.getCollegeId())) != null)){
+        else if((coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class).eq(CoursepartPO::getCollegeId,collegePO.getCollegeId())).size()!=0)){
             res=true;
         }
 

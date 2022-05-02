@@ -79,12 +79,12 @@ public class MajorServiceImpMP extends ServiceImpl<MajorDaoMP, MajorPO> implemen
         Map<String, Object> columnMap = new HashMap<String, Object>();
         columnMap.put("major_id",majorDTO.getMajorId());
         //根据专业找老师
-        if(teacherDaoMP.selectByMap(columnMap)!=null){
+        if(teacherDaoMP.selectByMap(columnMap).size()!=0){
             res=true;
         }
         //根据专业找学生，返回学生数量
 
-        else if(studentDaoMP.selectByMap(columnMap)!=null){
+        else if(studentDaoMP.selectByMap(columnMap).size()!=0){
             res=true;
         }
 
