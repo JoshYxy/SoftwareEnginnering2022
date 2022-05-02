@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.dao.*;
 import com.jwsystem.dto.MajorDTO;
+import com.jwsystem.dto.MajorDataDTO;
 import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
@@ -48,8 +49,8 @@ public class CollegeServiceImpMP extends ServiceImpl<CollegeDaoMP, CollegePO> im
             for(CollegeVO c:collegeVOList) {
                 List<MajorPO> majorPOList = majorDaoMP.selectList(Wrappers.lambdaQuery(MajorPO.class)
                         .eq(MajorPO::getCollegeId,c.getCollegeVOId()));
-                List<MajorDTO> majorDTOList = majorPOList.stream().map(MajorDTO::new).collect(toList());
-                majorDTOList.forEach(e -> e.setCollegeName(c.getCollegeVOName()));
+                List<MajorDataDTO> majorDTOList = majorPOList.stream().map(MajorDataDTO::new).collect(toList());
+                c.setMajors(majorDTOList);
             }
         }
         return collegeVOList;
