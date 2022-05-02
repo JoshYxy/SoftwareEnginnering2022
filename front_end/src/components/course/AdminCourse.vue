@@ -6,7 +6,7 @@
         </template>
     </el-input>
     <el-button @click="resetSearch">查看全部课程</el-button>
-    <el-button @click="resetRoomFilter">重置教室筛选</el-button>
+    <!-- <el-button @click="resetRoomFilter">重置教室筛选</el-button> -->
     <el-button @click="clearFilter">重置筛选</el-button>
     <!-- <el-button @click="test">test </el-button> -->
     <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px" @filter-change="filterChang">
@@ -64,15 +64,18 @@
                     </template>
                     <el-scrollbar max-height="200px">
                         <el-tree
+                            ref="time-tree"
                             style="margin:auto;"
                             :data="timeFilters"
                             show-checkbox
                             accordion
                             highlight-current
+                            node-key="id"
                         />
                     </el-scrollbar>
                     <div class="el-table-filter__bottom">
                         <el-button size="small" @click="filterTime">确认</el-button>
+                        <el-button size="small" @click="resetTime">重置</el-button>
                     </div>
                 </el-popover>
             </template>
@@ -492,6 +495,7 @@ export default {
                     selected: '80',
                 }
             ],
+            courses_back: [],
             editCourse: {
                 selectTime:[[],[],[],[],[],[],[]],
                 selectRoom: [],
@@ -521,15 +525,23 @@ export default {
         roomFilters(){
             let obj = [];
             //找到对应的数据 并添加到obj
-            this.courses.filter(item => {
-                obj.push({
-                    text:item['building']+item['roomNum'],
-                    value:item['building']+item['roomNum'],
-                })
-            })
-            //因为column有重复数据，所以要进行去重
-            console.log(obj)
-            return this.deWeight(obj) 
+            for(let i = 0; i < this.classroom.length; i++) {
+                for(let j = 0; j < this.classroom[i].room.length; j++) {
+                    obj.push( {
+                        text: this.classroom[i].aka+this.classroom[i].room[j].name,
+                        value: this.classroom[i].aka+this.classroom[i].room[j].name,
+                    })
+                }
+            }
+            // this.courses.filter(item => {
+            //     obj.push({
+            //         text:item['building']+item['roomNum'],
+            //         value:item['building']+item['roomNum'],
+            //     })
+            // })
+            // //因为column有重复数据，所以要进行去重
+            // console.log(obj)
+            return obj
         },
         yearFilters() {
             let obj = []
@@ -548,9 +560,9 @@ export default {
         timeFilters() {
             let obj = []
             for(let i = 0; i < this.periods.length; i++) {
-                const day = {label: this.periods[i], children:[]}
+                const day = {id: i,label: this.periods[i], children:[]}
                 for(let j = 0; j < this.times.length; j++) {
-                    day.children.push({label: '第'+(parseInt(j)+1)+'节课'})
+                    day.children.push({id: i*100+j+1, label: '第'+(parseInt(j)+1)+'节课'})
                 }
                 obj.push(day)
             }
@@ -607,7 +619,32 @@ export default {
             return arr;
         },
         filterTime() {
-            this.courses.splice(0,1)
+            let res = this.$refs['time-tree'].getCheckedKeys(true)
+            let flag = []
+            this.courses_back = JSON.parse(JSON.stringify(this.courses))
+            for(let i = 0; i < this.courses_back.length; i++) {
+                flag.push(false)
+                let data = this.courses_back[i]
+                for(let j = 0; j < data.times.length; j++) {
+                    if(flag[i]) break
+                    for(let k = 0; k < data.times[j].length; k++) {
+                        let num = parseInt(data.times[j][k])+j*100
+                        // console.log(num)
+                        if(res.indexOf(num) > -1) flag[i] = true
+                    }
+                }
+            }
+            let del_num = 0
+            for(let i = 0; i < this.courses_back.length; i++) {
+                if(!flag[i]) {
+                    this.courses.splice(i-del_num,1)
+                    del_num++
+                }
+            }
+            // this.courses.splice(0,1)
+        },
+        resetTime() {
+            this.courses = this.courses_back
         },
         filterRoom(value, row) {
             return row['building'] + row['roomNum'] === value
