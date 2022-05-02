@@ -30,23 +30,18 @@ public class UserController extends MainController{
     private JwtUtils jwtUtils;
 
     @Autowired
-//    StuServiceImp stuServiceImp;
     private StudentServiceImpMP studentServiceImpMP;
 
     @Autowired
-//    private AdminServiceImp adminServiceImp;
     private AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
-//    private TeaServiceImp teaServiceImp;
     private TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
-//    private BuildingServiceImp buildingServiceImp;
     private BuildingServiceImpMP buildingServiceImpMP;
 
     @Autowired
-//    private TimesServiceImp timesServiceImp;
     private TimesServiceImpMP timesServiceImpMP;
 
     public static int TEACHER_NUM_LENGTH = 8;

@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/05/2022 12:30:09
+ Date: 02/05/2022 15:17:11
 */
 
 SET NAMES utf8mb4;
@@ -76,15 +76,15 @@ CREATE TABLE `classroom`  (
 -- ----------------------------
 -- Records of classroom
 -- ----------------------------
-INSERT INTO `classroom` VALUES (1, 1, '101', '100');
-INSERT INTO `classroom` VALUES (2, 2, '102', '100');
+INSERT INTO `classroom` VALUES (1, 3, '101', '100');
+INSERT INTO `classroom` VALUES (2, 3, '102', '100');
 INSERT INTO `classroom` VALUES (3, 3, '103', '100');
-INSERT INTO `classroom` VALUES (4, 1, '101', '100');
-INSERT INTO `classroom` VALUES (5, 3, '102', '100');
-INSERT INTO `classroom` VALUES (6, 3, '103', '100');
-INSERT INTO `classroom` VALUES (7, 1, '201', '100');
-INSERT INTO `classroom` VALUES (8, 1, '101', '100');
-INSERT INTO `classroom` VALUES (9, 1, '102', '100');
+INSERT INTO `classroom` VALUES (4, 2, '101', '100');
+INSERT INTO `classroom` VALUES (5, 2, '102', '100');
+INSERT INTO `classroom` VALUES (6, 2, '103', '100');
+INSERT INTO `classroom` VALUES (7, 3, '201', '100');
+INSERT INTO `classroom` VALUES (8, 7, '101', '100');
+INSERT INTO `classroom` VALUES (9, 7, '102', '100');
 
 -- ----------------------------
 -- Table structure for college
@@ -135,10 +135,10 @@ CREATE TABLE `coursepart`  (
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', NULL, NULL, '0', 1, '20000001');
-INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', NULL, NULL, '1', 1, '20000001');
-INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', NULL, NULL, '1', 1, '20000002');
-INSERT INTO `coursepart` VALUES (4, 'SOFT130040.01', '离散数学', '30', '3', '不是一般人能上懂的课', '100', NULL, NULL, '0', 1, '20000002');
+INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', NULL, NULL, '0', 5, '20000001');
+INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', NULL, NULL, '1', 5, '20000001');
+INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', NULL, NULL, '1', 5, '20000002');
+INSERT INTO `coursepart` VALUES (4, 'SOFT130040.01', '离散数学', '30', '3', '不是一般人能上懂的课', '100', NULL, NULL, '0', 5, '20000002');
 
 -- ----------------------------
 -- Table structure for major
@@ -334,7 +334,7 @@ CREATE TABLE `student`  (
 INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', 1, 5);
 INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', 2, 5);
 INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
-INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', 4, 4);
+INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', 1, 5);
 
 -- ----------------------------
 -- Table structure for teacher

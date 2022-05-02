@@ -92,9 +92,9 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
     public List<TimepartDTO> selectAllTimepartByRoom(String building, String roomNum) {
         int buildingId = buildingDaoMP.selectOne(Wrappers.lambdaQuery(BuildingPO.class)
                 .eq(BuildingPO::getAbbrName,building)).getId();
-        int roomId = classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
+        int roomId = (classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
                 .eq(ClassroomPO::getBuildingId,buildingId)
-                .eq(ClassroomPO::getRoomNum,roomNum)).getRoomId();
+                .eq(ClassroomPO::getRoomNum,roomNum))).getRoomId();
         List<TimepartPO> timepartPOList = timepartDaoMP.selectList(Wrappers.lambdaQuery(TimepartPO.class)
                 .eq(TimepartPO::getRoomId,roomId));
         List<TimepartDTO> timepartDTOList = new ArrayList<>();

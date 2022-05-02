@@ -1,5 +1,6 @@
 package com.jwsystem.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.MajorDTO;
 import com.jwsystem.entity.college.CollegePO;
@@ -352,7 +353,10 @@ public class AdminController extends MainController{
                 response.setStatus(COLLEGE_CONFLICT);
                 return Result.fail("已有同名学院，修改失败！");
             }
-            collegeServiceImpMP.update(college,null);
+            //collegeServiceImpMP.update(college,null);
+            collegeServiceImpMP.update(null, Wrappers.lambdaUpdate(CollegePO.class)
+                    .set(CollegePO::getName,college.getName()).eq(CollegePO::getCollegeId,college.getCollegeId()));
+
         }
         else{
             response.setStatus(NO_COLLEGE);

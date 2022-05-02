@@ -162,8 +162,8 @@ public class TeacherController extends MainController{
         );
 
         //把申请插入申请表，返回requestId给我
-        reqTeacherServiceMP.insertRequest(requestDTO);
-        int requestId = requestDTO.getRequestId();
+        int requestId = reqTeacherServiceMP.insertRequest(requestDTO);
+        //int requestId = requestDTO.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 
