@@ -21,11 +21,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class test {
 
     @Autowired
-//    AdminServiceImp adminServiceImp;
     AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
-//    EduServiceImp eduServiceImp;
     MajorServiceImpMP majorServiceImpMP;
 
     @Before

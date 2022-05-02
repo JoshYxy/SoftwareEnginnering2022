@@ -2,10 +2,7 @@
 package com.jwsystem.vo;
 
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
-import com.jwsystem.entity.college.MajorPO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassroomVO /*extends ClassroomPO*/ {
+public class ClassroomVO {
     private Integer roomId;
     private String building;
     private String roomNum;

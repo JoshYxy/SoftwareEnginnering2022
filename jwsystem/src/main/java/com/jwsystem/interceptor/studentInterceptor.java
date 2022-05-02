@@ -16,7 +16,6 @@ public class studentInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-//    StuService stuService;
     StudentServiceImpMP studentServiceImpMP;
 
     @Autowired

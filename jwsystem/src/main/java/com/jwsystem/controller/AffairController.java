@@ -24,11 +24,9 @@ import java.util.List;
 public class AffairController extends MainController{
 
     @Autowired
-//    AdminServiceImp adminServiceImp;
     AdminServiceImpMP adminServiceImpMP;
 
     @Autowired
-//    CourseServiceImp courseServiceImp;
     CoursepartServiceImpMP coursepartServiceImpMP;
 
     @Autowired
@@ -41,15 +39,12 @@ public class AffairController extends MainController{
     BuildingServiceMP buildingServiceImpMP;
 
     @Autowired
-//    ClassroomServiceImp classroomServiceImp;
     ClassroomServiceImpMP classroomServiceImpMP;
 
     @Autowired
-//    TimesServiceImp timesServiceImp;
     TimesServiceImpMP timesServiceImpMP;
 
     @Autowired
-//    TeaServiceImp teaServiceImp;
     TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
@@ -299,7 +294,7 @@ public class AffairController extends MainController{
         BuildingPO buildingPO = buildingServiceImpMP.selectByAbbrName(classRoom.getBuilding());
         if(buildingPO == null){
             response.setStatus(WRONG_DATA);
-            return Result.fail("不存在对应教学楼，无法添加");
+            return Result.fail("不存在对应教学楼，无法删除");
         }
         if(classroomServiceImpMP.selectByRoomNum(buildingPO.getId(),classRoom.getRoomNum())==null){
             //不存在

@@ -26,15 +26,12 @@ public class loginInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-//    StuServiceImp stuServiceImp;
     StudentServiceImpMP studentServiceImpMP;
 
     @Autowired
-//    TeaServiceImp teaServiceImp;
     TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
-//    AdminServiceImp adminServiceImp;
     AdminServiceImpMP adminServiceImpMP;
 
     @Autowired

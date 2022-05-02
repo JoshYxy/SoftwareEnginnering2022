@@ -30,14 +30,9 @@ public class TeacherController extends MainController{
     @Autowired
     private TransUtil transUtil;
 
-    //@Autowired
-    //private TeaService teaService;
-
     @Autowired
     private TeacherServiceMP teacherServiceMP;
 
-    //@Autowired
-    //private CourseServiceImp courseServiceImp;
     @Autowired
     private CoursepartServiceMP coursepartServiceMP;
 
@@ -49,8 +44,6 @@ public class TeacherController extends MainController{
 
     @Autowired
     private TimepartServiceMP timepartServiceMP;
-    //@Autowired
-    //private CourseRequestImp courseRequestImp;
 
     @Autowired
     ReqTimepartServiceMP reqTimepartServiceMP;
@@ -163,7 +156,6 @@ public class TeacherController extends MainController{
 
         //把申请插入申请表，返回requestId给我
         int requestId = reqTeacherServiceMP.insertRequest(requestDTO);
-        //int requestId = requestDTO.getRequestId();
         //存和课程相关的部分，存到req-coursePart和req-timePart表里
         //courseVO 截成两段
 

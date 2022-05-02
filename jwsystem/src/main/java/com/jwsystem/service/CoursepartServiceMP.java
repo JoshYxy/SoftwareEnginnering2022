@@ -1,11 +1,9 @@
 package com.jwsystem.service;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.entity.course.CoursepartPO;
-
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

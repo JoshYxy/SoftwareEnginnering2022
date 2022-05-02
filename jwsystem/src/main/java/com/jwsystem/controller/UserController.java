@@ -3,6 +3,8 @@ package com.jwsystem.controller;
 import com.jwsystem.common.Result;
 
 import com.jwsystem.entity.affair.TimesPO;
+import com.jwsystem.entity.user.StudentPO;
+import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.JwtUtils;
@@ -16,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-import static com.jwsystem.vo.UserVO.STUDYING;
-import static com.jwsystem.vo.UserVO.WORKING;
+import static com.jwsystem.vo.UserVO.*;
+import static com.jwsystem.vo.UserVO.QUIT;
 
 @RestController
 @RequestMapping("/user")
@@ -44,9 +46,117 @@ public class UserController extends MainController{
     @Autowired
     private TimesServiceImpMP timesServiceImpMP;
 
+    @Autowired
+    private MajorServiceImpMP majorServiceImpMP;
+
     public static int TEACHER_NUM_LENGTH = 8;
     public static int STUDENT_NUM_LENGTH = 6;
     public static int ID_LENGTH = 18;
+
+
+    //用户信息合规性检验函数
+    boolean verifyUser (UserVO tempUserVO){
+
+        boolean valid = true;
+
+        String role = tempUserVO.getRole();
+        String id = tempUserVO.getId();
+        String status = tempUserVO.getStatus();
+
+        //role检验：是否为老师或学生
+        if(!role.equals("student") && !role.equals("teacher")){
+            valid = false;
+        }
+
+        //number检验：学工号非空判断和数字判断、位数判断
+        else if(role.equals("student") && !studentServiceImpMP.legalNumber(tempUserVO.getNumber())){
+            valid = false;
+        }
+        else if(role.equals("teacher") && !teacherServiceImpMP.legalNumber(tempUserVO.getNumber())){
+            valid = false;
+        }
+
+        //id检验:非空判断和数字判断、位数判断
+        //先检验长度是否为18
+        else if(id.length() != ID_LENGTH) {
+            valid = false;
+        }
+        else if(id.length() == ID_LENGTH){
+            //长度正确的情况下检验前17位为数字，第18位为数字或者X
+            String shortId = id.substring(0,17);
+            String last = id.substring(17);
+            String template = "0123456789Xx";
+            if(!org.apache.commons.lang3.StringUtils.isNumeric(shortId) || !template.contains(last)){
+                valid = false;
+            }
+        }
+
+        //name检验
+        else if(tempUserVO.getName().isEmpty()) valid = false;
+
+            //password检验
+        else if(tempUserVO.getPassword().isEmpty()) valid = false;
+
+            //status检验
+        else if(!status.equals(GRADUATED)
+                && !status.equals(QUIT)
+                && !status.equals(STUDYING)
+                && !status.equals(WORKING)
+        ) valid = false;
+
+            //major检验
+        else if(tempUserVO.getMajor().isEmpty()) valid = false;
+
+            //college检验
+        else if(tempUserVO.getCollege().isEmpty()) valid = false;
+
+        return valid;
+    }
+
+    //用户信息有效性检验函数
+    boolean verifyData(UserVO tempUserVO, String type){
+
+        boolean valid = true;
+
+        if(type.equals("add")){
+            //number非重复检验
+            String number = tempUserVO.getNumber();
+            if(studentServiceImpMP.selectUserByNumber(number) != null || teacherServiceImpMP.selectUserByNumber(number) != null) valid = false;
+        }
+
+        //id非重复检验
+        String id = tempUserVO.getId();
+        if(type.equals("add")){
+            if(studentServiceImpMP.selectStuById(id) != null || teacherServiceImpMP.selectTeaById(id) != null) valid = false;
+        }
+        else if(type.equals("change")){
+            StudentPO temp1 = studentServiceImpMP.selectStuById(tempUserVO.getId());
+            TeacherPO temp2 = teacherServiceImpMP.selectTeaById(tempUserVO.getId());
+
+            if(temp1!=null){
+                String tempNum = temp1.getNumber();
+                if(!tempNum.equals(tempUserVO.getNumber())){
+                    valid = false;
+                }
+            }
+
+            if(temp2!=null){
+                String tempNum = temp2.getNumber();
+                if(!tempNum.equals(tempUserVO.getNumber())){
+                    valid = false;
+                }
+            }
+        }
+
+        //major存在性检验
+        if(majorServiceImpMP.selectMajorByName(tempUserVO.getMajor()) == null ) valid = false;
+
+            //college存在性检验
+        else if(!majorServiceImpMP.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
+
+        return valid;
+    }
+
 
     //登陆请求
     @PostMapping("")
@@ -159,6 +269,16 @@ public class UserController extends MainController{
     //判断密码重复
     @PostMapping("/info")
     public Result changeInfo(@RequestBody UserVO tempUserVO){
+
+        boolean r = verifyUser(tempUserVO);
+        if(r) r=verifyData(tempUserVO,"change");
+
+        if(!r){
+            response.setStatus(WRONG_RES);
+            return Result.fail("修改信息失败，传入数据不合法！");
+        }
+
+
         //判断登陆用户是老师还是学生，再到对应的表中去查
         if(tempUserVO.getRole().equals("student")){
             //学生

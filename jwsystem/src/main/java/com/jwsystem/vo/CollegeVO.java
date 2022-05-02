@@ -15,7 +15,6 @@ public class CollegeVO /*extends College*/{
     //把id加上
     Integer collegeVOId;
     String collegeVOName;
-    //Map<Integer,String> majors;
     List<MajorDataDTO> majors;
 
     public CollegeVO(CollegePO c) {

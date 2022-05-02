@@ -2,13 +2,12 @@ package com.jwsystem.service.impl;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.dao.CollegeDaoMP;
-import com.jwsystem.entity.college.CollegePO;
-import com.jwsystem.entity.user.StudentPO;
-import com.jwsystem.entity.user.TeacherPO;
-import com.jwsystem.dao.TeacherDaoMP;
-import com.jwsystem.service.TeacherServiceMP;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.dao.CollegeDaoMP;
+import com.jwsystem.dao.TeacherDaoMP;
+import com.jwsystem.entity.college.CollegePO;
+import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.TeacherServiceMP;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.TeacherDataVO;
 import com.jwsystem.vo.UserVO;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.jwsystem.controller.UserController.TEACHER_NUM_LENGTH;
 

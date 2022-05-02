@@ -1,9 +1,8 @@
 package com.jwsystem.service;
 
-import com.jwsystem.entity.user.StudentPO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.vo.UserVO;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 

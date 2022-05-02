@@ -2,18 +2,15 @@ package com.jwsystem.service.impl;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.dao.BuildingDaoMP;
 import com.jwsystem.dao.ClassroomDaoMP;
+import com.jwsystem.dao.ReqTimepartDaoMP;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
-import com.jwsystem.entity.course.TimepartPO;
-import com.jwsystem.entity.request.ReqTeacherPO;
 import com.jwsystem.entity.request.ReqTimepartPO;
-
-import com.jwsystem.dao.ReqTimepartDaoMP;
 import com.jwsystem.service.ReqTimepartServiceMP;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.util.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

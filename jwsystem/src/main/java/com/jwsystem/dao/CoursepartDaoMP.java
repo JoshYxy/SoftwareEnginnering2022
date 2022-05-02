@@ -1,11 +1,8 @@
 package com.jwsystem.dao;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.dto.CoursepartDTO;
-import com.jwsystem.entity.course.CoursepartPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.jwsystem.entity.course.CoursepartPO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

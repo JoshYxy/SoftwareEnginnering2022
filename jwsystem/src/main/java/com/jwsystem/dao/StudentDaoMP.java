@@ -1,12 +1,9 @@
 package com.jwsystem.dao;
 
 
-import com.jwsystem.entity.user.StudentPO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jwsystem.vo.UserVO;
+import com.jwsystem.entity.user.StudentPO;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * <p>

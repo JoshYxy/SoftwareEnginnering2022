@@ -36,26 +36,12 @@ public class CourseController extends MainController{
     TransUtil transUtil;
 
     @Autowired
-//    private CourseServiceImp courseServiceImp;
     private CoursepartServiceImpMP coursepartServiceImpMP;
 
     @Autowired
     private TimepartServiceImpMP timepartServiceImpMP;
 
     @Autowired
-//    private TeaServiceImp teaServiceImp;
-    private TeacherServiceImpMP teacherServiceImpMP;
-
-    @Autowired
-//    private BuildingServiceImp buildingServiceImp;
-    private BuildingServiceImpMP buildingServiceImpMP;
-
-    @Autowired
-//    private TimesServiceImp timesServiceImp;
-    private TimesServiceImpMP timesServiceImpMP;
-
-    @Autowired
-//    private CourseRequestImp courseRequestImp;
     private ReqCoursepartServiceImpMP reqCoursepartServiceImpMP;
 
     @Autowired
@@ -87,8 +73,6 @@ public class CourseController extends MainController{
         //返回插入后自增得到的课程id给我
         //存到coursePart表里
         int courseId = coursepartServiceImpMP.insertCoursepart(coursePart);
-        //int courseId = coursePart.getRelationId();
-        //System.out.println("courseId="+courseId);
         try{
             for(int i=0;i<7;i++){
                 //周i（从0到6，表示周天，周一到周六
@@ -200,7 +184,7 @@ public class CourseController extends MainController{
         //设置对应的请求，examined为true，passed为requestResult.isRes()
         reqTeacherServiceImpMP.examinedById(requestResultVO.getRequestId(),true, requestResultVO.isRes());
 
-        String resultInfo = null;
+        String resultInfo = "申请未通过";
 
         //如果申请通过
         if(requestResultVO.isRes()){
@@ -212,7 +196,6 @@ public class CourseController extends MainController{
                 CoursepartDTO req_cp = reqCoursepartServiceImpMP.selectReqCoursepartByRequestId(r.getRequestId());
                 List<TimepartDTO> req_tp = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(r.getRequestId());
                 CourseVO courseVO = transUtil.transToVO(req_cp,req_tp);
-//                courseVO.setCourseId(r.getCourseId());
 
                 Result res = addCourse(courseVO);
                 if(!res.getMsg().equals("新增课程成功")){
@@ -244,7 +227,7 @@ public class CourseController extends MainController{
 
 
                 Integer requestId = r.getRequestId();
-                //先保存当前数据库内课程信息，并且转化成CourseVO对象
+                //将请求附带的课程信息转化成CourseVO对象
                 CoursepartDTO tempc = reqCoursepartServiceImpMP.selectReqCoursepartByRequestId(requestId);
                 if(tempc==null){
                     response.setStatus(WRONG_RES);
@@ -252,6 +235,12 @@ public class CourseController extends MainController{
                 }
 
                 List<TimepartDTO> tempt = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(requestId);
+                //将requestId修改成courseId，才能正确修改对应课程
+                tempc.setRelationId(r.getCourseId());
+                for (TimepartDTO t:
+                     tempt) {
+                    t.setRelationId(r.getCourseId());
+                }
                 CourseVO tempVO = transUtil.transToVO(tempc,tempt);
                 Result res = changeCourse(tempVO);
                 if(!res.getMsg().equals("修改课程信息成功")){
@@ -303,10 +292,11 @@ public class CourseController extends MainController{
     //管理员修改现有课程
     @PostMapping("")
     public Result changeCourse(@RequestBody CourseVO courseVO){
-        //核心思想：根据courseId，保存原有的所有timepart
+        //核心思想：根据courseId，保存原有的coursepart和所有timepart
         //对原有的coursePart进行修改，然后把原有的timePart全部删掉，插入新的timepart
-        //如果有冲突，则将原本时间存入
+        //如果有冲突，则将原本coursepart和timeparts重新存入，即进行数据还原
 
+        CoursepartDTO originalCP = coursepartServiceImpMP.selectCoursepartByCourseId(courseVO.getCourseId());
         List<TimepartDTO> timepartDTOList = timepartServiceImpMP.selectAllTimepartByCourseId(courseVO.getCourseId());
 
         CoursepartDTO coursePart = new CoursepartDTO(
@@ -365,6 +355,8 @@ public class CourseController extends MainController{
                     if(!res){
                         //插入冲突，删除timepart表中这次插入相关的数据
                         timepartServiceImpMP.deleteTimepartByCourseId(coursePart.getRelationId());
+                        //更新成原本的coursepart
+                        coursepartServiceImpMP.updateById(transUtil.CpDTOtoCpPO(originalCP));
                         //插入原本的timepart
                         for (TimepartDTO t:
                              timepartDTOList) {

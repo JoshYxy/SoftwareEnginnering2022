@@ -11,18 +11,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BuildingVO /*extends BuildingPO*/ {
+public class BuildingVO {
     private Integer id;
     private String fullName;
     private String abbrName;
-
-//    private List<ClassroomPO> room;
-//
-//    public BuildingVO(BuildingPO b) {
-//        this.id = b.getId();
-//        this.fullName = b.getFullName();
-//        this.abbrName = b.getAbbrName();
-//    }
 
     public BuildingVO(BuildingPO b) {
         id = b.getId();

@@ -29,18 +29,15 @@ public class AdminController extends MainController{
     private HttpServletResponse response;
 
     @Autowired
-//    private EduServiceImp eduServiceImp;
     private MajorServiceImpMP majorServiceImpMP;
 
     @Autowired
     private CollegeServiceImpMP collegeServiceImpMP;
 
     @Autowired
-//    private TeaServiceImp teaServiceImp;
     private TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired
-//    private StuServiceImp stuServiceImp;
     private StudentServiceImpMP studentServiceImpMP;
 
 
@@ -143,7 +140,7 @@ public class AdminController extends MainController{
         if(majorServiceImpMP.selectMajorByName(tempUserVO.getMajor()) == null ) valid = false;
 
         //college存在性检验
-        if(!majorServiceImpMP.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
+        else if(!majorServiceImpMP.judgeMajorAndCollege(tempUserVO.getMajor(), tempUserVO.getCollege())) valid = false;
 
         return valid;
     }

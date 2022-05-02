@@ -17,7 +17,6 @@ public class teacherInterceptor implements HandlerInterceptor {
     JwtUtils jwtUtils;
 
     @Autowired
-//    TeaService teaService;
     TeacherServiceImpMP teacherServiceImpMP;
 
     @Autowired

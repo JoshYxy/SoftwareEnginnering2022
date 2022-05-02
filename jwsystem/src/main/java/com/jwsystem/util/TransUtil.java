@@ -63,8 +63,6 @@ public class TransUtil {
     @Autowired
     CoursepartServiceImpMP coursepartServiceImpMP;
 
-//    @Autowired
-//    CollegeServiceMP collegeServiceMP;
 
     //CoursepartDTO和TimepartDTO转换成CourseVO
     public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList){

@@ -1,10 +1,8 @@
 package com.jwsystem.service;
 
 
-import com.jwsystem.entity.user.StudentPO;
-import com.jwsystem.entity.user.TeacherPO;
-
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.vo.TeacherDataVO;
 import com.jwsystem.vo.UserVO;
 

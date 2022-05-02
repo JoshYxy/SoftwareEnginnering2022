@@ -1,6 +1,5 @@
 package com.jwsystem.vo;
 
-import com.jwsystem.dao.TeacherDaoMP;
 import com.jwsystem.entity.user.AdminPO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;

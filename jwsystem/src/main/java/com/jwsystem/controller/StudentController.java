@@ -3,11 +3,13 @@ package com.jwsystem.controller;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.TimepartDTO;
-import com.jwsystem.service.*;
-import com.jwsystem.vo.UserVO;
+import com.jwsystem.service.AdminServiceMP;
+import com.jwsystem.service.CoursepartServiceMP;
+import com.jwsystem.service.StudentServiceMP;
+import com.jwsystem.service.TimepartServiceMP;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseVO;
-import org.apache.ibatis.jdbc.Null;
+import com.jwsystem.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,23 +29,14 @@ public class StudentController extends MainController{
     @Autowired
     private TransUtil transUtil;
 
-    //@Autowired
-    //private StuService stuService;
-
     @Autowired
     private StudentServiceMP studentServiceMP;
-
-    //@Autowired
-    //private CourseServiceImp courseServiceImp;
 
     @Autowired
     private CoursepartServiceMP coursepartServiceMP;
 
     @Autowired
     private TimepartServiceMP timepartServiceMP;
-
-   // @Autowired
-    //private AdminServiceImp adminServiceImp;
 
     @Autowired
     private AdminServiceMP adminServiceMP;
