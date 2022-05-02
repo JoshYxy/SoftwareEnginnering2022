@@ -5,6 +5,7 @@ import com.jwsystem.dto.CourseDTO;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.util.TransUtil;
@@ -196,6 +197,9 @@ public class CourseController extends MainController{
             return Result.fail("审核失败：该请求不存在");
         }
 
+        //设置对应的请求，examined为true，passed为requestResult.isRes()
+        reqTeacherServiceImpMP.examinedById(requestResultVO.getRequestId(),true, requestResultVO.isRes());
+
         String resultInfo = null;
 
         //如果申请通过
@@ -205,11 +209,10 @@ public class CourseController extends MainController{
 
             if(type.equals(ADD)){
                 //新增课程：先从req-coursepart和req-timepart里取出对应数据
-                //把对应的方法移到reqservice里去？
                 CoursepartDTO req_cp = reqCoursepartServiceImpMP.selectReqCoursepartByRequestId(r.getRequestId());
                 List<TimepartDTO> req_tp = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(r.getRequestId());
                 CourseVO courseVO = transUtil.transToVO(req_cp,req_tp);
-                courseVO.setCourseId(r.getCourseId());
+//                courseVO.setCourseId(r.getCourseId());
 
                 Result res = addCourse(courseVO);
                 if(!res.getMsg().equals("新增课程成功")){
@@ -236,41 +239,24 @@ public class CourseController extends MainController{
                 resultInfo="按照申请删除课程成功";
             }
             else if(type.equals(CHANGE)){
-                //修改：核心思想是根据courseId删掉现有的coursePart和所有的Timepart
-                // 然后把requestId对应的reqcoursePart和所有的reqTimepart包装成CourseVO
-                // 按照上述courseId插入到coursePart和timePart表里
+                //修改：核心思想是把requestId对应的reqcoursePart和所有的reqTimepart包装成CourseVO
+                //按照上述courseId调用修改课程的方法
 
 
-                Integer courseId = r.getCourseId();
+                Integer requestId = r.getRequestId();
                 //先保存当前数据库内课程信息，并且转化成CourseVO对象
-                CoursepartDTO tempc = coursepartServiceImpMP.selectCoursepartByCourseId(courseId);
+                CoursepartDTO tempc = reqCoursepartServiceImpMP.selectReqCoursepartByRequestId(requestId);
                 if(tempc==null){
                     response.setStatus(WRONG_RES);
                     return Result.fail("申请审核失败：修改的课程不存在");
                 }
 
-                List<TimepartDTO> tempt = timepartServiceImpMP.selectAllTimepartByCourseId(courseId);
+                List<TimepartDTO> tempt = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(requestId);
                 CourseVO tempVO = transUtil.transToVO(tempc,tempt);
-
-                //删除coursepart表和coursetime表中courseId对应的相关的数据（设置成连带删除的）
-                boolean res = coursepartServiceImpMP.removeById(courseId);
-                if(res){
-                    CoursepartDTO req_cp = reqCoursepartServiceImpMP.selectReqCoursepartByRequestId(r.getRequestId());
-                    List<TimepartDTO> req_tp = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(r.getRequestId());
-                    CourseVO courseVO = transUtil.transToVO(req_cp,req_tp);
-                    courseVO.setCourseId(courseId);
-                    //把修改后的数据按照一样的courseId插入进去
-                    Result res2 = addCourse(courseVO);
-                    if(!res2.getMsg().equals("新增课程成功")){
-                        //插入数据失败，恢复数据
-                        addCourse(tempVO);
-                        response.setStatus(WRONG_RES);
-                        return Result.fail("申请审核失败：新增修改后信息失败");
-                    }
-                }
-                else {
-                    response.setStatus(WRONG_RES);
-                    return Result.fail("申请审核失败：删除失败");
+                Result res = changeCourse(tempVO);
+                if(!res.getMsg().equals("修改课程信息成功")){
+                    response.setStatus(CONFLICT_TIME);
+                    return Result.fail("修改时间失败：时间冲突！", requestResultVO);
                 }
                 resultInfo="按照申请修改课程成功";
             }
@@ -279,8 +265,6 @@ public class CourseController extends MainController{
                 return Result.fail("无效的请求类型", requestResultVO);
             }
         }
-        //设置对应的请求，examined为true，passed为requestResult.isRes()
-        reqTeacherServiceImpMP.examinedById(requestResultVO.getRequestId(),true, requestResultVO.isRes());
         return Result.succ("审核完毕，"+ resultInfo);
     }
 
@@ -319,30 +303,81 @@ public class CourseController extends MainController{
     //管理员修改现有课程
     @PostMapping("")
     public Result changeCourse(@RequestBody CourseVO courseVO){
-        //核心思想：把原有的都删了，把传来的插入
+        //核心思想：根据courseId，保存原有的所有timepart
+        //对原有的coursePart进行修改，然后把原有的timePart全部删掉，插入新的timepart
+        //如果有冲突，则将原本时间存入
 
-        //先保存当前数据库内课程信息，并且转化成CourseVO对象
-        CoursepartDTO tempc = coursepartServiceImpMP.selectCoursepartByCourseId(courseVO.getCourseId());
-        List<TimepartDTO> tempt = timepartServiceImpMP.selectAllTimepartByCourseId(courseVO.getCourseId());
-        CourseVO tempVO = transUtil.transToVO(tempc,tempt);
+        List<TimepartDTO> timepartDTOList = timepartServiceImpMP.selectAllTimepartByCourseId(courseVO.getCourseId());
 
-        //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
-        boolean res = coursepartServiceImpMP.removeById(courseVO.getCourseId());
+        CoursepartDTO coursePart = new CoursepartDTO(
+                courseVO.getCourseId(),
+                courseVO.getCourseName(),
+                courseVO.getCourseNum(),
+                courseVO.getClassHours(),
+                courseVO.getCredits(),
+                courseVO.getCourseInfo(),
+                courseVO.getCollegeName(),
+                courseVO.getTeacherNum(),
+                courseVO.getTeacherName(),
+                courseVO.getCapacity(),
+                courseVO.getYear(),
+                courseVO.getSemester(),
+                courseVO.getIsGeneral());
+        CoursepartPO coursepartPO = transUtil.CpDTOtoCpPO(coursePart);
+        //修改原有的coursepart
+        coursepartServiceImpMP.updateById(coursepartPO);
+        //删除原有的timepart
+        timepartServiceImpMP.deleteTimepartByCourseId(coursePart.getRelationId());
+        //插入修改后的timepart
+        int courseId = coursePart.getRelationId();
+        try{
+            for(int i=0;i<7;i++){
+                //周i（从0到6，表示周天，周一到周六
 
-        if(res){
-            //删除成功，将传来的插入
-            //传来的courseVO自带courseId
-            Result r = addCourse(courseVO);
-            if(!r.getMsg().equals("新增课程成功")){
-                //插入修改后信息失败，复原原来的信息
-                addCourse(tempVO);
-                response.setStatus(WRONG_RES);
-                return Result.fail("修改信息失败！插入修改后信息失败！");
+                if(courseVO.getTimes()[i].length>0){
+                    int[] intArray = courseVO.getTimes()[i];
+                    //周i有课，转int数组为String
+                    String[] strArray = Arrays.stream(intArray)
+                            .mapToObj(String::valueOf)
+                            .toArray(String[]::new);
+
+                    String timeString =Arrays.toString(strArray)
+                            .replace("[","")
+                            .replace("]","")
+                            .replace(" ","")
+                            .replace(',',' ');
+
+                    System.out.println(timeString);
+
+                    //存课程id（对应上面那条）、教师工号、上课楼、教室号、星期几、节次
+                    //存到timepart表里
+                    TimepartDTO timepartDTO = new TimepartDTO(
+                            courseId,
+                            courseVO.getTeacherNum(),
+                            courseVO.getBuilding(),
+                            courseVO.getRoomNum(),
+                            i,
+                            timeString  //1 2 3
+                    );
+
+                    //在插入的时候根据老师和教室判断有没有时间冲突
+                    boolean res = timepartServiceImpMP.insertTimepart(timepartDTO);
+                    if(!res){
+                        //插入冲突，删除timepart表中这次插入相关的数据
+                        timepartServiceImpMP.deleteTimepartByCourseId(coursePart.getRelationId());
+                        //插入原本的timepart
+                        for (TimepartDTO t:
+                             timepartDTOList) {
+                            timepartServiceImpMP.insertTimepart(t);
+                        }
+                        response.setStatus(CONFLICT_TIME);
+                        return Result.fail("修改时间失败：时间冲突！");
+                    }
+                }
             }
-        }else{
-            //删除失败
-            response.setStatus(WRONG_RES);
-            return Result.fail("修改信息失败！删除原本信息失败！");
+        } catch (IndexOutOfBoundsException e ){
+            response.setStatus(WRONG_DATA);
+            return Result.fail("数组越界");
         }
         return Result.succ("修改课程信息成功");
     }
@@ -386,8 +421,7 @@ public class CourseController extends MainController{
                         temp.getIsGeneral());
                 //存课程名称、编号、学院名称、学时、学分、教师姓名、教师工号、课程简介、选课容量
                 //返回插入后自增得到的课程id给我
-                coursepartServiceImpMP.insertCoursepart(coursepartDTO);
-                int courseId = coursepartDTO.getRelationId();
+                int courseId = coursepartServiceImpMP.insertCoursepart(coursepartDTO);
 
                 Map<Integer,String> timeMap = new HashMap<>();
                 timeMap.put(0,temp.getSun());

@@ -51,7 +51,7 @@ public class StudentController extends MainController{
     @GetMapping("/course")
     public Result avaliableCourse(){
 
-        if(adminServiceMP.getCur() == "当前不在选课时间段"){
+        if(adminServiceMP.getCur().equals("当前不在选课时间段")){
             //从管理员表中查询是否在选课时间段，若不在选课时段
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return Result.fail("当前不在选课时间段");
