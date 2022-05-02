@@ -106,6 +106,8 @@ public class TransUtil {
     //CoursepartDTO转换成CoursepartPO
     public CoursepartPO CpDTOtoCpPO(CoursepartDTO coursepartDTO){
 
+        if(coursepartDTO == null) return null;
+
         CoursepartPO coursepartPO = new CoursepartPO(
                 coursepartDTO.getRelationId(),
                 coursepartDTO.getCourseNum(),
@@ -133,6 +135,8 @@ public class TransUtil {
     //CoursepartDTO转换成ReqCoursepartPO
     public ReqCoursepartPO CpDTOtoReqCpPO(CoursepartDTO coursepartDTO){
 
+        if(coursepartDTO == null) return null;
+
         ReqCoursepartPO reqCoursepartPO = new ReqCoursepartPO(
                 coursepartDTO.getRelationId(),
                 coursepartDTO.getCourseNum(),
@@ -159,6 +163,8 @@ public class TransUtil {
 
     //CoursepartPO转换成CoursepartDTO
     public CoursepartDTO CpPOtoCpDTO(CoursepartPO coursepartPO){
+
+        if(coursepartPO == null) return null;
 
         CoursepartDTO coursepartDTO = new CoursepartDTO(
                 coursepartPO.getCourseId(),
@@ -192,6 +198,8 @@ public class TransUtil {
     //ReqCoursepartPO转换成CoursepartDTO
     public CoursepartDTO ReqCpPOtoCpDTO(ReqCoursepartPO reqCoursepartPO){
 
+        if(reqCoursepartPO == null) return null;
+
         CoursepartDTO coursepartDTO = new CoursepartDTO(
                 reqCoursepartPO.getRequestId(),
                 reqCoursepartPO.getCourseName(),
@@ -224,6 +232,8 @@ public class TransUtil {
     //TimepartDTO转换成TimepartPO
     public TimepartPO TpDTOtoTpPO(TimepartDTO timepartDTO){
 
+        if(timepartDTO == null) return null;
+
         TimepartPO timepartPO = new TimepartPO(
                 null,
                 timepartDTO.getRelationId(),
@@ -245,6 +255,8 @@ public class TransUtil {
     //TimepartDTO转换成ReqTimepartPO
     public ReqTimepartPO TpDTOtoReqTpPO(TimepartDTO timepartDTO){
 
+        if(timepartDTO == null) return null;
+
         ReqTimepartPO reqTimepartPO = new ReqTimepartPO(
                 null,
                 timepartDTO.getRelationId(),
@@ -265,6 +277,8 @@ public class TransUtil {
 
     //TimepartPO转换成TimepartDTO
     public TimepartDTO TpPOtoTpDTO(TimepartPO timepartPO){
+
+        if(timepartPO == null) return null;
 
         TimepartDTO timepartDTO = new TimepartDTO(
                 timepartPO.getCourseId(),
@@ -288,6 +302,8 @@ public class TransUtil {
 
     //ReqTimepartPO转换成TimepartDTO
     public TimepartDTO ReqTpPOtoTpDTO(ReqTimepartPO reqTimepartPO){
+
+        if(reqTimepartPO == null) return null;
 
         TimepartDTO timepartDTO = new TimepartDTO(
                 reqTimepartPO.getRequestId(),
@@ -313,6 +329,8 @@ public class TransUtil {
     //MajorDTO转MajorPO
     public MajorPO MajorDTOtoPO(MajorDTO majorDTO){
 
+        if(majorDTO == null) return null;
+
         MajorPO  majorPO = new MajorPO(
                 majorDTO.getMajorId(),
                 majorDTO.getName(),
@@ -330,6 +348,8 @@ public class TransUtil {
     //MajorPO转MajorDTO
     public MajorDTO MajorPOtoDTO(MajorPO majorPO){
 
+        if(majorPO == null) return null;
+
         MajorDTO majorDTO = new MajorDTO(
                 majorPO.getMajorId(),
                 majorPO.getName(),
@@ -346,6 +366,8 @@ public class TransUtil {
 
     //RequestDTO转ReqTeacherPO
     public ReqTeacherPO RequestDTOtoPO(RequestDTO requestDTO){
+
+        if(requestDTO == null) return null;
 
         ReqTeacherPO reqTeacherPO = new ReqTeacherPO(
                 requestDTO.getRequestId(),
@@ -368,6 +390,8 @@ public class TransUtil {
 
     //ReqTeacherPO转RequestDTO
     public RequestDTO ReqTeacherPOtoDTO(ReqTeacherPO reqTeacherPO){
+
+        if(reqTeacherPO == null) return null;
 
         RequestDTO requestDTO = new RequestDTO(
                 reqTeacherPO.getRequestId(),
@@ -394,6 +418,8 @@ public class TransUtil {
     //StudentPO转UserVO
     public UserVO StudentPOtoUserVO(StudentPO studentPO){
 
+        if(studentPO == null) return null;
+
         UserVO userVO = new UserVO(
                 studentPO.getRole(),
                 studentPO.getNumber(),
@@ -416,6 +442,8 @@ public class TransUtil {
 
     //UserVO转StudentPO
     public StudentPO UserVOtoStudentPO(UserVO userVO){
+
+        if(userVO == null) return null;
 
         StudentPO studentPO = new StudentPO(
                 userVO.getRole(),
@@ -440,6 +468,8 @@ public class TransUtil {
     //TeacherPO转UserVO
     public UserVO TeacherPOtoUserVO(TeacherPO teacherPO){
 
+        if(teacherPO == null) return null;
+
         UserVO userVO = new UserVO(
                 teacherPO.getRole(),
                 teacherPO.getNumber(),
@@ -462,6 +492,8 @@ public class TransUtil {
 
     //UserVO转teacherPO
     public TeacherPO UserVOtoTeacherPO(UserVO userVO){
+
+        if(userVO == null) return null;
 
         TeacherPO teacherPO = new TeacherPO(
                 userVO.getRole(),
@@ -486,6 +518,8 @@ public class TransUtil {
     //ClassroomVO转ClassroomPO
     public ClassroomPO ClassroomVOtoPO(ClassroomVO classroomVO){
 
+        if(classroomVO == null) return null;
+
         ClassroomPO classroomPO = new ClassroomPO(
                 classroomVO.getRoomId(),
                 null,
@@ -503,6 +537,8 @@ public class TransUtil {
 
     //ClassroomPO转VO
     public ClassroomVO ClassroomPOtoVO(ClassroomPO classroomPO){
+
+        if(classroomPO == null) return null;
 
         ClassroomVO classroomVO = new ClassroomVO(
                 classroomPO.getRoomId(),
