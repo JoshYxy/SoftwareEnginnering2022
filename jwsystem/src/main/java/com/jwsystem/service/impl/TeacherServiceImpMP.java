@@ -17,8 +17,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.jwsystem.controller.UserController.TEACHER_NUM_LENGTH;
+import static com.jwsystem.vo.UserVO.WORKING;
 
 /**
  * <p>
@@ -98,7 +100,9 @@ public class TeacherServiceImpMP extends ServiceImpl<TeacherDaoMP, TeacherPO> im
             List<TeacherPO> teacherPOList = teacherDaoMP.selectList(Wrappers.lambdaQuery(TeacherPO.class).eq(TeacherPO::getCollegeId,c.getCollegeId()));
             List<UserVO> userVOList = new ArrayList<>();
             for(TeacherPO t :teacherPOList) {
-                userVOList.add(transUtil.TeacherPOtoUserVO(t));
+                if(Objects.equals(t.getStatus(), WORKING)) {
+                    userVOList.add(transUtil.TeacherPOtoUserVO(t));
+                }
             }
             td.setCollegeName(c.getName());
             td.setTeachers(userVOList);

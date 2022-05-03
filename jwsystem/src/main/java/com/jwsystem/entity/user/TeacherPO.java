@@ -34,7 +34,7 @@ public class TeacherPO implements Serializable {
     /**
      * 工号
      */
-    @TableId(value = "number", type = IdType.AUTO)
+    @TableId(value = "number"/*, type = IdType.AUTO*/)
     private String number;
 
     /**
