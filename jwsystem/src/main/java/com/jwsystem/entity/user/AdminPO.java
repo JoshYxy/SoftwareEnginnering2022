@@ -24,6 +24,12 @@ public class AdminPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static String ROUND_ONE_OPEN = "一轮选课开始";
+    public static String ROUND_ONE_END = "一轮选课结束";
+    public static String ROUND_TWO_OPEN = "二轮选课开始";
+    public static String ROUND_TWO_END = "二轮选课结束";
+    public static String CLOSE = "当前不在选课时间段内";
+
     private String role;
 
     @TableId(value = "number", type = IdType.AUTO)

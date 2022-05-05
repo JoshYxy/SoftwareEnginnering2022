@@ -1,11 +1,14 @@
 package com.jwsystem.controller;
 
 import com.jwsystem.common.Result;
+import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.affair.TimesPO;
+import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.service.BuildingServiceMP;
+import com.jwsystem.util.CommonUtil;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.ClassroomVO;
 import com.jwsystem.vo.UserVO;
@@ -15,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
+import static com.jwsystem.entity.user.AdminPO.ROUND_ONE_END;
+import static com.jwsystem.entity.user.AdminPO.ROUND_TWO_END;
 
 @RestController
 @RequestMapping("/affair")
@@ -53,6 +57,9 @@ public class AffairController extends MainController{
     @Autowired
     TransUtil transUtil;
 
+    @Autowired
+    CommonUtil commonUtil;
+
 
     //管理员获得教务信息
     @GetMapping("")
@@ -63,10 +70,31 @@ public class AffairController extends MainController{
         return Result.succ3(buildingList,timesList,null);
     }
 
-    //管理员获得某间教室的所有上课时间信息
+    //管理员获得某间教室本学期的所有上课时间信息
     @PutMapping("/building/room/time")
     public Result getRoomTime(@RequestBody ClassroomVO classRoom){
-        List<TimepartDTO> timepartDTOList = timepartServiceImpMP.selectAllTimepartByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+        //取出本教室所有上课时间信息
+        List<TimepartDTO> list = timepartServiceImpMP.selectAllTimepartByRoom(classRoom.getBuilding(),classRoom.getRoomNum());
+        //从timepart中取出所有的课程id
+        Set<Integer> validCourse = new HashSet<>();
+        for(TimepartDTO t:
+        list){
+            validCourse.add(t.getRelationId());
+        }
+
+        //选出当前学年学期的课程
+        String year = commonUtil.getSchoolYear();
+        String semester = commonUtil.getSemester();
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+
+        //根据id取出coursepartDTO，判断是否为当前学期课程
+        for(Integer i:
+        validCourse){
+            CoursepartDTO c = coursepartServiceImpMP.selectCoursepartByCourseId(i);
+            //如果课程是当前学年学期的，将其timepart加入
+            if(c.getSemester().equals(semester) && c.getYear().equals(year)) timepartDTOList.addAll(timepartServiceImpMP.selectAllTimepartByCourseId(c.getRelationId()));
+        }
+
         int[][] time = new int[7][];
         for (TimepartDTO t:
                 timepartDTOList) {
@@ -109,7 +137,7 @@ public class AffairController extends MainController{
         return Result.succ(time);
     }
 
-    //管理员获得某个老师所有上课时间
+    //管理员获得某个老师本学期所有上课时间
     @PutMapping("/teacher/time")
     public Result getTeaTime(@RequestBody UserVO userVO){
         UserVO temp = teacherServiceImpMP.selectUserByNumber(userVO.getNumber());
@@ -118,7 +146,18 @@ public class AffairController extends MainController{
             return Result.fail("获取教师上课时间失败：该老师不存在");
         }
 
-        List<TimepartDTO> timepartDTOList = timepartServiceImpMP.selectAllTimepartByTea(userVO.getNumber());
+        List<CoursepartDTO> temps = coursepartServiceImpMP.selectAllCoursepartByTeacherNum(temp.getNumber());
+
+        //选出当前学年学期的课程
+        String year = commonUtil.getSchoolYear();
+        String semester = commonUtil.getSemester();
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+
+        //如果课程是当前学年学期的，将其timepart加入
+        for(CoursepartDTO c:
+                temps){
+            if(c.getSemester().equals(semester) && c.getYear().equals(year)) timepartDTOList.addAll(timepartServiceImpMP.selectAllTimepartByCourseId(c.getRelationId()));
+        }
 
         int[][] time = new int[7][];
         for (TimepartDTO t:
@@ -320,6 +359,12 @@ public class AffairController extends MainController{
     @PostMapping("/curriculaVariable")
     public Result changeCurrVariable(@RequestParam("choice") String choice){
         adminServiceImpMP.setCurr(choice);
+
+        if(choice.equals(ROUND_ONE_END)){
+            //一轮结束，所有人数超了的课程进行踢人
+            coursepartServiceImpMP.solveExceededCourse();
+        }
+
         return Result.succ("修改选课权限成功");
     }
 

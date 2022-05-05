@@ -4,8 +4,12 @@ import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.request.ReqCoursepartPO;
 import com.jwsystem.service.*;
+import com.jwsystem.service.impl.RelaCourseStudentServiceImpMP;
+import com.jwsystem.util.CommonUtil;
+import com.jwsystem.vo.SelectedStudentVO;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.util.TransUtil;
 import com.jwsystem.vo.CourseRequestVO;
@@ -14,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.sql.Time;
+import java.util.*;
 
 //教师相关操作
 @RestController
@@ -46,10 +48,19 @@ public class TeacherController extends MainController{
     private TimepartServiceMP timepartServiceMP;
 
     @Autowired
-    ReqTimepartServiceMP reqTimepartServiceMP;
+    private ReqTimepartServiceMP reqTimepartServiceMP;
+
+    @Autowired
+    private RelaCourseStudentServiceMP relaCourseStudentServiceMP;
+
+    @Autowired
+    private StudentServiceMP studentServiceMP;
+
+    @Autowired
+    private CommonUtil commonUtil;
 
 
-    //教师获得自己开设的课程信息
+    //教师获得自己开设的所有课程信息
     @GetMapping("/course")
     public Result getCourse(){
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
@@ -73,7 +84,7 @@ public class TeacherController extends MainController{
             List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList);
+            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList,true);
 
             courseVOList.add(tempVO);
         }
@@ -81,7 +92,7 @@ public class TeacherController extends MainController{
         return Result.succ3(courseVOList,teacher,null);
     }
 
-    //根据老师token返回全部有课时间
+    //根据老师token返回当前学期全部有课时间
     @GetMapping("/time")
     public Result getTime(){
         //根据token解析得到的工号，查找该教师开设的对应全部课程并返回
@@ -94,7 +105,18 @@ public class TeacherController extends MainController{
             return Result.fail("教师不存在");
         }
 
-        List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByTea(number);
+        List<CoursepartDTO> temps = coursepartServiceMP.selectAllCoursepartByTeacherNum(number);
+
+        //选出当前学年学期的课程
+        String year = commonUtil.getSchoolYear();
+        String semester = commonUtil.getSemester();
+        List<TimepartDTO> timepartDTOList = new ArrayList<>();
+
+        //如果课程是当前学年学期的，将其timepart加入
+        for(CoursepartDTO c:
+        temps){
+            if(c.getSemester().equals(semester) && c.getYear().equals(year)) timepartDTOList.addAll(timepartServiceMP.selectAllTimepartByCourseId(c.getRelationId()));
+        }
 
         int[][] time = new int[7][];
         for (TimepartDTO t:
@@ -220,5 +242,30 @@ public class TeacherController extends MainController{
             return Result.fail("数组越界");
         }
         return Result.succ("提交申请成功");
+    }
+
+    //获得某门课程已选/已修学生名单
+    @GetMapping("/selectedList")
+    public Result selected(@RequestBody Map<String,Integer> map){
+
+        int courseId = map.get("courseId");
+        //根据课程id取出已选或已修名单（当前学期为已选，以前的课为已修，因此只传了id进去）
+        List<RelaCourseStudentPO> relaCourseStudentPOList = relaCourseStudentServiceMP.xxx(courseId);
+
+        List<SelectedStudentVO> selectedStudentVOS = new ArrayList<>();
+
+        for (RelaCourseStudentPO rela:
+                relaCourseStudentPOList) {
+            UserVO student = transUtil.StudentPOtoUserVO(studentServiceMP.getById(rela.getStudentNum()));
+            SelectedStudentVO s = new SelectedStudentVO(
+                    student.getName(),
+                    student.getNumber(),
+                    student.getMajor()
+            );
+
+            selectedStudentVOS.add(s);
+        }
+
+        return Result.succ(selectedStudentVOS);
     }
 }

@@ -1,27 +1,31 @@
 package com.jwsystem.util;
 
 
-
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.MajorDTO;
 import com.jwsystem.dto.RequestDTO;
+import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.affair.BuildingPO;
 import com.jwsystem.entity.affair.ClassroomPO;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.college.MajorPO;
 import com.jwsystem.entity.course.CoursepartPO;
+import com.jwsystem.entity.course.RelaCourseMajorPO;
+import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.course.TimepartPO;
 import com.jwsystem.entity.request.ReqCoursepartPO;
+import com.jwsystem.entity.request.ReqStudentPO;
 import com.jwsystem.entity.request.ReqTeacherPO;
 import com.jwsystem.entity.request.ReqTimepartPO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.service.MajorServiceMP;
 import com.jwsystem.service.StudentServiceMP;
+import com.jwsystem.service.TimepartServiceMP;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.vo.ClassroomVO;
 import com.jwsystem.vo.CourseVO;
-import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.vo.ReqStudentVO;
 import com.jwsystem.vo.UserVO;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static com.jwsystem.entity.course.CoursepartPO.GENERAL;
+import static com.jwsystem.entity.course.RelaCourseStudentPO.SELECTED;
 
 //将数据库内存储的课程信息转换为CourseVO对象的工具类
 @Data
@@ -63,9 +70,21 @@ public class TransUtil {
     @Autowired
     CoursepartServiceImpMP coursepartServiceImpMP;
 
+    @Lazy
+    @Autowired
+    TimepartServiceMP timepartServiceMP;
+
+    @Lazy
+    @Autowired
+    RelaCourseStudentServiceImpMP relaCourseStudentServiceImpMP;
+
+    @Lazy
+    @Autowired
+    RelaCourseMajorServiceImpMP relaCourseMajorServiceImpMP;
+
 
     //CoursepartDTO和TimepartDTO转换成CourseVO
-    public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList){
+    public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList,boolean needSelect){
 
         CourseVO VO = new CourseVO();
 
@@ -81,6 +100,9 @@ public class TransUtil {
         VO.setBuilding(timepartDTOList.get(0).getBuilding());
         VO.setRoomNum(timepartDTOList.get(0).getRoomNum());
         VO.setCapacity(coursePart.getCapacity());
+        VO.setYear(coursePart.getYear());
+        VO.setSemester(coursePart.getSemester());
+        VO.setIsGeneral(coursePart.getIsGeneral());
 
         //设置时间部分
         int[][] time = new int[7][];
@@ -98,7 +120,40 @@ public class TransUtil {
             if(time[i]==null) time[i] = new int[0];
         }
         VO.setTimes(time);
+
+        //needSelect为true，表示需要查询可选专业和已选人数
+        if(needSelect){
+            //从relaCourseStudent表里查出已选人数（注意不要已修读的，即status为已选）
+            //返回list就行
+            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceImpMP.xxx(coursePart.getRelationId(),SELECTED);
+            VO.setSelected(Integer.toString(courseStudentPOS.size()));
+
+            //不是通选课，根据courseId查询可选专业
+            if(!coursePart.getIsGeneral().equals(GENERAL)){
+                List<RelaCourseMajorPO> courseMajorPOS = relaCourseMajorServiceImpMP.xxx(coursePart.getRelationId());
+                //创建对应数量的二维数组
+                String[][] majors = new String[courseMajorPOS.size()][2];
+                int i=0;
+                for (RelaCourseMajorPO r:
+                        courseMajorPOS) {
+                    //根据majorid查询对应的学院名和专业名
+                    MajorDTO m = majorServiceMP.selectMajorById(r.getMajorId());
+                    majors[i][0]=m.getCollegeName();
+                    majors[i][1]=m.getName();
+                    i++;
+                }
+                VO.setMajors(majors);
+            }
+        }
+
         return VO;
+    }
+
+    //根据课程id获得课程VO变量
+    public CourseVO getCourseById(int courseId ,boolean needSelect){
+        CoursepartDTO coursePart = CpPOtoCpDTO(coursepartServiceImpMP.getById(courseId));
+        List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(courseId);
+        return transToVO(coursePart,timepartDTOList,needSelect);
     }
 
     //CoursepartDTO转换成CoursepartPO
@@ -550,5 +605,30 @@ public class TransUtil {
         classroomVO.setBuilding(building);
 
         return classroomVO;
+    }
+
+    public ReqStudentPO ReqStuVOtoPO(ReqStudentVO reqStudentVO,String num) {
+        ReqStudentPO reqStudentPO = new ReqStudentPO(
+                reqStudentVO.getRequestId(),
+                reqStudentVO.getCourseVO().getCourseId(),
+                num,
+                reqStudentVO.getApplyReason(),
+                null,
+                reqStudentVO.isDealt()?1:0,
+                reqStudentVO.isApproved()?1:0
+        );
+        return reqStudentPO;
+    }
+
+    public ReqStudentVO ReqStuPOtoVO(ReqStudentPO reqStudentPO){
+        ReqStudentVO reqStudentVO = new ReqStudentVO(
+                reqStudentPO.getId(),
+                reqStudentPO.getReason(),
+                getCourseById(reqStudentPO.getCourseId(),false),
+                StudentPOtoUserVO(studentServiceMP.getById(reqStudentPO.getStudentNum())),
+                reqStudentPO.getDealt() == 1,
+                reqStudentPO.getApproved() == 1
+        );
+        return reqStudentVO;
     }
 }

@@ -27,4 +27,6 @@ public class CourseVO {
     private String year;
     private String semester;
     private String isGeneral;
+    private String selected="0";    //已选人数
+    private String[][] majors;      //可选专业数组
 }

@@ -3,7 +3,10 @@ package com.jwsystem.entity.request;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -17,6 +20,8 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
 @TableName("req_student")
 public class ReqStudentPO implements Serializable {

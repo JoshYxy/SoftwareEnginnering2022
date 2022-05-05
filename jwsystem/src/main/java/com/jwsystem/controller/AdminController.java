@@ -4,9 +4,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.MajorDTO;
 import com.jwsystem.entity.college.CollegePO;
+import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.RelaCourseStudentServiceMP;
+import com.jwsystem.service.StudentServiceMP;
 import com.jwsystem.service.impl.*;
+import com.jwsystem.util.TransUtil;
+import com.jwsystem.vo.SelectedStudentVO;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.util.CSVUtils;
 import com.jwsystem.vo.CollegeVO;
@@ -16,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.jwsystem.controller.UserController.ID_LENGTH;
 import static com.jwsystem.vo.UserVO.*;
@@ -40,6 +47,14 @@ public class AdminController extends MainController{
     @Autowired
     private StudentServiceImpMP studentServiceImpMP;
 
+    @Autowired
+    private RelaCourseStudentServiceMP relaCourseStudentServiceMP;
+
+    @Autowired
+    private TransUtil transUtil;
+
+    @Autowired
+    private StudentServiceMP studentServiceMP;
 
 
     //用户信息合规性检验函数

@@ -5,17 +5,23 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dao.CollegeDaoMP;
 import com.jwsystem.dao.ReqCoursepartDaoMP;
 import com.jwsystem.dto.CoursepartDTO;
+import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.dao.CoursepartDaoMP;
-import com.jwsystem.service.CoursepartServiceMP;
+import com.jwsystem.entity.course.RelaCourseStudentPO;
+import com.jwsystem.entity.course.TimepartPO;
+import com.jwsystem.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jwsystem.util.CommonUtil;
 import com.jwsystem.util.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static com.jwsystem.entity.course.RelaCourseStudentPO.SELECTED;
 
 /**
  * <p>
@@ -36,6 +42,14 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
     CollegeDaoMP collegeDaoMP;
     @Autowired
     TransUtil transUtil;
+    @Autowired
+    ClassroomServiceMP classroomServiceMP;
+    @Autowired
+    TimepartServiceMP timepartServiceMP;
+    @Autowired
+    RelaCourseStudentServiceMP relaCourseStudentServiceMP;
+    @Autowired
+    CommonUtil commonUtil;
     @Override
     public CoursepartDTO selectCoursepartByCourseId(int courseId) {
         return transUtil.CpPOtoCpDTO(coursepartDaoMP.selectById(courseId));
@@ -83,4 +97,107 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
         }
         return coursepartDTOList;
     }
+
+    @Override
+    public void solveExceededCourse() {
+        //取出本学期开设的全部课程
+        String year = commonUtil.getSchoolYear();
+        String semester = commonUtil.getSemester();
+        List<CoursepartPO> coursepartPOList = coursepartDaoMP.xxx(year,semester);
+        for (CoursepartPO c:
+             coursepartPOList) {
+            int capacity = Integer.parseInt(c.getCapacity());
+            //取出这门课所有的选课记录
+            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.xxx(c.getCourseId(),SELECTED);// TODO: 2022/5/4 根据课程id查出已选的relaCourseStudent对象List并返回
+            int selected = courseStudentPOS.size();
+            if(capacity < selected){
+                //人数超出容量，踢人（被踢掉的人的选课记录会被删除）
+                //根据relaCourseStudentPO里自带的学号，按年级进行排序
+                courseStudentPOS.sort(Comparator.comparing(RelaCourseStudentPO::getStudentNum).reversed());
+
+                //将不同年级的申请分别存在不同的List里
+                int currentGrade = Integer.parseInt(courseStudentPOS.get(0).getStudentNum().substring(0,2));
+                int cnt = 0;
+                int start = 0;
+                Map<Integer,List<RelaCourseStudentPO>> map = new HashMap<>();
+                for (RelaCourseStudentPO rela:
+                     courseStudentPOS) {
+                    int grade = Integer.parseInt(rela.getStudentNum().substring(0,2));
+                    if(grade<currentGrade){
+                        //说明已经进入了第一年级的选课信息部分，将之前一个年级的部分截取出来
+                        List<RelaCourseStudentPO> temp = new ArrayList<>(courseStudentPOS.subList(start,cnt));
+                        map.put(currentGrade,temp);
+                        start = cnt;
+                        currentGrade = grade;
+                    }
+                    cnt++;
+                }
+
+                int total = 0;
+                boolean flag = false;
+                List<Integer> verified = new ArrayList<>();
+                List<Integer> highToLow = new ArrayList<>(map.keySet());
+                //map.keyset默认从小到大，这里做一个反转
+                highToLow.sort(Comparator.comparing(Integer::intValue).reversed());
+
+                for (Integer key:
+                     highToLow) {
+                    //将每个年级的申请顺序都打乱，保证之后删除多余部分时是随机删除的
+                    Collections.shuffle(map.get(key));
+                    total+=map.get(key).size();
+
+                    if(total<capacity){
+                        //将可以全部选入的年级记录
+                        verified.add(key);
+                    }
+                    else if (total == capacity){
+                        //加入当前年级的选课申请后，恰好达到课程容量，则删除后面年级的选课申请
+                        verified.add(key);
+                        flag = true;
+                        break;
+                    }
+                    else{
+                        //加入当前年级的申请后超了，说明要在当前年级删除一部分
+                        verified.add(key);
+                        break;
+                    }
+                }
+
+                //把要留下的数据从courseStudentPOS里删除，留在courseStudentPOS里的都是要从数据库删除掉的
+                if(flag){
+                    //恰好加入某个年级的申请后人数刚好，则将没有选中的年级的申请都留下
+                    for(Integer key:
+                    verified){
+                        courseStudentPOS.removeAll(map.get(key));
+                    }
+                }
+                else{
+                    //需要对verified最后那个年级取一部分人
+                    if(verified.isEmpty()){
+                        //最高年级的选课就已经超了
+                        int key = highToLow.get(0);
+                        courseStudentPOS.removeAll(map.get(key).subList(0,capacity));
+                    }
+                    else {
+                        List<Integer> temp = new ArrayList<>(verified.subList(0,verified.size()-1));
+                        int count = 0;
+                        for(Integer key:
+                                temp){
+                            count+=map.get(key).size();
+                            courseStudentPOS.removeAll(map.get(key));
+                        }
+                        //最后一个年级只删除部分
+                        courseStudentPOS.removeAll(map.get(verified.get(verified.size()-1)).subList(0,capacity-count));
+                    }
+                }
+
+                //将被踢除的数据删去
+                for(RelaCourseStudentPO courseStudentPOS1:
+                courseStudentPOS){
+                    relaCourseStudentServiceMP.removeById(courseStudentPOS1.getId());
+                }
+            }
+        }
+    }
+
 }

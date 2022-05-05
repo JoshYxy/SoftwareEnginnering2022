@@ -27,6 +27,10 @@ public class CoursepartPO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static String GENERAL = "通选课程";
+    public static String ONE_MAJOR = "专业课程";
+    public static String PART_OF_MAJORS = "面向部分专业课程";
+
     /**
      * 课程id
      */
