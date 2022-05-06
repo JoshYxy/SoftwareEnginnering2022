@@ -1,5 +1,6 @@
 package com.jwsystem.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.CourseDTO;
 import com.jwsystem.dto.CoursepartDTO;
@@ -78,7 +79,7 @@ public class CourseController extends MainController{
         int roomCap = Integer.parseInt(classroomServiceImpMP.selectByRoomNum(buildingId,courseVO.getRoomNum()).getCapacity());
 
         //根据课程id找到当前已选人数
-        int selected = relaCourseStudentServiceImpMP.xxx(courseVO.getCourseId(),SELECTED).size();
+        int selected = relaCourseStudentServiceImpMP.selectStuNumberSelectCourse(courseVO.getCourseId(),SELECTED);
 
         return (courseCap<=roomCap) && (courseCap>=selected);
     }
@@ -184,7 +185,7 @@ public class CourseController extends MainController{
     @DeleteMapping("")
     public Result deleteCourse(@RequestBody CourseVO courseVO ){
         //先根据课程id查询该课程是否有人选过或修读过，比如返回list，list不为空
-        List<RelaCourseStudentPO> list = relaCourseStudentServiceImpMP.xxx(courseVO.getCourseId());
+        List<RelaCourseStudentPO> list = relaCourseStudentServiceImpMP.selectByCourseId(courseVO.getCourseId());
         if(!list.isEmpty()){
             response.setStatus(WRONG_RES);
             return Result.fail("删除失败，该门课程已被修读过选过");
@@ -243,7 +244,8 @@ public class CourseController extends MainController{
                 courseVO.getIsGeneral());
         CoursepartPO coursepartPO = transUtil.CpDTOtoCpPO(coursePart);
         // TODO: 2022/5/3 MP根据课程num和name找到同类课程，并只对上面几个字段进行更新。在这里增加更新方法
-        coursepartServiceImpMP.xxx(courseVO.getCourseName(),courseVO.getCourseNum(),coursepartPO);
+        //传入原先的课程名称和课程序号
+        coursepartServiceImpMP.updateCourseInfo(courseVO.getCourseName(),courseVO.getCourseNum(),coursepartPO);
 
         return Result.succ("修改课程信息成功：同类课程信息已更新");
     }
@@ -448,7 +450,7 @@ public class CourseController extends MainController{
         }
 
         //根据课程id找到当前已选人数
-        int selected = relaCourseStudentServiceImpMP.xxx(courseId).size;
+        int selected = relaCourseStudentServiceImpMP.selectStuNumberSelectCourse(courseId,SELECTED);
 
         if(capacity < selected){
             response.setStatus(WRONG_DATA);
@@ -456,7 +458,7 @@ public class CourseController extends MainController{
         }
 
         //单独修改courseId对应coursepart的capacity字段
-        coursepartServiceImpMP.updatexxx(courseId,Integer.toString(capacity));
+        coursepartServiceImpMP.updateCapacity(Integer.toString(capacity),courseId);
         return Result.succ("修改容量成功");
     }
 
@@ -599,7 +601,7 @@ public class CourseController extends MainController{
 
         int courseId = map.get("courseId");
         //根据课程id取出已选或已修名单（当前学期为已选，以前的课为已修，因此只传了id进去）
-        List<RelaCourseStudentPO> relaCourseStudentPOList = relaCourseStudentServiceImpMP.xxx(courseId);
+        List<RelaCourseStudentPO> relaCourseStudentPOList = relaCourseStudentServiceImpMP.selectByCourseId(courseId);
 
         List<SelectedStudentVO> selectedStudentVOS = new ArrayList<>();
 
@@ -622,7 +624,8 @@ public class CourseController extends MainController{
     @GetMapping("/student/requests")
     public Result getStuRequests(){
         //取出全部未审核的选课申请
-        List<ReqStudentPO> reqStudentPOS = reqStudentServiceMP.xxx(dealt=false);
+        List<ReqStudentPO> reqStudentPOS = reqStudentServiceMP.list(Wrappers.lambdaQuery(ReqStudentPO.class)
+                .eq(ReqStudentPO::getDealt,false));
 
         List<ReqStudentVO> reqStudentVOS = new ArrayList<>();
         for (ReqStudentPO r:
@@ -640,7 +643,11 @@ public class CourseController extends MainController{
         boolean res = (boolean) map.get("approved");
         Integer id = (Integer) map.get("requestId");
         //更新对应学生请求数据为已审核，对应审核结果
-        reqStudentServiceMP.update(id,res,dealt=true);
+        //reqStudentServiceMP.update(id,res,dealt=true);
+        reqStudentServiceMP.update(Wrappers.lambdaUpdate(ReqStudentPO.class)
+                .eq(ReqStudentPO::getId,id)
+                .set(ReqStudentPO::getApproved,res)
+                .set(ReqStudentPO::getDealt,true));
 
         ReqStudentPO reqStudentPO = reqStudentServiceMP.getById(id);
         int courseId = reqStudentPO.getCourseId();
@@ -655,7 +662,7 @@ public class CourseController extends MainController{
             int roomCap = Integer.parseInt(classroomServiceImpMP.selectByRoomNum(buildingId,timepartDTOList.get(0).getRoomNum()).getCapacity());
 
             //找到当前已选人数
-            int selected = relaCourseStudentServiceImpMP.xxx(courseId,SELECTED).size;
+            int selected = relaCourseStudentServiceImpMP.selectStuNumberSelectCourse(courseId,SELECTED);
 
             //不能加，返回失败结果
             if(selected >= roomCap){
@@ -666,11 +673,11 @@ public class CourseController extends MainController{
                 //能加，判断对应课程是否为学生能选的（此处只需要判断学生是否已经修过/选了同类课）
                 //根据课程的名字和编号返回同类课程
                 CoursepartPO coursepartPO = coursepartServiceImpMP.getById(reqStudentPO.getCourseId());
-                List<CoursepartPO> coursepartPOList = coursepartServiceImpMP.selectCoursepartByNameAndNum(coursepartPO.getCourseName(),coursepartPO.getCourseNum());
+                List<CoursepartPO> coursepartPOList = coursepartServiceImpMP.selectSameTypeCourse(coursepartPO.getCourseNum(),coursepartPO.getCourseName());
                 for (CoursepartPO c:
                         coursepartPOList) {
                     //根据课程的id和学生num查找是否有对应的选课/修读记录，有的话就说明已选同类/已修读，则不能选
-                    List<RelaCourseStudentPO> relaCourseStudentPOS = relaCourseStudentServiceImpMP.xxx(c.getCourseId(),reqStudentPO.getStudentNum());
+                    List<RelaCourseStudentPO> relaCourseStudentPOS = relaCourseStudentServiceImpMP.selectRecordByCourseAndStu(c.getCourseId(),reqStudentPO.getStudentNum());
                     if(!relaCourseStudentPOS.isEmpty()){
                         response.setStatus(WRONG_DATA);
                         return Result.fail("申请通过失败：学生不能选择已修读的课程或已选过同类课程的课程");
@@ -680,7 +687,7 @@ public class CourseController extends MainController{
                 int capacity = Integer.parseInt(coursepartServiceImpMP.getById(courseId).getCapacity());
                 capacity++;
                 //更新对应课程的容量
-                coursepartServiceImpMP.updatexx(courseId,Integer.toString(capacity));
+                coursepartServiceImpMP.updateCapacity(Integer.toString(capacity),courseId);
                 //增加该学生的选课信息
                 RelaCourseStudentPO relaCourseStudentPO = new RelaCourseStudentPO(
                         null,
@@ -706,7 +713,7 @@ public class CourseController extends MainController{
     public Result blurSearch(@RequestBody Map<String,String>map){
         String word = map.get("search");
         //根据word对课程代码、课程名称、教师字段模糊查询，返回coursepartPO的List
-        List<CoursepartPO> temp = coursepartServiceImpMP.xxx(word);
+        List<CoursepartPO> temp = coursepartServiceImpMP.conditionSearch(word);
 
         if(!temp.isEmpty()){
             List<CourseVO> searched = new ArrayList<>();

@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 02/05/2022 15:17:11
+ Date: 06/05/2022 12:57:31
 */
 
 SET NAMES utf8mb4;
@@ -128,8 +128,8 @@ CREATE TABLE `coursepart`  (
   UNIQUE INDEX `course_id`(`course_id`) USING BTREE,
   INDEX `fk_teacher_num`(`teacher_num`) USING BTREE,
   INDEX `fk_course_college_id`(`college_id`) USING BTREE,
-  CONSTRAINT `fk_tea_course` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_course_college_id` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_course_college_id` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_tea_course` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -138,7 +138,7 @@ CREATE TABLE `coursepart`  (
 INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', NULL, NULL, '0', 5, '20000001');
 INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', NULL, NULL, '1', 5, '20000001');
 INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', NULL, NULL, '1', 5, '20000002');
-INSERT INTO `coursepart` VALUES (4, 'SOFT130040.01', '离散数学', '30', '3', '不是一般人能上懂的课', '100', NULL, NULL, '0', 5, '20000002');
+INSERT INTO `coursepart` VALUES (4, 'SOFT130040.01', '数学', '30', '3', '不是一般人能上懂的课', '100', NULL, NULL, '0', 5, '20000002');
 
 -- ----------------------------
 -- Table structure for major
@@ -180,6 +180,7 @@ CREATE TABLE `rela_course_major`  (
 -- ----------------------------
 -- Records of rela_course_major
 -- ----------------------------
+INSERT INTO `rela_course_major` VALUES (1, 1, 2);
 
 -- ----------------------------
 -- Table structure for rela_course_student
@@ -200,6 +201,8 @@ CREATE TABLE `rela_course_student`  (
 -- ----------------------------
 -- Records of rela_course_student
 -- ----------------------------
+INSERT INTO `rela_course_student` VALUES (1, 2, '220001', '已选');
+INSERT INTO `rela_course_student` VALUES (2, 3, '220002', '已修');
 
 -- ----------------------------
 -- Table structure for req_coursepart
@@ -221,9 +224,9 @@ CREATE TABLE `req_coursepart`  (
   UNIQUE INDEX `course_id`(`request_id`) USING BTREE,
   INDEX `fk_req_teacher_num`(`teacher_num`) USING BTREE,
   INDEX `fk_req_college`(`college_id`) USING BTREE,
-  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_req_college` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+  CONSTRAINT `fk_req_college` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_id` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of req_coursepart
@@ -231,6 +234,9 @@ CREATE TABLE `req_coursepart`  (
 INSERT INTO `req_coursepart` VALUES (1, 'SOFT130050.01', '高级web技术', '30', '2', '无', '30', '1', NULL, NULL, 2, '20000001');
 INSERT INTO `req_coursepart` VALUES (2, 'SOFT130050.02', '卓越软件', '30', '2', '无', '40', '1', NULL, NULL, 2, '20000002');
 INSERT INTO `req_coursepart` VALUES (3, 'SOFT130050.03', '面向对象设计', '40', '2', '无', '20', '1', NULL, NULL, 2, '20000002');
+INSERT INTO `req_coursepart` VALUES (13, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
+INSERT INTO `req_coursepart` VALUES (14, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
+INSERT INTO `req_coursepart` VALUES (15, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
 
 -- ----------------------------
 -- Table structure for req_student
@@ -241,7 +247,6 @@ CREATE TABLE `req_student`  (
   `course_id` int(0) NOT NULL COMMENT '课程',
   `student_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学生',
   `reason` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申请理由',
-  `time` datetime(0) NULL DEFAULT NULL COMMENT '申请时间',
   `dealt` tinyint(0) NULL DEFAULT NULL COMMENT '处理状态',
   `approved` tinyint(0) NULL DEFAULT NULL COMMENT '审批是否通过',
   PRIMARY KEY (`id`) USING BTREE,
@@ -254,6 +259,7 @@ CREATE TABLE `req_student`  (
 -- ----------------------------
 -- Records of req_student
 -- ----------------------------
+INSERT INTO `req_student` VALUES (1, 1, '220001', '111', 1, 1);
 
 -- ----------------------------
 -- Table structure for req_teacher
@@ -272,14 +278,17 @@ CREATE TABLE `req_teacher`  (
   INDEX `fk_room_req`(`room_id`) USING BTREE,
   CONSTRAINT `fk_request_room_id` FOREIGN KEY (`room_id`) REFERENCES `classroom` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_request_tea` FOREIGN KEY (`teacher_num`) REFERENCES `teacher` (`number`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of req_teacher
 -- ----------------------------
-INSERT INTO `req_teacher` VALUES (1, 'add', NULL, '20000002', 0, 0, 1);
-INSERT INTO `req_teacher` VALUES (2, 'add', NULL, '20000002', 0, 0, 2);
+INSERT INTO `req_teacher` VALUES (1, 'add', NULL, '20000002', 1, 0, 1);
+INSERT INTO `req_teacher` VALUES (2, 'add', NULL, '20000002', 1, 0, 2);
 INSERT INTO `req_teacher` VALUES (3, 'add', NULL, '20000002', 0, 0, 3);
+INSERT INTO `req_teacher` VALUES (13, 'add', NULL, '20000002', 0, 0, 3);
+INSERT INTO `req_teacher` VALUES (14, 'add', NULL, '20000002', 0, 0, 3);
+INSERT INTO `req_teacher` VALUES (15, 'add', NULL, '20000002', 0, 0, 3);
 
 -- ----------------------------
 -- Table structure for req_timepart
@@ -299,7 +308,7 @@ CREATE TABLE `req_timepart`  (
   INDEX `fk_req_building_room_num`(`room_id`) USING BTREE,
   CONSTRAINT `fk_request_id` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_room_id` FOREIGN KEY (`room_id`) REFERENCES `classroom` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of req_timepart
@@ -307,6 +316,9 @@ CREATE TABLE `req_timepart`  (
 INSERT INTO `req_timepart` VALUES (1, 1, '20000002', 5, '1 2 3', 1);
 INSERT INTO `req_timepart` VALUES (2, 2, '20000002', 5, '4 5', 2);
 INSERT INTO `req_timepart` VALUES (3, 3, '20000002', 6, '3 4', 3);
+INSERT INTO `req_timepart` VALUES (10, 13, '20000002', 6, '3 4', 3);
+INSERT INTO `req_timepart` VALUES (11, 14, '20000002', 6, '3 4', 3);
+INSERT INTO `req_timepart` VALUES (12, 15, '20000002', 6, '3 4', 3);
 
 -- ----------------------------
 -- Table structure for student
@@ -334,7 +346,8 @@ CREATE TABLE `student`  (
 INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗', '123456', '19012127754', '220001@fudan.edu.cn', 'studying', 1, 5);
 INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', 2, 5);
 INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
-INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', 'Ww111', '19850336668', 'wwen75421@qq.com', 'studying', 1, 5);
+INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', '111222', '19850336668', 'wwen75421@qq.com', 'studying', 1, 5);
+INSERT INTO `student` VALUES ('student', '220009', '311321200106070023', 'dddd', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
 
 -- ----------------------------
 -- Table structure for teacher
@@ -360,11 +373,12 @@ CREATE TABLE `teacher`  (
 -- ----------------------------
 -- Records of teacher
 -- ----------------------------
-INSERT INTO `teacher` VALUES ('teacher', '20000001', '410622197912093492', '老师1', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 1, 5);
-INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '老师2', '123456', '18958772236', 'pxx@163.com', 'working', 2, 5);
+INSERT INTO `teacher` VALUES ('teacher', '20000001', '354683199008097640', '老师2', 'yyk', '18958772236', 'pxx@163.com', 'working', 2, 5);
+INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '老师2', 'yyk', '18958772236', 'pxx@163.com', 'working', 2, 5);
 INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '老师3', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', 3, 6);
 INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '老师4', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', 4, 4);
 INSERT INTO `teacher` VALUES ('teacher', '20000005', '211298200110034567', '老师5', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 1, 5);
+INSERT INTO `teacher` VALUES ('teacher', '20000006', '410622197912093496', '老师6', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 2, 5);
 
 -- ----------------------------
 -- Table structure for timepart
@@ -382,7 +396,7 @@ CREATE TABLE `timepart`  (
   INDEX `fk_timepart_classroom`(`room_id`) USING BTREE,
   CONSTRAINT `fk_course_id_timepart` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_timepart_classroom` FOREIGN KEY (`room_id`) REFERENCES `classroom` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of timepart
@@ -390,7 +404,12 @@ CREATE TABLE `timepart`  (
 INSERT INTO `timepart` VALUES (1, 1, '20000001', 0, '1 2 3', 1);
 INSERT INTO `timepart` VALUES (2, 2, '20000001', 1, '4 5', 2);
 INSERT INTO `timepart` VALUES (3, 3, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (4, 4, '20000002', 4, '3 4', 4);
+INSERT INTO `timepart` VALUES (5, 3, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (11, 4, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (12, 4, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (13, 4, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (14, 4, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (15, 4, '20000002', 2, '1 2', 3);
 
 -- ----------------------------
 -- Table structure for times

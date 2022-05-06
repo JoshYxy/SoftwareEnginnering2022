@@ -31,5 +31,16 @@ public interface CoursepartServiceMP extends IService<CoursepartPO> {
     List<CoursepartDTO> selectAllCoursepartByTeacherNum(String teacherNum);
 
     void solveExceededCourse();
-    //根据requestId删除requesttea 直接用service方法
+
+    void updateCourseInfo(String courseName, String courseNum, CoursepartPO coursepartPO);
+
+    List<CoursepartPO> conditionSearch(String word);
+
+    void updateCapacity(String capacity, int courseId);
+
+    List<CoursepartPO> selectSameTypeCourse(String courseNum, String courseName);
+
+    List<CoursepartPO> selectByYearAndSemester(String schoolYear, String semester);
+
+    List<CoursepartPO> selectCoursepartByNameAndNum(String courseName, String courseNum);
 }

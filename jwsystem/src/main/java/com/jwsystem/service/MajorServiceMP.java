@@ -24,4 +24,6 @@ public interface MajorServiceMP extends IService<MajorPO> {
     //删除专业
     void deleteMajor(MajorDTO majorDTO);
     boolean findOthersByMajor(MajorDTO majorDTO);
+
+    MajorDTO selectMajorById(Integer majorId);
 }

@@ -1,5 +1,6 @@
 package com.jwsystem.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
@@ -90,7 +91,7 @@ public class StudentController extends MainController{
         String semester = commonUtil.getSemester();
 
         //返回当前学年学期的所有coursepartPO
-        List<CoursepartPO> coursepartPOList = coursepartServiceMP.xxx(schoolYear,semester);
+        List<CoursepartPO> coursepartPOList = coursepartServiceMP.selectByYearAndSemester(schoolYear,semester);
 
         List<CourseVO> courses = new ArrayList<>();
 
@@ -112,7 +113,7 @@ public class StudentController extends MainController{
         String number = getNumByToken();
 
         //根据学号查找所有已选课程,注意不要是已修
-        List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.xxx(number,SELECTED);
+        List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.selectCourseWithStatus(number,SELECTED);
 
         List<CourseVO> courseVOS = new ArrayList<>();
 
@@ -131,7 +132,7 @@ public class StudentController extends MainController{
         String number = getNumByToken();
 
         //根据学号查找所有已修课程,注意不要是已选
-        List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.xxx(number,STUDIED);
+        List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.selectCourseWithStatus(number,STUDIED);
 
         if(courseStudentPOS.isEmpty()){
             response.setStatus(WRONG_RES);
@@ -163,11 +164,12 @@ public class StudentController extends MainController{
 
         //判断是否已经修过/选过同类课程
         //根据课程的名字和编号返回同类课程
-        List<CoursepartPO> coursepartPOList = coursepartServiceMP.selectCoursepartByNameAndNum(coursepartPO.getCourseName(),coursepartPO.getCourseNum());
+        List<CoursepartPO> coursepartPOList =
+                coursepartServiceMP.selectCoursepartByNameAndNum(coursepartPO.getCourseName(),coursepartPO.getCourseNum());
         for (CoursepartPO c:
              coursepartPOList) {
             //根据课程的id和学生num查找是否有对应的选课/修读记录，有的话就说明已选同类/已修读，则不能选
-            List<RelaCourseStudentPO> relaCourseStudentPOS = relaCourseStudentServiceMP.xxx(c.getCourseId(),num);
+            List<RelaCourseStudentPO> relaCourseStudentPOS = relaCourseStudentServiceMP.selectRecordByCourseAndStu(c.getCourseId(),num);
             if(!relaCourseStudentPOS.isEmpty()){
                 response.setStatus(WRONG_DATA);
                 return Result.fail("选课失败：不能选择已修读的课程或已选过同类课程的课程");
@@ -201,7 +203,7 @@ public class StudentController extends MainController{
         if(curr.equals(ROUND_TWO_OPEN)){
             //判断课程是否已选满
             int capacity = Integer.parseInt(coursepartPO.getCapacity());
-            int selected = relaCourseStudentServiceMP.xxx(courseId,SELECTED).size();// TODO: 2022/5/4 根据课程id查出已选的relaCourseStudent对象List并返回
+            int selected = relaCourseStudentServiceMP.selectStuNumberSelectCourse(courseId,SELECTED);// TODO: 2022/5/4 根据课程id查出已选的relaCourseStudent对象List并返回
             if(capacity <= selected){
                 response.setStatus(WRONG_DATA);
                 return Result.fail("二轮选课失败：该门课程已被选满");
@@ -237,7 +239,7 @@ public class StudentController extends MainController{
         int courseId = map.get("courseId");
 
         // TODO: 2022/5/4 根据课程id和学生num删除对应的选课请求
-        relaCourseStudentServiceMP.deleteByCourseIdAndNum(courseId,num);
+        relaCourseStudentServiceMP.deleteByCourseIdAndStuNum(courseId,num);
 
         return Result.succ("退选成功");
     }
@@ -290,7 +292,7 @@ public class StudentController extends MainController{
              coursepartPOList) {
             int capacity = Integer.parseInt(course.getCapacity());
             //找出该门课程的选课人数
-            int selected = relaCourseStudentServiceMP.xxx(course.getCourseId(),SELECTED).size();
+            int selected = relaCourseStudentServiceMP.selectStuNumberSelectCourse(course.getCourseId(),SELECTED);
             if (capacity == selected) {
                 fullCourse.add(course.getCourseId());
             }
@@ -327,7 +329,6 @@ public class StudentController extends MainController{
                 courseId,
                 getNumByToken(),
                 reason,
-                null,
                 0,
                 0
         );
@@ -340,7 +341,8 @@ public class StudentController extends MainController{
     public Result getRequest(){
         String num = getNumByToken();
         //根据学号获得全部选课申请并返回
-        List<ReqStudentPO> reqStudentPOS = reqStudentServiceMP.xxx(num);
+        List<ReqStudentPO> reqStudentPOS = reqStudentServiceMP.list(Wrappers.lambdaQuery(ReqStudentPO.class)
+                .eq(ReqStudentPO::getStudentNum,num));
         List<ReqStudentVO> reqStudentVOS = new ArrayList<>();
         for (ReqStudentPO r:
              reqStudentPOS) {
@@ -392,7 +394,7 @@ public class StudentController extends MainController{
         //先搜出来，再判断可选，最后返回
         String word = map.get("search");
         //根据word对课程代码、课程名称、教师字段模糊查询，返回coursepartPO的List
-        List<CoursepartPO> temp = coursepartServiceImpMP.xxx(word);
+        List<CoursepartPO> temp = coursepartServiceImpMP.conditionSearch(word);
 
         List<Integer> fullCourse = new ArrayList<>();
         for (CoursepartPO course:

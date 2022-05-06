@@ -1,6 +1,7 @@
 package com.jwsystem.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dao.CollegeDaoMP;
 import com.jwsystem.dao.StudentDaoMP;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>
@@ -90,4 +92,10 @@ public class MajorServiceImpMP extends ServiceImpl<MajorDaoMP, MajorPO> implemen
 
         return res;
     }
+
+    @Override
+    public MajorDTO selectMajorById(Integer majorId) {
+        return transUtil.MajorPOtoDTO(majorDaoMP.selectById(majorId));
+    }
+
 }

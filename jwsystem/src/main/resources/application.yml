@@ -4,7 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/lab4?useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 10291004
+    password: 1
 # mybatis 配置内容
 mybatis:
   mapper-locations: classpath:mapper/*.xml # 配置 Mapper XML 地址

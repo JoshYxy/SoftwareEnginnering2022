@@ -1,16 +1,17 @@
 package com.jwsystem.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.jwsystem.dao.CollegeDaoMP;
-import com.jwsystem.dao.ReqCoursepartDaoMP;
+import com.jwsystem.dao.*;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.TimepartDTO;
 import com.jwsystem.entity.college.CollegePO;
 import com.jwsystem.entity.course.CoursepartPO;
-import com.jwsystem.dao.CoursepartDaoMP;
 import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.course.TimepartPO;
+import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.service.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jwsystem.util.CommonUtil;
@@ -42,14 +43,16 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
     CollegeDaoMP collegeDaoMP;
     @Autowired
     TransUtil transUtil;
-    @Autowired
-    ClassroomServiceMP classroomServiceMP;
-    @Autowired
-    TimepartServiceMP timepartServiceMP;
-    @Autowired
-    RelaCourseStudentServiceMP relaCourseStudentServiceMP;
+    //@Autowired
+   // ClassroomServiceMP classroomServiceMP;
+   // @Autowired
+    //TimepartServiceMP timepartServiceMP;
     @Autowired
     CommonUtil commonUtil;
+    @Autowired
+    TeacherDaoMP teacherDaoMP;
+    @Autowired
+    RelaCourseStudentDaoMP relaCourseStudentDaoMP;
     @Override
     public CoursepartDTO selectCoursepartByCourseId(int courseId) {
         return transUtil.CpPOtoCpDTO(coursepartDaoMP.selectById(courseId));
@@ -103,12 +106,16 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
         //取出本学期开设的全部课程
         String year = commonUtil.getSchoolYear();
         String semester = commonUtil.getSemester();
-        List<CoursepartPO> coursepartPOList = coursepartDaoMP.xxx(year,semester);
+        List<CoursepartPO> coursepartPOList = coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
+                .eq(CoursepartPO::getYear,year)
+                .eq(CoursepartPO::getSemester,semester));
         for (CoursepartPO c:
              coursepartPOList) {
             int capacity = Integer.parseInt(c.getCapacity());
             //取出这门课所有的选课记录
-            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceMP.xxx(c.getCourseId(),SELECTED);// TODO: 2022/5/4 根据课程id查出已选的relaCourseStudent对象List并返回
+            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentDaoMP.selectList(Wrappers.lambdaQuery(RelaCourseStudentPO.class)
+                    .eq(RelaCourseStudentPO::getCourseId,c.getCourseId())
+                    .eq(RelaCourseStudentPO::getStatus,SELECTED)); // TODO: 2022/5/4 根据课程id查出已选的relaCourseStudent对象List并返回
             int selected = courseStudentPOS.size();
             if(capacity < selected){
                 //人数超出容量，踢人（被踢掉的人的选课记录会被删除）
@@ -194,10 +201,70 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
                 //将被踢除的数据删去
                 for(RelaCourseStudentPO courseStudentPOS1:
                 courseStudentPOS){
-                    relaCourseStudentServiceMP.removeById(courseStudentPOS1.getId());
+                    relaCourseStudentDaoMP.deleteById(courseStudentPOS1.getId());
                 }
             }
         }
     }
+
+    @Override
+    public void updateCourseInfo(String courseName, String courseNum, CoursepartPO coursepartPO) {
+        coursepartDaoMP.update(null,Wrappers.lambdaUpdate(CoursepartPO.class)
+                .eq(CoursepartPO::getCourseNum,courseNum)
+                .eq(CoursepartPO::getCourseName,courseName)
+                .set(CoursepartPO::getCourseNum,coursepartPO.getCourseNum())
+                .set(CoursepartPO::getCourseName,coursepartPO.getCourseName())
+                .set(CoursepartPO::getCourseInfo,coursepartPO.getCourseInfo())
+                .set(CoursepartPO::getYear,coursepartPO.getYear())
+                .set(CoursepartPO::getSemester,coursepartPO.getSemester()));
+    }
+
+    @Override
+    public List<CoursepartPO> conditionSearch(String word) {
+        //根据课程代码、课程名称模糊查询
+        LambdaQueryWrapper<CoursepartPO> queryWrapper = new LambdaQueryWrapper<>();
+        List<CoursepartPO> coursepartPOList = coursepartDaoMP.selectList(queryWrapper.and(c -> c.like(CoursepartPO::getCourseNum, word)
+                .or().like(CoursepartPO::getCourseName, word)));
+        //根据教师名称模糊查询
+        LambdaQueryWrapper<TeacherPO> queryWrapperTea = new LambdaQueryWrapper<>();
+        List<TeacherPO> teacherPOList = teacherDaoMP.selectList(queryWrapperTea.like(TeacherPO::getName,word));
+
+        for (TeacherPO t:
+             teacherPOList) {
+            coursepartPOList.addAll(coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
+                    .eq(CoursepartPO::getTeacherNum,t.getNumber())));
+        }
+
+        return coursepartPOList;
+    }
+
+    @Override
+    public void updateCapacity(String capacity, int courseId) {
+        coursepartDaoMP.update(null,Wrappers.lambdaUpdate(CoursepartPO.class)
+                .eq(CoursepartPO::getCourseId,courseId)
+                .set(CoursepartPO::getCapacity,capacity));
+    }
+
+    @Override
+    public List<CoursepartPO> selectSameTypeCourse(String courseNum, String courseName) {
+        return coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
+                .eq(CoursepartPO::getCourseNum,courseNum)
+                .eq(CoursepartPO::getCourseName,courseName));
+    }
+
+    @Override
+    public List<CoursepartPO> selectByYearAndSemester(String schoolYear, String semester) {
+        return coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
+                .eq(CoursepartPO::getYear,schoolYear)
+                .eq(CoursepartPO::getSemester,semester));
+    }
+
+    @Override
+    public List<CoursepartPO> selectCoursepartByNameAndNum(String courseName, String courseNum) {
+        return coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
+                .eq(CoursepartPO::getCourseName,courseName)
+                .eq(CoursepartPO::getCourseNum,courseNum));
+    }
+
 
 }

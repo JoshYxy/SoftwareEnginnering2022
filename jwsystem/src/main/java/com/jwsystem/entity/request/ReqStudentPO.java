@@ -49,11 +49,6 @@ public class ReqStudentPO implements Serializable {
     private String reason;
 
     /**
-     * 申请时间
-     */
-    private LocalDateTime time;
-
-    /**
      * 处理状态
      */
     private Integer dealt;

@@ -250,7 +250,7 @@ public class TeacherController extends MainController{
 
         int courseId = map.get("courseId");
         //根据课程id取出已选或已修名单（当前学期为已选，以前的课为已修，因此只传了id进去）
-        List<RelaCourseStudentPO> relaCourseStudentPOList = relaCourseStudentServiceMP.xxx(courseId);
+        List<RelaCourseStudentPO> relaCourseStudentPOList = relaCourseStudentServiceMP.selectByCourseId(courseId);
 
         List<SelectedStudentVO> selectedStudentVOS = new ArrayList<>();
 

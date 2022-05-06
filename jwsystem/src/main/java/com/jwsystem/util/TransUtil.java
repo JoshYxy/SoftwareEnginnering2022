@@ -1,6 +1,7 @@
 package com.jwsystem.util;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.MajorDTO;
 import com.jwsystem.dto.RequestDTO;
@@ -125,12 +126,15 @@ public class TransUtil {
         if(needSelect){
             //从relaCourseStudent表里查出已选人数（注意不要已修读的，即status为已选）
             //返回list就行
-            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceImpMP.xxx(coursePart.getRelationId(),SELECTED);
+            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseStudentPO.class)
+                    .eq(RelaCourseStudentPO::getCourseId,coursePart.getRelationId())
+                    .eq(RelaCourseStudentPO::getStatus,SELECTED));
             VO.setSelected(Integer.toString(courseStudentPOS.size()));
 
             //不是通选课，根据courseId查询可选专业
             if(!coursePart.getIsGeneral().equals(GENERAL)){
-                List<RelaCourseMajorPO> courseMajorPOS = relaCourseMajorServiceImpMP.xxx(coursePart.getRelationId());
+                List<RelaCourseMajorPO> courseMajorPOS = relaCourseMajorServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseMajorPO.class)
+                        .eq(RelaCourseMajorPO::getCourseId,coursePart.getRelationId()));
                 //创建对应数量的二维数组
                 String[][] majors = new String[courseMajorPOS.size()][2];
                 int i=0;
@@ -613,7 +617,6 @@ public class TransUtil {
                 reqStudentVO.getCourseVO().getCourseId(),
                 num,
                 reqStudentVO.getApplyReason(),
-                null,
                 reqStudentVO.isDealt()?1:0,
                 reqStudentVO.isApproved()?1:0
         );
