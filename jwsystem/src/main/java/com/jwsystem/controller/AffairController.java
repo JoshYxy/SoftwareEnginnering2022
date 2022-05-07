@@ -249,7 +249,6 @@ public class AffairController extends MainController{
         return Result.succ("修改成功");
     }
 
-
     //管理员增加楼
     @PostMapping("/building/new")
     public Result addBuilding(@RequestBody BuildingPO building){
@@ -306,7 +305,6 @@ public class AffairController extends MainController{
         classroomServiceImpMP.deleteByBuildingId(buildingPO.getId());
         return Result.succ("删除成功");
     }
-
 
     //管理员增加教室
     @PostMapping("/room/new")

@@ -612,7 +612,7 @@ public class TransUtil {
     }
 
     public ReqStudentPO ReqStuVOtoPO(ReqStudentVO reqStudentVO,String num) {
-        ReqStudentPO reqStudentPO = new ReqStudentPO(
+        return new ReqStudentPO(
                 reqStudentVO.getRequestId(),
                 reqStudentVO.getCourseVO().getCourseId(),
                 num,
@@ -620,11 +620,10 @@ public class TransUtil {
                 reqStudentVO.isDealt()?1:0,
                 reqStudentVO.isApproved()?1:0
         );
-        return reqStudentPO;
     }
 
     public ReqStudentVO ReqStuPOtoVO(ReqStudentPO reqStudentPO){
-        ReqStudentVO reqStudentVO = new ReqStudentVO(
+        return new ReqStudentVO(
                 reqStudentPO.getId(),
                 reqStudentPO.getReason(),
                 getCourseById(reqStudentPO.getCourseId(),false),
@@ -632,6 +631,5 @@ public class TransUtil {
                 reqStudentPO.getDealt() == 1,
                 reqStudentPO.getApproved() == 1
         );
-        return reqStudentVO;
     }
 }

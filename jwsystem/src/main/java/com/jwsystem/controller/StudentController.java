@@ -108,7 +108,7 @@ public class StudentController extends MainController{
     }
 
     //获得自己的已选课程
-    @GetMapping("/selectedList")
+    @GetMapping("/course/selected")
     public Result selected(){
         String number = getNumByToken();
 
@@ -127,7 +127,7 @@ public class StudentController extends MainController{
     }
 
     //获得自己的已修课程
-    @GetMapping("/studiedList")
+    @GetMapping("/course/studied")
     public Result studied(){
         String number = getNumByToken();
 
@@ -386,7 +386,6 @@ public class StudentController extends MainController{
             return Result.succ("获取成功",requestCoursesVO);
         }
     }
-
 
     //根据课程代码、课程名称、教师模糊搜索可选课程
     @PostMapping("/course/verified/search")

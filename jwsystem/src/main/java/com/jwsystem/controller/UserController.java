@@ -263,7 +263,6 @@ public class UserController extends MainController{
         return Result.succ(userVO);
     }
 
-
     //用户修改个人信息
     //前端一定要返回完整的User对象
     //判断密码重复

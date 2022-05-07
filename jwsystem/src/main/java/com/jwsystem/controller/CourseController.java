@@ -188,7 +188,7 @@ public class CourseController extends MainController{
         List<RelaCourseStudentPO> list = relaCourseStudentServiceImpMP.selectByCourseId(courseVO.getCourseId());
         if(!list.isEmpty()){
             response.setStatus(WRONG_RES);
-            return Result.fail("删除失败，该门课程已被修读过选过");
+            return Result.fail("删除失败，该门课程已被修读过/选过");
         }
         //根据courseId删除coursePart和TimePart（做成连带的），加上一个存在性检验，返回bool
         boolean res = coursepartServiceImpMP.removeById(courseVO.getCourseId());
@@ -207,6 +207,10 @@ public class CourseController extends MainController{
             response.setStatus(WRONG_DATA);
             return Result.fail("修改课程失败：课程容量不合规！");
         }
+
+        //保存原先的课程名称和序号
+        String name = coursepartServiceImpMP.selectCoursepartByCourseId(courseVO.getCourseId()).getCourseName();
+        String num = coursepartServiceImpMP.selectCoursepartByCourseId(courseVO.getCourseId()).getCourseNum();
 
         //先对id所对应的单门课程进行修改，取得修改结果
         Result res = changeCourse(courseVO);
@@ -245,7 +249,7 @@ public class CourseController extends MainController{
         CoursepartPO coursepartPO = transUtil.CpDTOtoCpPO(coursePart);
         // TODO: 2022/5/3 MP根据课程num和name找到同类课程，并只对上面几个字段进行更新。在这里增加更新方法
         //传入原先的课程名称和课程序号
-        coursepartServiceImpMP.updateCourseInfo(courseVO.getCourseName(),courseVO.getCourseNum(),coursepartPO);
+        coursepartServiceImpMP.updateCourseInfo(name,num,coursepartPO);
 
         return Result.succ("修改课程信息成功：同类课程信息已更新");
     }
@@ -434,9 +438,9 @@ public class CourseController extends MainController{
 
     //管理员单独修改课程容量接口
     @PutMapping("/capacity")
-    public Result updateCourseCap(@RequestBody Map<String,Integer>map){
-        int courseId = map.get("courseId");
-        int capacity = map.get("capacity");
+    public Result updateCourseCap(@RequestBody Map<String,Object>map){
+        int courseId = (int)map.get("courseId");
+        int capacity = Integer.parseInt((String)map.get("capacity"));
 
         //根据课程id找到对应的教室，取出最小的教室容量
         //我们现在courseId相同的timepart对应的教室都是同一个，因此只用取一个就行
