@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 06/05/2022 12:57:31
+ Date: 07/05/2022 23:46:23
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `admin`  (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('admin', '1', '111', '1');
+INSERT INTO `admin` VALUES ('admin', '1', '111', '当前不在选课时间段内');
 
 -- ----------------------------
 -- Table structure for building
@@ -135,10 +135,10 @@ CREATE TABLE `coursepart`  (
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', NULL, NULL, '0', 5, '20000001');
-INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', NULL, NULL, '1', 5, '20000001');
-INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', NULL, NULL, '1', 5, '20000002');
-INSERT INTO `coursepart` VALUES (4, 'SOFT130040.01', '数学', '30', '3', '不是一般人能上懂的课', '100', NULL, NULL, '0', 5, '20000002');
+INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', '2021-2022', '春', '0', 5, '20000001');
+INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', '2020-2021', '春', '1', 5, '20000001');
+INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', '2021-2022', '秋', '1', 5, '20000002');
+INSERT INTO `coursepart` VALUES (4, 'COMP110040.01', 'Python程序设计', '10', '1', '同类课程', '50', '2021-2022', '春', '1', 5, '20000005');
 
 -- ----------------------------
 -- Table structure for major
@@ -181,6 +181,7 @@ CREATE TABLE `rela_course_major`  (
 -- Records of rela_course_major
 -- ----------------------------
 INSERT INTO `rela_course_major` VALUES (1, 1, 2);
+INSERT INTO `rela_course_major` VALUES (2, 1, 1);
 
 -- ----------------------------
 -- Table structure for rela_course_student
@@ -231,12 +232,29 @@ CREATE TABLE `req_coursepart`  (
 -- ----------------------------
 -- Records of req_coursepart
 -- ----------------------------
-INSERT INTO `req_coursepart` VALUES (1, 'SOFT130050.01', '高级web技术', '30', '2', '无', '30', '1', NULL, NULL, 2, '20000001');
-INSERT INTO `req_coursepart` VALUES (2, 'SOFT130050.02', '卓越软件', '30', '2', '无', '40', '1', NULL, NULL, 2, '20000002');
-INSERT INTO `req_coursepart` VALUES (3, 'SOFT130050.03', '面向对象设计', '40', '2', '无', '20', '1', NULL, NULL, 2, '20000002');
-INSERT INTO `req_coursepart` VALUES (13, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
-INSERT INTO `req_coursepart` VALUES (14, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
-INSERT INTO `req_coursepart` VALUES (15, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', NULL, NULL, NULL, 5, '20000002');
+INSERT INTO `req_coursepart` VALUES (1, 'SOFT130050.01', '高级web技术', '30', '2', '无', '30', '1', '2021-2022', '春', 2, '20000001');
+INSERT INTO `req_coursepart` VALUES (2, 'SOFT130050.02', '卓越软件', '30', '2', '无', '40', '1', '2021-2022', '春', 2, '20000002');
+INSERT INTO `req_coursepart` VALUES (3, 'SOFT130050.03', '面向对象设计', '40', '2', '无', '20', '1', '2021-2022', '春', 2, '20000002');
+INSERT INTO `req_coursepart` VALUES (13, 'SOFT130077.01', '计算机组成原理', '40', '2', '无', '20', '0', '2021-2022', '春', 5, '20000002');
+
+-- ----------------------------
+-- Table structure for req_rela_course_major
+-- ----------------------------
+DROP TABLE IF EXISTS `req_rela_course_major`;
+CREATE TABLE `req_rela_course_major`  (
+  `id` int(0) NOT NULL,
+  `request_id` int(0) NULL DEFAULT NULL,
+  `major_id` int(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_rela_course`(`request_id`) USING BTREE,
+  INDEX `fk_rela_major`(`major_id`) USING BTREE,
+  CONSTRAINT `fk_req_request_major` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of req_rela_course_major
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for req_student
@@ -259,7 +277,8 @@ CREATE TABLE `req_student`  (
 -- ----------------------------
 -- Records of req_student
 -- ----------------------------
-INSERT INTO `req_student` VALUES (1, 1, '220001', '111', 1, 1);
+INSERT INTO `req_student` VALUES (1, 1, '220001', '已审批的申请', 1, 1);
+INSERT INTO `req_student` VALUES (2, 2, '220002', '待审批', 0, 0);
 
 -- ----------------------------
 -- Table structure for req_teacher
@@ -347,7 +366,7 @@ INSERT INTO `student` VALUES ('student', '220001', '533298200110034568', '小罗
 INSERT INTO `student` VALUES ('student', '220002', '210321200111034562', '小俞', '123456', '17869897754', '220002@fudan.edu.cn', 'studying', 2, 5);
 INSERT INTO `student` VALUES ('student', '220003', '311321200206070023', '小李', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
 INSERT INTO `student` VALUES ('student', '220004', '320683200110300603', '小文', '111222', '19850336668', 'wwen75421@qq.com', 'studying', 1, 5);
-INSERT INTO `student` VALUES ('student', '220009', '311321200106070023', 'dddd', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'studying', 3, 6);
+INSERT INTO `student` VALUES ('student', '220005', '311321200106070024', '小滴', 'xlxlll', '13111702898', '220003@fudan.edu.cn', 'graduated', 3, 6);
 
 -- ----------------------------
 -- Table structure for teacher
@@ -373,12 +392,11 @@ CREATE TABLE `teacher`  (
 -- ----------------------------
 -- Records of teacher
 -- ----------------------------
-INSERT INTO `teacher` VALUES ('teacher', '20000001', '354683199008097640', '老师2', 'yyk', '18958772236', 'pxx@163.com', 'working', 2, 5);
+INSERT INTO `teacher` VALUES ('teacher', '20000001', '354683199008097641', '老师1', 'yyk', '18958772236', 'pxx@163.com', 'working', 2, 5);
 INSERT INTO `teacher` VALUES ('teacher', '20000002', '354683199008097640', '老师2', 'yyk', '18958772236', 'pxx@163.com', 'working', 2, 5);
 INSERT INTO `teacher` VALUES ('teacher', '20000003', '276408200207252211', '老师3', '123456', '13127686548', 'Martin@fudan.edu.cn', 'quit', 3, 6);
 INSERT INTO `teacher` VALUES ('teacher', '20000004', '321622197912093492', '老师4', '123456', '17318222222', 'zd@fudan.edu.cn', 'quit', 4, 4);
 INSERT INTO `teacher` VALUES ('teacher', '20000005', '211298200110034567', '老师5', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 1, 5);
-INSERT INTO `teacher` VALUES ('teacher', '20000006', '410622197912093496', '老师6', '123456', '17318271111', 'zdd@fudan.edu.cn', 'working', 2, 5);
 
 -- ----------------------------
 -- Table structure for timepart
@@ -404,12 +422,7 @@ CREATE TABLE `timepart`  (
 INSERT INTO `timepart` VALUES (1, 1, '20000001', 0, '1 2 3', 1);
 INSERT INTO `timepart` VALUES (2, 2, '20000001', 1, '4 5', 2);
 INSERT INTO `timepart` VALUES (3, 3, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (5, 3, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (11, 4, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (12, 4, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (13, 4, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (14, 4, '20000002', 2, '1 2', 3);
-INSERT INTO `timepart` VALUES (15, 4, '20000002', 2, '1 2', 3);
+INSERT INTO `timepart` VALUES (4, 4, '20000005', 3, '4 5', 4);
 
 -- ----------------------------
 -- Table structure for times

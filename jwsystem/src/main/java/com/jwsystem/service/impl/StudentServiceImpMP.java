@@ -41,6 +41,8 @@ public class StudentServiceImpMP extends ServiceImpl<StudentDaoMP, StudentPO> im
     @Override
     public UserVO selectUserByNumber(String number) {
         UserVO userVO = transUtil.StudentPOtoUserVO(studentDaoMP.selectById(number));
+        //UserVO userVO = transUtil.StudentPOtoUserVO(studentDaoMP.selectOne(Wrappers.lambdaQuery(StudentPO.class)
+         //       .eq(StudentPO::getNumber,number)));
         return userVO;
     }
 
