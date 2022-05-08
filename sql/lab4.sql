@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 08/05/2022 20:05:44
+ Date: 08/05/2022 21:48:20
 */
 
 SET NAMES utf8mb4;
@@ -121,7 +121,7 @@ CREATE TABLE `coursepart`  (
   `capacity` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '课程容量',
   `year` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学年',
   `semester` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学期',
-  `is_general` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否为通识课程',
+  `is_general` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '是否为通识课程',
   `college_id` int(0) NOT NULL COMMENT '学院',
   `teacher_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '老师',
   PRIMARY KEY (`course_id`) USING BTREE,
@@ -135,10 +135,10 @@ CREATE TABLE `coursepart`  (
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '2', '2021-2022', '春', '0', 5, '20000001');
-INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', '2020-2021', '春', '1', 5, '20000001');
-INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', '2021-2022', '春', '0', 5, '20000004');
-INSERT INTO `coursepart` VALUES (4, 'COMP110040.01', 'Python程序设计', '10', '1', '同类课程', '50', '2021-2022', '春', '1', 5, '20000004');
+INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '2', '2021-2022', '春', '通选课程', 5, '20000001');
+INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', '2020-2021', '春', '面向部分专业课程', 5, '20000001');
+INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', '2021-2022', '春', '专业课程', 5, '20000004');
+INSERT INTO `coursepart` VALUES (4, 'COMP110040.01', 'Python程序设计', '10', '1', '同类课程', '50', '2021-2022', '春', '通选课程', 5, '20000004');
 
 -- ----------------------------
 -- Table structure for major
@@ -180,9 +180,10 @@ CREATE TABLE `rela_course_major`  (
 -- ----------------------------
 -- Records of rela_course_major
 -- ----------------------------
-INSERT INTO `rela_course_major` VALUES (1, 1, 1);
-INSERT INTO `rela_course_major` VALUES (2, 3, 1);
-INSERT INTO `rela_course_major` VALUES (3, 4, 1);
+INSERT INTO `rela_course_major` VALUES (1, 2, 1);
+INSERT INTO `rela_course_major` VALUES (2, 2, 2);
+INSERT INTO `rela_course_major` VALUES (3, 3, 3);
+INSERT INTO `rela_course_major` VALUES (4, 2, 3);
 
 -- ----------------------------
 -- Table structure for rela_course_student
@@ -243,7 +244,7 @@ INSERT INTO `req_coursepart` VALUES (13, 'SOFT130077.01', '计算机组成原理
 -- ----------------------------
 DROP TABLE IF EXISTS `req_rela_course_major`;
 CREATE TABLE `req_rela_course_major`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `request_id` int(0) NULL DEFAULT NULL,
   `major_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
