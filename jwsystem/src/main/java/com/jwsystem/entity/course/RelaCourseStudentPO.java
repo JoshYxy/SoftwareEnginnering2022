@@ -1,5 +1,7 @@
 package com.jwsystem.entity.course;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 
@@ -30,6 +32,7 @@ public class RelaCourseStudentPO implements Serializable {
     public static String SELECTED = "已选";
     public static String STUDIED = "已修";
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     private Integer courseId;

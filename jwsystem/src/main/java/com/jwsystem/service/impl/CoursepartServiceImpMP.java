@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.jwsystem.entity.course.RelaCourseStudentPO.SELECTED;
 
@@ -234,7 +235,15 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
             coursepartPOList.addAll(coursepartDaoMP.selectList(Wrappers.lambdaQuery(CoursepartPO.class)
                     .eq(CoursepartPO::getTeacherNum,t.getNumber())));
         }
-
+        //过滤重复元素
+        for (int i = 0; i < coursepartPOList.size(); i++) {
+            for (int j = i + 1; j < coursepartPOList.size(); j++) {
+                if (coursepartPOList.get(i).getCourseId() == coursepartPOList.get(j).getCourseId()) {
+                    coursepartPOList.remove(j);
+                    j--;
+                }
+            }
+        }
         return coursepartPOList;
     }
 

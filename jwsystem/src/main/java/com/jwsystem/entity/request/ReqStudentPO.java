@@ -1,5 +1,7 @@
 package com.jwsystem.entity.request;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ public class ReqStudentPO implements Serializable {
     /**
      * 选课申请id
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

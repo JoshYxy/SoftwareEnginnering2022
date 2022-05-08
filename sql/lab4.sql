@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 07/05/2022 23:46:23
+ Date: 08/05/2022 16:31:40
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `admin`  (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('admin', '1', '111', '当前不在选课时间段内');
+INSERT INTO `admin` VALUES ('admin', '1', '111', '一轮选课结束');
 
 -- ----------------------------
 -- Table structure for building
@@ -135,10 +135,10 @@ CREATE TABLE `coursepart`  (
 -- ----------------------------
 -- Records of coursepart
 -- ----------------------------
-INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '50', '2021-2022', '春', '0', 5, '20000001');
+INSERT INTO `coursepart` VALUES (1, 'COMP110040.01', 'Python程序设计', '20', '3', '好课！', '2', '2021-2022', '春', '0', 5, '20000001');
 INSERT INTO `coursepart` VALUES (2, 'COMP110040.02', '数据库引论', '30', '4', '需要恶补的课', '50', '2020-2021', '春', '1', 5, '20000001');
-INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', '2021-2022', '秋', '1', 5, '20000002');
-INSERT INTO `coursepart` VALUES (4, 'COMP110040.01', 'Python程序设计', '10', '1', '同类课程', '50', '2021-2022', '春', '1', 5, '20000005');
+INSERT INTO `coursepart` VALUES (3, 'SOFT130006.01', '软件工程', '40', '4', '无', '100', '2021-2022', '春', '0', 5, '20000004');
+INSERT INTO `coursepart` VALUES (4, 'COMP110040.01', 'Python程序设计', '10', '1', '同类课程', '50', '2021-2022', '春', '1', 5, '20000004');
 
 -- ----------------------------
 -- Table structure for major
@@ -167,7 +167,7 @@ INSERT INTO `major` VALUES (4, '经济学', 4);
 -- ----------------------------
 DROP TABLE IF EXISTS `rela_course_major`;
 CREATE TABLE `rela_course_major`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `course_id` int(0) NULL DEFAULT NULL,
   `major_id` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -180,15 +180,16 @@ CREATE TABLE `rela_course_major`  (
 -- ----------------------------
 -- Records of rela_course_major
 -- ----------------------------
-INSERT INTO `rela_course_major` VALUES (1, 1, 2);
-INSERT INTO `rela_course_major` VALUES (2, 1, 1);
+INSERT INTO `rela_course_major` VALUES (1, 1, 1);
+INSERT INTO `rela_course_major` VALUES (2, 3, 1);
+INSERT INTO `rela_course_major` VALUES (3, 4, 1);
 
 -- ----------------------------
 -- Table structure for rela_course_student
 -- ----------------------------
 DROP TABLE IF EXISTS `rela_course_student`;
 CREATE TABLE `rela_course_student`  (
-  `id` int(0) NOT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `course_id` int(0) NOT NULL,
   `student_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `status` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '选课状态',
@@ -202,7 +203,7 @@ CREATE TABLE `rela_course_student`  (
 -- ----------------------------
 -- Records of rela_course_student
 -- ----------------------------
-INSERT INTO `rela_course_student` VALUES (1, 2, '220001', '已选');
+INSERT INTO `rela_course_student` VALUES (1, 1, '220004', '已选');
 INSERT INTO `rela_course_student` VALUES (2, 3, '220002', '已修');
 
 -- ----------------------------
@@ -248,8 +249,8 @@ CREATE TABLE `req_rela_course_major`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_rela_course`(`request_id`) USING BTREE,
   INDEX `fk_rela_major`(`major_id`) USING BTREE,
-  CONSTRAINT `fk_req_request_major` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_req_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_req_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_req_request_major` FOREIGN KEY (`request_id`) REFERENCES `req_teacher` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -261,7 +262,7 @@ CREATE TABLE `req_rela_course_major`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `req_student`;
 CREATE TABLE `req_student`  (
-  `id` int(0) NOT NULL COMMENT '选课申请id',
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '选课申请id',
   `course_id` int(0) NOT NULL COMMENT '课程',
   `student_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '学生',
   `reason` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申请理由',
@@ -279,6 +280,11 @@ CREATE TABLE `req_student`  (
 -- ----------------------------
 INSERT INTO `req_student` VALUES (1, 1, '220001', '已审批的申请', 1, 1);
 INSERT INTO `req_student` VALUES (2, 2, '220002', '待审批', 0, 0);
+INSERT INTO `req_student` VALUES (3, 1, '220001', 'python', 0, 0);
+INSERT INTO `req_student` VALUES (4, 4, '220001', 'python', 0, 0);
+INSERT INTO `req_student` VALUES (5, 2, '220001', 'python', 0, 0);
+INSERT INTO `req_student` VALUES (6, 3, '220001', 'python', 0, 0);
+INSERT INTO `req_student` VALUES (7, 3, '220001', 'python', 0, 0);
 
 -- ----------------------------
 -- Table structure for req_teacher
