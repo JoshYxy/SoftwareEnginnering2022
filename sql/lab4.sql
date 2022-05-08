@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 08/05/2022 16:31:40
+ Date: 08/05/2022 20:05:44
 */
 
 SET NAMES utf8mb4;
@@ -173,8 +173,8 @@ CREATE TABLE `rela_course_major`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_rela_course`(`course_id`) USING BTREE,
   INDEX `fk_rela_major`(`major_id`) USING BTREE,
-  CONSTRAINT `fk_rela_course` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_rela_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_rela_course` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_rela_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -196,8 +196,8 @@ CREATE TABLE `rela_course_student`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_rela_course_student`(`course_id`) USING BTREE,
   INDEX `fk_rela_student_course`(`student_num`) USING BTREE,
-  CONSTRAINT `fk_rela_course_student` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `fk_rela_student_course` FOREIGN KEY (`student_num`) REFERENCES `student` (`number`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk_rela_course_student` FOREIGN KEY (`course_id`) REFERENCES `coursepart` (`course_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_rela_student_course` FOREIGN KEY (`student_num`) REFERENCES `student` (`number`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
