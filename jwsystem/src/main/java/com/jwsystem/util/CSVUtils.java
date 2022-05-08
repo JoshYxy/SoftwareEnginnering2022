@@ -94,6 +94,7 @@ public class CSVUtils {
                 courseDTO.setYear(splitResult(split[18]));
                 courseDTO.setSemester(splitResult(split[19]));
                 courseDTO.setIsGeneral(splitResult(split[20]));
+                courseDTO.setMajors(splitResult(split[21]));
                 courses.add(courseDTO);
             }
         } catch (IOException e) {

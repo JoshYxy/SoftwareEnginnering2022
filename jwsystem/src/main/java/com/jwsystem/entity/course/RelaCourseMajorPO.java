@@ -2,6 +2,8 @@ package com.jwsystem.entity.course;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -16,6 +18,7 @@ import lombok.experimental.Accessors;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 @Accessors(chain = true)
 @TableName("rela_course_major")
 public class RelaCourseMajorPO implements Serializable {

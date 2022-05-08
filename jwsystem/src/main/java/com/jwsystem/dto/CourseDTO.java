@@ -53,6 +53,8 @@ public class CourseDTO {
     private String semester;
     @CsvBindByName(column = "isGeneral")
     private String isGeneral;
+    @CsvBindByName(column = "majors")
+    private String majors;
 }
 
 

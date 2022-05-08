@@ -4,8 +4,10 @@ import com.jwsystem.common.Result;
 import com.jwsystem.dto.CoursepartDTO;
 import com.jwsystem.dto.RequestDTO;
 import com.jwsystem.dto.TimepartDTO;
+import com.jwsystem.entity.course.RelaCourseMajorPO;
 import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.request.ReqCoursepartPO;
+import com.jwsystem.entity.request.ReqRelaCourseMajorPO;
 import com.jwsystem.service.*;
 import com.jwsystem.service.impl.RelaCourseStudentServiceImpMP;
 import com.jwsystem.util.CommonUtil;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Time;
 import java.util.*;
+
+import static com.jwsystem.entity.course.CoursepartPO.GENERAL;
+import static com.jwsystem.vo.CourseRequestVO.ADD;
 
 //教师相关操作
 @RestController
@@ -58,6 +63,12 @@ public class TeacherController extends MainController{
 
     @Autowired
     private CommonUtil commonUtil;
+
+    @Autowired
+    private MajorServiceMP majorServiceMP;
+
+    @Autowired
+    private ReqRelaCourseMajorServiceMP reqRelaCourseMajorServiceMP;
 
 
     //教师获得自己开设的所有课程信息
@@ -240,6 +251,27 @@ public class TeacherController extends MainController{
         } catch (IndexOutOfBoundsException e ){
             response.setStatus(WRONG_DATA);
             return Result.fail("数组越界");
+        }
+
+        //如果新增课程且非通选课程，记录面向专业信息
+        //教师申请修改课程，不能修改面向的专业，因此不用考虑
+        if(courseRequestVO.getType().equals(ADD) && !courseVO.getIsGeneral().equals(GENERAL)){
+            String [][]majors = courseVO.getMajors();
+            try{
+                for (String [] s:
+                        majors) {
+                    int majorId = majorServiceMP.selectMajorByName(s[1]).getMajorId();
+                    ReqRelaCourseMajorPO reqRelaCourseMajorPO = new ReqRelaCourseMajorPO(
+                            null,
+                            requestId,
+                            majorId
+                    );
+                    reqRelaCourseMajorServiceMP.save(reqRelaCourseMajorPO);
+                }
+            }catch (IndexOutOfBoundsException e){
+                response.setStatus(WRONG_DATA);
+                return Result.fail("数组越界");
+            }
         }
         return Result.succ("提交申请成功");
     }
