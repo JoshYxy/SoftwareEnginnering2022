@@ -1,7 +1,7 @@
 <template>
     <h2>我的课程</h2>
     <!-- <el-button @click="test">test </el-button> -->
-    <el-button @click="handleNew">申请新增 </el-button>
+    <el-button @click="handleNew" type="primary">申请新增 </el-button>
     <el-table class="tea-course-table" ref="course-table" :data="courses" :row-class-name="tableRowClassName">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
         <el-table-column fixed prop="courseNum" label="课程编号" width="140" />

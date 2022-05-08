@@ -1,13 +1,13 @@
 <template>
-    <h2>所有课程</h2>
-    <el-input class="search" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch"> 
+    <h2 style="margin-right:250px">所有课程</h2>
+    <el-input class="search" size="large" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch">
         <template #suffix>
             <el-icon @click="submitSearch" class="el-input__icon"><search /></el-icon>
         </template>
     </el-input>
-    <el-button @click="resetSearch">查看全部课程</el-button>
+    <el-button @click="resetSearch" type="primary">查看全部课程</el-button>
     <!-- <el-button @click="resetRoomFilter">重置教室筛选</el-button> -->
-    <el-button @click="clearFilter">重置筛选</el-button>
+    <el-button @click="clearFilter" type="danger">重置筛选</el-button>
     <!-- <el-button @click="test">test </el-button> -->
     <el-table class="class-table" :data="courses" ref="coursesData" :row-class-name="tableRowClassName" max-height="500px" @filter-change="filterChang">
         <el-table-column fixed prop="courseName" label="课程名" width="150" />
@@ -91,9 +91,9 @@
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="180">
         <template #default="scope">
-            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button v-if="courseStatus != CLOSE" @click="editCapacity(scope.$index)">修改容量</el-button>
-            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+            <el-button v-if="courseStatus != CLOSE" @click="editCapacity(scope.$index)" type="primary">修改容量</el-button>
+            <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
             <el-dialog 
                 width="70%"
                 v-model="editTableVisible[scope.$index]" 
@@ -749,35 +749,35 @@ export default {
                 })
         },
         async handleEdit(index, data) {
-            await axios.put('http://localhost:8081/affair/teacher/time',
-                {  
-                    name: data.teacherName, 
-                    number: data.teacherNum
-                })
-            .then(res => {
-                this.unavalTeaTimes = res.data.data1
-            })
-            .catch(err => {
-                console.dir(err)
-            })
-            await axios.put('http://localhost:8081/affair/building/room/time',
-                {   
-                    building: data.building, 
-                    roomNum: data.roomNum
-                })
-            .then(res => {
-                this.unavalRoomTimes = res.data.data1
-            })
-            //axios获取教室，教师不可用时间 data.teacher data.selectRoom
-            
-            this.setAvalTime()
-            //当前课程时间设置为可以选中
-            for(let i = 0; i < data.times.length; i++) {
-                for(let j = 1; j <= this.times.length; j++) {
-                    if(data.times[i].indexOf(j) > -1)
-                        this.timeData[i].times[j-1].disable = false
-                }
-            }
+            // await axios.put('http://localhost:8081/affair/teacher/time',
+            //     {
+            //         name: data.teacherName,
+            //         number: data.teacherNum
+            //     })
+            // .then(res => {
+            //     this.unavalTeaTimes = res.data.data1
+            // })
+            // .catch(err => {
+            //     console.dir(err)
+            // })
+            // await axios.put('http://localhost:8081/affair/building/room/time',
+            //     {
+            //         building: data.building,
+            //         roomNum: data.roomNum
+            //     })
+            // .then(res => {
+            //     this.unavalRoomTimes = res.data.data1
+            // })
+            // //axios获取教室，教师不可用时间 data.teacher data.selectRoom
+            //
+            // this.setAvalTime()
+            // //当前课程时间设置为可以选中
+            // for(let i = 0; i < data.times.length; i++) {
+            //     for(let j = 1; j <= this.times.length; j++) {
+            //         if(data.times[i].indexOf(j) > -1)
+            //             this.timeData[i].times[j-1].disable = false
+            //     }
+            // }
             //数组深拷贝
             this.editCourse.selectTime = []
             for(let i = 0; i < data.times.length; i++)

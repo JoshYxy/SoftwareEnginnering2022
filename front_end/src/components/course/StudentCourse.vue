@@ -6,12 +6,12 @@
         <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
             <el-tab-pane label="可选课程" name="available">
                 <h2>可选课程</h2>
-                <el-input class="search" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch"> 
+                <el-input class="search" size="large" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch">
                     <template #suffix>
                         <el-icon @click="submitSearch" class="el-input__icon"><search /></el-icon>
                     </template>
                 </el-input>
-                <el-button @click="resetSearch">查看全部可选课程</el-button>
+                <el-button @click="resetSearch" type="primary" style="margin-left: 210px">查看全部可选课程</el-button>
                 <!-- <el-button @click="test">test </el-button> -->
                 <el-table class="class-table" :data="courses" max-height="500px">
                     <el-table-column fixed prop="courseName" label="课程名" width="150" />
@@ -55,14 +55,13 @@
                     </el-table-column>
                     <el-table-column fixed="right" label="操作" width="180">
                         <template #default="scope">
-                            <el-button @click="selectCourse(scope.$index)">选课</el-button>
+                            <el-button @click="selectCourse(scope.$index)" type="primary" round>选课</el-button>
                         </template>
                     </el-table-column>
                 </el-table>  
             </el-tab-pane>
             <el-tab-pane label="已选课程" name="selected">
                 <h2>已选课程</h2>
-                <!-- <el-button @click="test">test </el-button> -->
                 <el-table class="class-table" :data="selectedCourses"  max-height="500px">
                     <el-table-column fixed prop="courseName" label="课程名" width="150" />
                     <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
@@ -105,7 +104,7 @@
                     </el-table-column>
                     <el-table-column fixed="right" label="操作" width="180">
                         <template #default="scope">
-                            <el-button @click="quitCourse(scope.$index)">退课</el-button>
+                            <el-button @click="quitCourse(scope.$index)" type="danger">退课</el-button>
                         </template>
                     </el-table-column>
                 </el-table> 

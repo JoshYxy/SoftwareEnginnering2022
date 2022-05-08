@@ -1,5 +1,5 @@
 <template>
-    <h2>新增课程</h2>
+    <h2 style="margin-right:250px">新增课程</h2>
     <el-upload
       class="upload-demo"
       action="#"
@@ -8,107 +8,98 @@
       :limit="1"
       :before-upload="onBeforeUpload"
     >
-      <el-button type="primary">
+      <el-button type="primary" round style="margin-right:250px">
         <el-icon style="vertical-align: middle;">
           <upload />
         </el-icon>
         <span style="vertical-align: middle;"> 上传文件 </span>
       </el-button>
       <template #tip>
-        <div class="el-upload__tip">
+        <div class="el-upload__tip" style="margin-right:250px">
           单个csv文件
         </div>
       </template>
     </el-upload>
-
-    <!-- <div><el-button @click="test">
-        测试
-    </el-button></div> -->
-    <el-form class="new-course-admin" :model="courseData" ref="courseData" :rules="rules" hide-required-asterisk>
-        <el-form-item label="课程名称" prop="courseName">
-            <el-input v-model="courseData.courseName" />
+    <div class="form">
+      <el-form class="new-course-admin" :model="courseData" ref="courseData" :rules="rules" hide-required-asterisk>
+        <el-form-item label="课程名称" prop="courseName" style="margin-left: 250px">
+          <el-input v-model="courseData.courseName" style="width: 200px" />
         </el-form-item>
-        <el-form-item label="课程编号" prop="courseNum">
-            <el-input v-model="courseData.courseNum" />
+        <el-form-item label="课程编号" prop="courseNum" style="margin-left: 250px" >
+          <el-input v-model="courseData.courseNum" style="width: 200px" />
         </el-form-item>
-        <el-form-item label="课程学分" prop="credits">
-            <el-input v-model="courseData.credits" />
+        <el-form-item label="课程学分" prop="credits" style="margin-left: 250px">
+          <el-input v-model="courseData.credits"  style="width: 200px"/>
         </el-form-item>
-        <el-form-item label="选课容量" prop="capacity">
-            <el-input v-model="courseData.capacity" />
+        <el-form-item label="选课容量" prop="capacity" style="margin-left: 250px">
+          <el-input v-model="courseData.capacity" style="width: 200px" />
         </el-form-item>
-        <el-form-item label="课程简介" prop="courseInfo">
-            <el-input v-model="courseData.courseInfo" type="textarea" />
-        </el-form-item>  
-        <el-form-item label="课程类型" prop="commonCourse">
-            <el-select v-model="courseData.commonCourse" placeholder="类型">
-                <el-option label="通选课程" value="通选课程" />
-                <el-option label="专业选修" value="专业课程" />
-            </el-select>
-        </el-form-item> 
-        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '专业课程'">
-            <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
-        </el-form-item> 
-        <el-form-item label="开课学年" prop="year" style="float:left; margin-right:20px">
-            <el-select v-model="courseData.year" placeholder="学年">
-                <el-option :key="year" :value="year" :label="year" v-for="year in years" />
-            </el-select>
+        <el-form-item label="课程简介" prop="courseInfo" style="margin-left: 250px">
+          <el-input v-model="courseData.courseInfo" type="textarea" style="width: 400px" />
+        </el-form-item>
+        <el-form-item label="课程类型" prop="commonCourse" style="margin-left: 250px">
+          <el-select v-model="courseData.commonCourse" placeholder="类型" >
+            <el-option label="通选课程" value="通选课程" />
+            <el-option label="专业选修" value="专业课程" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '专业课程'" style="margin-left: 250px">
+          <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
+        </el-form-item>
+        <el-form-item label="开课学年" prop="year" style="float:left; margin-left:250px;margin-right: 10px">
+          <el-select v-model="courseData.year" placeholder="学年">
+            <el-option :key="year" :value="year" :label="year" v-for="year in years" />
+          </el-select>
         </el-form-item>
         <el-form-item label="开课学期" prop="year">
-            <el-select v-model="courseData.semester" placeholder="学期">
-                <el-option :key="semester" :value="semester" :label="semester" v-for="semester in semesters" />
-            </el-select>
+          <el-select v-model="courseData.semester" placeholder="学期">
+            <el-option :key="semester" :value="semester" :label="semester" v-for="semester in semesters" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="开课院系" prop="college">
-            <el-select v-model="courseData.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
-                <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
-            </el-select>
+        <el-form-item label="开课院系" prop="college" style="margin-left: 250px">
+          <el-select v-model="courseData.college" value-key="collegeName" placeholder="学院" @change="updateCollege">
+            <el-option :key="college.collegeName" :value="college" :label="college.collegeName" v-for="college in teacherData" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="任课教师" prop="teacher">
-            <el-select v-model="courseData.teacher" value-key="number" placeholder="教师" no-data-text="未选择开课院系或学院无教师" @change="updateTeacher">
-                <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in courseData.college.teachers" />
-            </el-select>
-        </el-form-item> 
-        <el-form-item label="上课教室" prop="selectRoom">
-            <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
-            <span>教室容量: {{roomCap}} </span>
+        <el-form-item label="任课教师" prop="teacher" style="margin-left: 250px">
+          <el-select v-model="courseData.teacher" value-key="number" placeholder="教师" no-data-text="未选择开课院系或学院无教师" @change="updateTeacher">
+            <el-option :key="teacher.number" :value="teacher" :label="teacher.name+teacher.number" v-for="teacher in courseData.college.teachers" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="上课时间" prop="selectTime">            
-            <div class="time-container">
-                <div class="left-part">
-                    <div class="line" v-for="day in times" :key="day.id">{{day.startTime}}-{{day.endTime}}</div>
-                </div>
-                <div class="right-part">
-                    <span class="class-week" v-for="period in periods" :key="period">{{period}}</span> 
-                        <div class="right-down">
-                        <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="courseData.selectTime[day.id]">
-                            
-                            <el-checkbox-button 
-                                v-for="time in day.times" 
-                                :key="time.num" 
-                                :label="time.num" 
-                                :disabled="time.disable" 
-                                style="display:block;"
-                                >
-                                {{time.name}}
-                            </el-checkbox-button>
-                            <!-- <span class="day"> {{day.name}} </span> -->
-                        </el-checkbox-group>
-                    </div>
-                </div>
+        <el-form-item label="上课教室" prop="selectRoom" style="margin-left: 250px">
+          <el-cascader :props="roomProps" :options="classroom" v-model="courseData.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
+          <span>教室容量: {{roomCap}} </span>
+        </el-form-item>
+        <el-form-item label="上课时间" prop="selectTime" style="margin-left: 250px">
+          <div class="time-container">
+            <div class="left-part">
+              <div class="line" v-for="day in times" :key="day.id">{{day.startTime}}-{{day.endTime}}</div>
             </div>
+            <div class="right-part">
+              <span class="class-week" v-for="period in periods" :key="period">{{period}}</span>
+              <div class="right-down">
+                <el-checkbox-group v-for="day in timeData" :key="day.id" v-model="courseData.selectTime[day.id]">
+
+                  <el-checkbox-button
+                      v-for="time in day.times"
+                      :key="time.num"
+                      :label="time.num"
+                      :disabled="time.disable"
+                      style="display:block;"
+                  >
+                    {{time.name}}
+                  </el-checkbox-button>
+                  <!-- <span class="day"> {{day.name}} </span> -->
+                </el-checkbox-group>
+              </div>
+            </div>
+          </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit">提交</el-button>
+          <el-button type="primary" @click="submit" size="large" style="margin: 0 auto">提交</el-button>
         </el-form-item>
-    </el-form>
-    <!-- <course-time>
-    </course-time> -->
-    <!-- <el-checkbox-group v-model="selectTime" size="large">
-      <el-checkbox-button v-for="time in times" :key="time" :label="time">
-        {{ time }}
-      </el-checkbox-button>
-    </el-checkbox-group> -->
+      </el-form>
+    </div>
 </template>
 
 <script>
@@ -536,6 +527,7 @@ export default {
 .new-course-admin .left-part .line {
     height:32px;
 }
+
 .new-course-admin .right-part {
     /* display: flex;
     flex-direction: column; */
@@ -563,4 +555,5 @@ export default {
     /* float:left; */
     font-size: 16px;
 }
+
 </style>

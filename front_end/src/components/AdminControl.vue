@@ -1,5 +1,5 @@
 <template>
-  <div class="admin" style="margin:0px auto">
+  <div class="admin" style="margin:0 auto">
     <h1>信息录入</h1>
     <el-upload
       class="upload-demo"
@@ -10,7 +10,7 @@
       :before-upload="onBeforeUpload"
      
     >
-      <el-button type="primary">
+      <el-button type="primary" round>
         <el-icon style="vertical-align: middle;">
           <upload />
         </el-icon>

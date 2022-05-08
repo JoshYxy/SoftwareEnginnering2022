@@ -42,6 +42,12 @@
             <span v-else-if="route.name=='courseVerify'">
               <svg style="vertical-align: -10%" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M704 192h160v736H160V192h160.064v64H704v-64zM311.616 537.28l-45.312 45.248L447.36 763.52l316.8-316.8-45.312-45.184L447.36 673.024 311.616 537.28zM384 192V96h256v96H384z"></path></svg>
             </span>
+            <span v-else-if="route.name=='applicationVerify'">
+              <svg style="vertical-align: -10%" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M805.504 320 640 154.496V320h165.504zM832 384H576V128H192v768h640V384zM160 64h480l256 256v608a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32zm318.4 582.144 180.992-180.992L704.64 510.4 478.4 736.64 320 578.304l45.248-45.312L478.4 646.144z"></path></svg>
+            </span>
+            <span v-else-if="route.name=='courseApplication'">
+              <svg style="vertical-align: -10%" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-v-ba633cb8=""><path fill="currentColor" d="M832 384H576V128H192v768h640V384zm-26.496-64L640 154.496V320h165.504zM160 64h480l256 256v608a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V96a32 32 0 0 1 32-32zm160 448h384v64H320v-64zm0-192h160v64H320v-64zm0 384h384v64H320v-64z"></path></svg>
+            </span>
             <span style="font-weight: bold">{{route.meta.nav_name}} </span>
           </el-menu-item>
         
@@ -84,7 +90,7 @@ svg {
   padding: 0;
 }
 .el-aside {
-  width: 240px;
+  width: 200px;
   color: var(--el-text-color-primary);
   background: #fff !important;
   border-right: solid 1px #e6e6e6;

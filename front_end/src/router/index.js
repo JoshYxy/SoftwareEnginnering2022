@@ -139,26 +139,26 @@ const router = createRouter({
   routes
 })
 //拦截器
-router.beforeEach((to, from, next) => {
-  if (to.path === '/login') {
-    next();
-  }
-  else {
-    let token = localStorage.getItem('Authorization');
-
-    if (token === null || token === '') {
-      alert("无权访问")
-      next('/login')
-    }
-    else
-    {
-      if(to.meta.role.indexOf(localStorage.getItem('role')) >= 0)
-        next()
-      else{
-        alert("无权访问")
-        next(false)
-      }
-    }
+// router.beforeEach((to, from, next) => {
+//   if (to.path === '/login') {
+//     next();
+//   }
+  // else {
+  //   let token = localStorage.getItem('Authorization');
+  //
+  //   if (token === null || token === '') {
+  //     alert("无权访问")
+  //     next('/login')
+  //   }
+  //   else
+  //   {
+  //     if(to.meta.role.indexOf(localStorage.getItem('role')) >= 0)
+  //       next()
+  //     else{
+  //       alert("无权访问")
+  //       next(false)
+  //     }
+  //   }
     // else {
     //   axios.post('http://localhost:8081/verify').then(function(resp){
     //         console.log(resp)
@@ -175,6 +175,6 @@ router.beforeEach((to, from, next) => {
     //       next(false);
     //     })
     // }
-  }
-});
+  // }
+// });
 export default router

@@ -1,98 +1,105 @@
 <template>
     <div >
+      <div class="status">
         <h2>选课状态设置</h2>
         <el-radio-group v-model="courseStatus" @change="courseChange">
-            <el-radio :label="CLOSE">关闭选课</el-radio>
-            <el-radio :label="ONE_ON">开始第一轮选课</el-radio>
-            <el-radio :label="ONE_OFF">结束第一轮选课</el-radio>
-            <el-radio :label="TWO_ON">开始第二轮选课</el-radio>
-            <el-radio :label="TWO_OFF">结束第二轮选课</el-radio>
+          <el-radio :label="CLOSE">关闭选课</el-radio>
+          <el-radio :label="ONE_ON">开始第一轮选课</el-radio>
+          <el-radio :label="ONE_OFF">结束第一轮选课</el-radio>
+          <el-radio :label="TWO_ON">开始第二轮选课</el-radio>
+          <el-radio :label="TWO_OFF">结束第二轮选课</el-radio>
         </el-radio-group>
-
+      </div>
+      <div class="time">
         <h2>教学时间设置</h2>
         <el-button @click="addCourse(-1)">增加第一节课</el-button>
         <el-button type='primary' @click="submitCourse">提交修改</el-button>
         <div class="course-container" v-for="(item, index) in startTime" :key="item.id">
-            <span class="course-left">第{{index+1}}节课</span>
-            <div class="course-right">
-                <el-time-select
-                    v-model="startTime[index]"
-                    :min-time="index==0?'7:55':(endTime[index-1]?endTime[index-1]:'8:00')"
-                    :max-time="endTime[index]"
-                    :start="index==0?'8:00':(endTime[index-1]?endTime[index-1]:'8:00')"
-                    placeholder="上课时间"
-                    step="00:05"
-                    end="22:30"
-                    />-
-                <el-time-select
-                    v-model="endTime[index]"
-                    :min-time="startTime[index]"
-                    :max-time="startTime[index+1]"
-                    :start="startTime[index]?startTime[index]:'8:00'"
-                    placeholder="下课时间"
-                    step="00:05"
-                    end="23:30"
-                    />
-                <el-button @click="addCourse(index)">增加一节课</el-button>
-                <el-button @click="deleteCourse(index)">删除这节课</el-button>
-                <el-button @click="test(index)">test</el-button>
-            </div>
+          <span class="course-left">第{{index+1}}节课</span>
+          <div class="course-right">
+            <el-time-select
+                v-model="startTime[index]"
+                :min-time="index==0?'7:55':(endTime[index-1]?endTime[index-1]:'8:00')"
+                :max-time="endTime[index]"
+                :start="index==0?'8:00':(endTime[index-1]?endTime[index-1]:'8:00')"
+                placeholder="上课时间"
+                step="00:05"
+                end="22:30"
+                style="width:150px"
+            />-
+            <el-time-select
+                v-model="endTime[index]"
+                :min-time="startTime[index]"
+                :max-time="startTime[index+1]"
+                :start="startTime[index]?startTime[index]:'8:00'"
+                placeholder="下课时间"
+                step="00:05"
+                end="23:30"
+                style="width:150px"
+            />
+            <el-button @click="addCourse(index)" type="primary" style="margin-left: 10px">增加一节课</el-button>
+            <el-button @click="deleteCourse(index)" type="danger">删除这节课</el-button>
+            <el-button @click="test(index)">test</el-button>
+          </div>
         </div>
+      </div>
+      <div class="classroom">
         <div class="class-container">
-            <h2>上课教室设置</h2>
-            <el-input
-                v-model="newRoom"
-                placeholder="教室号"
-                class="input-with-select"
-                style="width:70%"
-                >
-                <template #prepend>
-                    <el-select v-model="newClassroom" placeholder="教学楼" value-key="name" style="width: 150px">
-                        <el-option v-for="(building) in buildings" :key="building.name" :value="building" :label="building.name"  />
-                    </el-select>
-                </template>
-                <template #append>
-                    <section style="width: 80px"> {{newClassroom.aka}}{{newRoom}} </section>
-                    
-                </template>
-            </el-input>
-            <el-input v-model="newCap" placeholder="教室容量" style="width:30%"/>
+          <h2>上课教室设置</h2>
+          <el-input
+              v-model="newRoom"
+              placeholder="教室号"
+              class="input-with-select"
+              style="width:70%"
+          >
+            <template #prepend>
+              <el-select v-model="newClassroom" placeholder="教学楼" value-key="name" style="width: 150px">
+                <el-option v-for="(building) in buildings" :key="building.name" :value="building" :label="building.name"  />
+              </el-select>
+            </template>
+            <template #append>
+              <section style="width: 80px"> {{newClassroom.aka}}{{newRoom}} </section>
 
-            <el-button @keydown="addClassroom" @click="addClassroom">添加新教室</el-button>
+            </template>
+          </el-input>
+          <el-input v-model="newCap" placeholder="教室容量" style="width:30%"/>
+
+          <el-button @keydown="addClassroom" @click="addClassroom">添加新教室</el-button>
         </div>
         <div class="classroom-container">
-            <el-card 
-                class="box-card"
-                v-for="(building, index) in classroom"
-                :key="building.name"
-                >
-                <template #header>
-                <div class="card-header">
-                    <span>{{building.name}}</span>
-                    <el-button class="button" type="text" v-if="!onDeleteAll" @click="checkDelete(index)">清空教学楼内教室</el-button>
-                </div>
-                </template>
-                <el-scrollbar height="200px" class="card-item-container"> 
-                    <el-button v-if="!onDelete[index] && !onDeleteAll" class="button" type="text" @click="openDelete(index)">删除教室</el-button>
-                    <el-button v-if="onDelete[index]" class="button2" type="text" @click="submitDelete(index)">确认删除选中教室</el-button>
-                    <el-button v-if="onDelete[index]" class="button2" type="text" @click="cancelDelete(index)">取消删除</el-button>
-                    <div class="hold-place" v-if="onDeleteAll && !onDelete[index]"> </div>
-                    <div v-if="!onDelete[index]" class="card-item-div-container">
-                        <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room.name}} {{room.capacity}}人</div>
-                    </div> 
-                    <div v-for="(room,index2) in checkGroup" 
-                            :key="room.name" 
-                            class="card-item-delete" >
-                        <el-checkbox 
-                            v-if="onDelete[index]"
-                            v-model="checkGroup[index2].status" 
-                            :label='building.aka+checkGroup[index2].name' 
-                            />
-                    </div>
-                </el-scrollbar>
+          <el-card
+              class="box-card"
+              v-for="(building, index) in classroom"
+              :key="building.name"
+          >
+            <template #header>
+              <div class="card-header">
+                <span>{{building.name}}</span>
+                <el-button class="button" type="text" v-if="!onDeleteAll" @click="checkDelete(index)">清空教学楼内教室</el-button>
+              </div>
+            </template>
+            <el-scrollbar height="200px" class="card-item-container">
+              <el-button v-if="!onDelete[index] && !onDeleteAll" class="button" type="text" @click="openDelete(index)">删除教室</el-button>
+              <el-button v-if="onDelete[index]" class="button2" type="text" @click="submitDelete(index)">确认删除选中教室</el-button>
+              <el-button v-if="onDelete[index]" class="button2" type="text" @click="cancelDelete(index)">取消删除</el-button>
+              <div class="hold-place" v-if="onDeleteAll && !onDelete[index]"> </div>
+              <div v-if="!onDelete[index]" class="card-item-div-container">
+                <div class="card-item" v-for="room in building.room" :key="room">{{building.aka}}{{room.name}} {{room.capacity}}人</div>
+              </div>
+              <div v-for="(room,index2) in checkGroup"
+                   :key="room.name"
+                   class="card-item-delete" >
+                <el-checkbox
+                    v-if="onDelete[index]"
+                    v-model="checkGroup[index2].status"
+                    :label='building.aka+checkGroup[index2].name'
+                />
+              </div>
+            </el-scrollbar>
 
-            </el-card>
+          </el-card>
         </div>
+      </div>
     </div>
 </template>
 
@@ -374,9 +381,28 @@ export default {
 </script>
 
 <style >
+.status{
+  border: 2px outset lightslategrey;
+  width: 800px;
+  height: 120px;
+  margin: 20px auto;
+}
+
+.time{
+  border: 2px outset lightslategrey;
+  width: 800px;
+  margin: 30px auto;
+}
 .el-card__body {
     padding-top: 10px;
 }
+
+.classroom{
+  border: 2px outset lightslategrey;
+  width: 800px;
+  margin: 30px auto;
+}
+
 .card-item-container .el-scrollbar__view {
     display: flex;
     flex-wrap: wrap;

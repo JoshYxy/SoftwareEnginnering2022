@@ -1,10 +1,9 @@
 <template>
   <div class="major-container">
     <h2 style="margin-right:250px">专业信息管理</h2>
-    <el-button type='primary' @click="appendCollege()"> 新增学院 </el-button>
+    <el-button style="display:block;margin:0 340px" type='primary' round @click="appendCollege()" > 新增学院 </el-button>
     <el-tree
       :data="this.collegeData"
-    
       default-expand-all
       :props="this.defaultProps" 
       :expand-on-click-node="false"
@@ -14,10 +13,9 @@
         <span class="custom-tree-node">
           <span>{{ data.name }}</span>
           <span>
-            <a v-if="data.majors" @click="append(node, data)"> 新增专业 </a>
-     
-            <a @click="openAlter(node, data)"> 修改 </a>
-            <a @click="openRemove(node, data)"> 删除 </a>
+            <a v-if="data.majors" @click="append(node, data)" style="font-weight: bold;color: dodgerblue"> 新增专业 </a>
+            <a @click="openAlter(node, data)" style="font-weight: bold;color: dodgerblue"> 修改 </a>
+            <a @click="openRemove(node, data)" style="font-weight: bold;color: red"> 删除 </a>
           </span>
         </span>
       </template>
