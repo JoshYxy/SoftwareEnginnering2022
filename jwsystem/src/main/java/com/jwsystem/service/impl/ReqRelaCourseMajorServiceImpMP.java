@@ -21,4 +21,11 @@ import java.util.List;
 @Service
 public class ReqRelaCourseMajorServiceImpMP extends ServiceImpl<ReqRelaCourseMajorDaoMP, ReqRelaCourseMajorPO> implements ReqRelaCourseMajorServiceMP {
 
+    @Autowired
+    ReqRelaCourseMajorDaoMP reqRelaCourseMajorDaoMP;
+    @Override
+    public List<ReqRelaCourseMajorPO> selectByReqId(Integer requestId) {
+        return reqRelaCourseMajorDaoMP.selectList(Wrappers.lambdaQuery(ReqRelaCourseMajorPO.class)
+                .eq(ReqRelaCourseMajorPO::getRequestId,requestId));
+    }
 }

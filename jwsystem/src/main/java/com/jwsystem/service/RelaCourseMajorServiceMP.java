@@ -18,4 +18,6 @@ import java.util.List;
 public interface RelaCourseMajorServiceMP extends IService<RelaCourseMajorPO> {
 
     List<RelaCourseMajorPO> selectByCourseId(Integer i);
+
+    void deleteAllByCourseId(int courseId);
 }

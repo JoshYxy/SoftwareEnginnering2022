@@ -16,4 +16,5 @@ import java.util.List;
  */
 public interface ReqRelaCourseMajorServiceMP extends IService<ReqRelaCourseMajorPO> {
 
+    List<ReqRelaCourseMajorPO> selectByReqId(Integer requestId);
 }

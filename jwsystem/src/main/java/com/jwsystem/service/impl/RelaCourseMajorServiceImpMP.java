@@ -27,4 +27,10 @@ public class RelaCourseMajorServiceImpMP extends ServiceImpl<RelaCourseMajorDaoM
         return relaCourseMajorDaoMP.selectList(Wrappers.lambdaQuery(RelaCourseMajorPO.class)
                 .eq(RelaCourseMajorPO::getCourseId,i));
     }
+
+    @Override
+    public void deleteAllByCourseId(int courseId) {
+        relaCourseMajorDaoMP.delete(Wrappers.lambdaQuery(RelaCourseMajorPO.class)
+                .eq(RelaCourseMajorPO::getCourseId,courseId));
+    }
 }
