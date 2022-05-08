@@ -95,7 +95,7 @@ public class TeacherController extends MainController{
             List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList,true);
+            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList,true,false);
 
             courseVOList.add(tempVO);
         }

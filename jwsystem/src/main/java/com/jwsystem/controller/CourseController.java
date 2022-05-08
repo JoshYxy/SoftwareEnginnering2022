@@ -91,8 +91,7 @@ public class CourseController extends MainController{
     }
 
     //保存选课专业信息
-    public boolean saveRelaCourseMajor(CourseVO courseVO){
-        int courseId = courseVO.getCourseId();
+    public boolean saveRelaCourseMajor(CourseVO courseVO,int courseId){
         String [][]majors = courseVO.getMajors();
         try{
             for (String [] s:
@@ -123,7 +122,7 @@ public class CourseController extends MainController{
             List<TimepartDTO> timepartDTOList = timepartServiceImpMP.selectAllTimepartByCourseId(c.getRelationId());
 
             //包装成CourseVO的List
-            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList,true);
+            CourseVO tempVO = transUtil.transToVO(c, timepartDTOList,true,false);
 
             courses.add(tempVO);
         }
@@ -208,7 +207,7 @@ public class CourseController extends MainController{
 
         //如果不是通选课程，保存可选专业信息
         if(!courseVO.getIsGeneral().equals(GENERAL)){
-            if(!saveRelaCourseMajor(courseVO)){
+            if(!saveRelaCourseMajor(courseVO,courseId)){
                 response.setStatus(WRONG_DATA);
                 return Result.fail("数组越界");
             }
@@ -264,7 +263,7 @@ public class CourseController extends MainController{
             //对单门课程的可选专业信息进行更新
             //删除老的，然后插入新的
             relaCourseMajorServiceMP.deleteAllByCourseId(courseId);
-            if(!saveRelaCourseMajor(courseVO)){
+            if(!saveRelaCourseMajor(courseVO, courseId)){
                 response.setStatus(WRONG_DATA);
                 return Result.fail("数组越界");
             }
@@ -470,16 +469,19 @@ public class CourseController extends MainController{
                     }
                 }
 
-                //保存可选专业信息
-                String[] majors = temp.getMajors().split(" ");
-                for(int i=0;i<majors.length;i++){
-                    RelaCourseMajorPO relaCourseMajorPO = new RelaCourseMajorPO(
-                            null,
-                            courseId,
-                            Integer.parseInt(majors[i])
-                    );
-                    relaCourseMajorServiceMP.save(relaCourseMajorPO);
+                if(!temp.getIsGeneral().equals(GENERAL)){
+                    //保存可选专业信息
+                    String[] majors = temp.getMajors().split(" ");
+                    for(int i=0;i<majors.length;i++){
+                        RelaCourseMajorPO relaCourseMajorPO = new RelaCourseMajorPO(
+                                null,
+                                courseId,
+                                Integer.parseInt(majors[i])
+                        );
+                        relaCourseMajorServiceMP.save(relaCourseMajorPO);
+                    }
                 }
+
             }
             if(wrongCnt!=0){
                 response.setStatus(WRONG_RES);
@@ -555,7 +557,7 @@ public class CourseController extends MainController{
             courseRequestVO.setPassed(r.isPassed());
             courseRequestVO.setExamined(r.isExamined());
 
-            CourseVO courseVO = transUtil.transToVO(cp,tp,false);
+            CourseVO courseVO = transUtil.transToVO(cp,tp,true,true);
             courseVO.setCourseId(r.getCourseId());
 
             courseRequestVO.setCourseVO(courseVO);
@@ -595,34 +597,21 @@ public class CourseController extends MainController{
 
         List<TimepartDTO> tempt = reqTimepartServiceImpMP.selectAllReqTimepartByRequestId(requestId);
         //将requestId修改成courseId，才能正确删除和修改对应课程
-        tempc.setRelationId(r.getCourseId());
+        if(r.getCourseId()!=null){
+            tempc.setRelationId(r.getCourseId());
+        }
+        else tempc.setRelationId(r.getRequestId());
         for (TimepartDTO t:
                 tempt) {
             t.setRelationId(r.getCourseId());
         }
-        CourseVO tempVO = transUtil.transToVO(tempc,tempt,false);
+        CourseVO tempVO = transUtil.transToVO(tempc,tempt,true,true);
 
         //如果申请通过
         if(requestResultVO.isRes()){
             String type = r.getType();
 
             if(type.equals(ADD)){
-                //新增课程：如果不是通选课程，将ReqRelaCourseMajor中的数据取出
-                if(!tempVO.getIsGeneral().equals(GENERAL)){
-                    List<ReqRelaCourseMajorPO> reqRelaCourseMajorPOS = reqRelaCourseMajorServiceMP.selectByReqId(requestId);
-                    if(!reqRelaCourseMajorPOS.isEmpty()){
-                        String [][] temps = new String [reqRelaCourseMajorPOS.size()][2];
-                        int i=0;
-                        for (ReqRelaCourseMajorPO req:
-                                reqRelaCourseMajorPOS) {
-                            MajorDTO majorDTO = majorServiceMP.selectMajorById(req.getMajorId());
-                            temps[i][0] = majorDTO.getCollegeName();
-                            temps[i][1] = majorDTO.getName();
-                            i++;
-                        }
-                        tempVO.setMajors(temps);
-                    }
-                }
 
                 Result res = addCourse(tempVO);
                 if(!res.getMsg().equals("新增课程成功")){
@@ -799,7 +788,7 @@ public class CourseController extends MainController{
                     temp) {
                 CoursepartDTO tempc = transUtil.CpPOtoCpDTO(c);
                 List<TimepartDTO> tempt = timepartServiceImpMP.selectAllTimepartByCourseId(tempc.getRelationId());
-                CourseVO tempVO = transUtil.transToVO(tempc,tempt,true);
+                CourseVO tempVO = transUtil.transToVO(tempc,tempt,true,false);
                 searched.add(tempVO);
             }
             return Result.succ("查询成功",searched);

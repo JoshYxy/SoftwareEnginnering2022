@@ -14,13 +14,11 @@ import com.jwsystem.entity.course.CoursepartPO;
 import com.jwsystem.entity.course.RelaCourseMajorPO;
 import com.jwsystem.entity.course.RelaCourseStudentPO;
 import com.jwsystem.entity.course.TimepartPO;
-import com.jwsystem.entity.request.ReqCoursepartPO;
-import com.jwsystem.entity.request.ReqStudentPO;
-import com.jwsystem.entity.request.ReqTeacherPO;
-import com.jwsystem.entity.request.ReqTimepartPO;
+import com.jwsystem.entity.request.*;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
 import com.jwsystem.service.MajorServiceMP;
+import com.jwsystem.service.ReqRelaCourseMajorServiceMP;
 import com.jwsystem.service.StudentServiceMP;
 import com.jwsystem.service.TimepartServiceMP;
 import com.jwsystem.service.impl.*;
@@ -83,9 +81,13 @@ public class TransUtil {
     @Autowired
     RelaCourseMajorServiceImpMP relaCourseMajorServiceImpMP;
 
+    @Lazy
+    @Autowired
+    ReqRelaCourseMajorServiceMP reqRelaCourseMajorServiceMP;
+
 
     //CoursepartDTO和TimepartDTO转换成CourseVO
-    public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList,boolean needSelect){
+    public CourseVO transToVO(CoursepartDTO coursePart, List<TimepartDTO> timepartDTOList,boolean needSelect,boolean isReq){
 
         CourseVO VO = new CourseVO();
 
@@ -124,21 +126,14 @@ public class TransUtil {
 
         //needSelect为true，表示需要查询可选专业和已选人数
         if(needSelect){
-            //从relaCourseStudent表里查出已选人数（注意不要已修读的，即status为已选）
-            //返回list就行
-            List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseStudentPO.class)
-                    .eq(RelaCourseStudentPO::getCourseId,coursePart.getRelationId())
-                    .eq(RelaCourseStudentPO::getStatus,SELECTED));
-            VO.setSelected(Integer.toString(courseStudentPOS.size()));
-
-            //不是通选课，根据courseId查询可选专业
-            if(!coursePart.getIsGeneral().equals(GENERAL)){
-                List<RelaCourseMajorPO> courseMajorPOS = relaCourseMajorServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseMajorPO.class)
-                        .eq(RelaCourseMajorPO::getCourseId,coursePart.getRelationId()));
+            if(isReq && !coursePart.getIsGeneral().equals(GENERAL)){
+                //是将申请的课程转换为VO，不需要查询已选人数，只需要找出可选专业即可
+                List<ReqRelaCourseMajorPO> courseMajorPOS = reqRelaCourseMajorServiceMP.list(Wrappers.lambdaQuery(ReqRelaCourseMajorPO.class)
+                        .eq(ReqRelaCourseMajorPO::getRequestId,coursePart.getRelationId()));
                 //创建对应数量的二维数组
                 String[][] majors = new String[courseMajorPOS.size()][2];
                 int i=0;
-                for (RelaCourseMajorPO r:
+                for (ReqRelaCourseMajorPO r:
                         courseMajorPOS) {
                     //根据majorid查询对应的学院名和专业名
                     MajorDTO m = majorServiceMP.selectMajorById(r.getMajorId());
@@ -147,6 +142,32 @@ public class TransUtil {
                     i++;
                 }
                 VO.setMajors(majors);
+            }
+            else{
+                //从relaCourseStudent表里查出已选人数（注意不要已修读的，即status为已选）
+                //返回list就行
+                List<RelaCourseStudentPO> courseStudentPOS = relaCourseStudentServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseStudentPO.class)
+                        .eq(RelaCourseStudentPO::getCourseId,coursePart.getRelationId())
+                        .eq(RelaCourseStudentPO::getStatus,SELECTED));
+                VO.setSelected(Integer.toString(courseStudentPOS.size()));
+
+                //不是通选课，根据courseId查询可选专业
+                if(!coursePart.getIsGeneral().equals(GENERAL)){
+                    List<RelaCourseMajorPO> courseMajorPOS = relaCourseMajorServiceImpMP.list(Wrappers.lambdaQuery(RelaCourseMajorPO.class)
+                            .eq(RelaCourseMajorPO::getCourseId,coursePart.getRelationId()));
+                    //创建对应数量的二维数组
+                    String[][] majors = new String[courseMajorPOS.size()][2];
+                    int i=0;
+                    for (RelaCourseMajorPO r:
+                            courseMajorPOS) {
+                        //根据majorid查询对应的学院名和专业名
+                        MajorDTO m = majorServiceMP.selectMajorById(r.getMajorId());
+                        majors[i][0]=m.getCollegeName();
+                        majors[i][1]=m.getName();
+                        i++;
+                    }
+                    VO.setMajors(majors);
+                }
             }
         }
 
@@ -157,7 +178,7 @@ public class TransUtil {
     public CourseVO getCourseById(int courseId ,boolean needSelect){
         CoursepartDTO coursePart = CpPOtoCpDTO(coursepartServiceImpMP.getById(courseId));
         List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(courseId);
-        return transToVO(coursePart,timepartDTOList,needSelect);
+        return transToVO(coursePart,timepartDTOList,needSelect,false);
     }
 
     //CoursepartDTO转换成CoursepartPO
@@ -626,7 +647,7 @@ public class TransUtil {
         return new ReqStudentVO(
                 reqStudentPO.getId(),
                 reqStudentPO.getReason(),
-                getCourseById(reqStudentPO.getCourseId(),false),
+                getCourseById(reqStudentPO.getCourseId(),true),
                 StudentPOtoUserVO(studentServiceMP.getById(reqStudentPO.getStudentNum())),
                 reqStudentPO.getDealt() == 1,
                 reqStudentPO.getApproved() == 1

@@ -120,8 +120,8 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
             int selected = courseStudentPOS.size();
             if(capacity < selected){
                 //人数超出容量，踢人（被踢掉的人的选课记录会被删除）
-                //根据relaCourseStudentPO里自带的学号，按年级进行排序
-                courseStudentPOS.sort(Comparator.comparing(RelaCourseStudentPO::getStudentNum).reversed());
+                //根据relaCourseStudentPO里自带的学号，按年级进行排序（高年级优先）
+                courseStudentPOS.sort(Comparator.comparing(RelaCourseStudentPO::getStudentNum));
 
                 //将不同年级的申请分别存在不同的List里
                 int currentGrade = Integer.parseInt(courseStudentPOS.get(0).getStudentNum().substring(0,2));
@@ -131,8 +131,8 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
                 for (RelaCourseStudentPO rela:
                      courseStudentPOS) {
                     int grade = Integer.parseInt(rela.getStudentNum().substring(0,2));
-                    if(grade<currentGrade){
-                        //说明已经进入了第一年级的选课信息部分，将之前一个年级的部分截取出来
+                    if(grade>currentGrade){
+                        //说明已经进入了另一年级的选课信息部分，将之前一个年级的部分截取出来
                         List<RelaCourseStudentPO> temp = new ArrayList<>(courseStudentPOS.subList(start,cnt));
                         map.put(currentGrade,temp);
                         start = cnt;
@@ -141,17 +141,21 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
                     cnt++;
                 }
 
+                //把最后一个年级的选课信息保存到map里
+                List<RelaCourseStudentPO> tempRC = new ArrayList<>(courseStudentPOS.subList(start,cnt));
+                map.put(currentGrade,tempRC);
+
                 int total = 0;
                 boolean flag = false;
                 List<Integer> verified = new ArrayList<>();
                 List<Integer> highToLow = new ArrayList<>(map.keySet());
-                //map.keyset默认从小到大，这里做一个反转
-                highToLow.sort(Comparator.comparing(Integer::intValue).reversed());
+                highToLow.sort(Comparator.comparing(Integer::intValue));
 
                 for (Integer key:
                      highToLow) {
                     //将每个年级的申请顺序都打乱，保证之后删除多余部分时是随机删除的
-                    Collections.shuffle(map.get(key));
+                    Random rnd = new Random(233);
+                    Collections.shuffle(map.get(key), rnd);
                     total+=map.get(key).size();
 
                     if(total<capacity){
@@ -181,7 +185,7 @@ public class CoursepartServiceImpMP extends ServiceImpl<CoursepartDaoMP, Coursep
                 }
                 else{
                     //需要对verified最后那个年级取一部分人
-                    if(verified.isEmpty()){
+                    if(verified.size()==1){
                         //最高年级的选课就已经超了
                         int key = highToLow.get(0);
                         courseStudentPOS.removeAll(map.get(key).subList(0,capacity));

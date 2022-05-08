@@ -100,7 +100,7 @@ public class StudentController extends MainController{
             CoursepartDTO coursepartDTO = transUtil.CpPOtoCpDTO(cp);
             List<TimepartDTO> timepartDTOList = timepartServiceMP.selectAllTimepartByCourseId(cp.getCourseId());
             //包装成CourseVO的List
-            CourseVO tempVO = transUtil.transToVO(coursepartDTO, timepartDTOList,true);
+            CourseVO tempVO = transUtil.transToVO(coursepartDTO, timepartDTOList,true,false);
             courses.add(tempVO);
         }
 
@@ -157,6 +157,11 @@ public class StudentController extends MainController{
     public Result firstRound(@RequestBody Map<String,Integer>map){
         //获得当前选课状态
         String curr = adminServiceMP.getCur();
+
+        if(!curr.equals(ROUND_ONE_OPEN) && !curr.equals(ROUND_TWO_OPEN)){
+            response.setStatus(WRONG_RES);
+            return Result.fail("选课失败：非选课时间段");
+        }
 
         String num = getNumByToken();
         int courseId = map.get("courseId");
@@ -245,8 +250,9 @@ public class StudentController extends MainController{
     }
 
     //判断课程是否可选的函数
-    public List<Integer> verifyCourses(int stuMajor,List<Integer> fullCourse){
-        //找出其中可选的（本学期，且可选专业有该学生的专业）
+    //要删掉自己已经选了的
+    public List<Integer> verifyCourses(int stuMajor,List<Integer> fullCourse,String stuNumber){
+        //找出其中可选的（本学期，且可选专业有该学生的专业，且该学生没选的课）
         List<Integer> requestCourses = new ArrayList<>();
 
         for (Integer i:
@@ -257,6 +263,9 @@ public class StudentController extends MainController{
             String year = commonUtil.getSchoolYear();
             String semester = commonUtil.getSemester();
             if(!coursepartPO.getYear().equals(year) || !coursepartPO.getSemester().equals(semester)) continue;
+
+            //自己选了的课，删除
+            if(!relaCourseStudentServiceMP.selectRecordByCourseAndStu(i,stuNumber).isEmpty()) continue;
 
             if(!coursepartPO.getIsGeneral().equals(GENERAL)){
                 //非通选课程，根据课程id查到所有的可选专业id，然后进行判断
@@ -283,6 +292,7 @@ public class StudentController extends MainController{
 
     //学生获取可以提交选课申请的课程：只给能选且选课人数已满的课
     //根据token获取学生信息，然后获取可选课程里已满课程，返回
+    //不能返回自己选了的课
     @GetMapping("/requestCourses")
     public Result requestedCourses(){
         //先找出人数已满的课
@@ -298,10 +308,10 @@ public class StudentController extends MainController{
             }
         }
 
-        //再找出其中可选的（本学期，且可选专业有该学生的专业）
+        //再找出其中可选的（本学期，且可选专业有该学生的专业，且该学生没选）
         StudentPO studentPO = studentServiceMP.getById(getNumByToken());
         int stuMajor = studentPO.getMajorId();
-        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse);
+        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse,getNumByToken());
 
         if(requestCourses.isEmpty()){
             response.setStatus(WRONG_RES);
@@ -370,7 +380,7 @@ public class StudentController extends MainController{
         //再找出其中可选的（本学期，且可选专业有该学生的专业）
         StudentPO studentPO = studentServiceMP.getById(getNumByToken());
         int stuMajor = studentPO.getMajorId();
-        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse);
+        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse,getNumByToken());
 
         if(requestCourses.isEmpty()){
             response.setStatus(WRONG_RES);
@@ -404,7 +414,7 @@ public class StudentController extends MainController{
         //再找出其中可选的（本学期，且可选专业有该学生的专业）
         StudentPO studentPO = studentServiceMP.getById(getNumByToken());
         int stuMajor = studentPO.getMajorId();
-        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse);
+        List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse,getNumByToken());
 
         if(requestCourses.isEmpty()){
             response.setStatus(WRONG_RES);
