@@ -414,10 +414,18 @@ public class TransUtil {
                 majorDTO.getName(),
                 null
         );
-        
-        //根据collegeName查询collegeId并且插入
-        CollegePO collegePO = collegeServiceImpMP.selectCollegeByName(majorDTO.getCollegeName());
-        Integer collegeId = collegePO.getCollegeId();// TODO: 2022/4/30 根据学院名查询学院id ;
+
+        Integer collegeId;
+        if(majorDTO.getCollegeName()==null){
+            MajorPO majorPO2 = majorServiceMP.getById(majorDTO.getMajorId());
+            collegeId = majorPO2.getCollegeId();
+        }
+        else{
+            //根据collegeName查询collegeId并且插入
+            CollegePO collegePO = collegeServiceImpMP.selectCollegeByName(majorDTO.getCollegeName());
+             collegeId = collegePO.getCollegeId();// TODO: 2022/4/30 根据学院名查询学院id ;
+        }
+
         majorPO.setCollegeId(collegeId);
 
        return majorPO;

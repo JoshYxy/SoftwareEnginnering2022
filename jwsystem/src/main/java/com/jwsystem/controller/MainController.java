@@ -28,8 +28,9 @@ public class MainController {
     public static int CONFLICT_TIME = 431;
 
 
-    protected String getNumByToken(){
+    public String getNumByToken(){
         String token = request.getHeader("token");
+        if(token == null) return null;
         String number = jwtUtils.getCliamByToken(token).getSubject();
         return number;
     }

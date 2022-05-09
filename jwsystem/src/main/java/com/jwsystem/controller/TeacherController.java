@@ -277,7 +277,7 @@ public class TeacherController extends MainController{
     }
 
     //获得某门课程已选/已修学生名单
-    @GetMapping("/selectedList")
+    @PutMapping("/selectedList")
     public Result selected(@RequestBody Map<String,Integer> map){
 
         int courseId = map.get("courseId");

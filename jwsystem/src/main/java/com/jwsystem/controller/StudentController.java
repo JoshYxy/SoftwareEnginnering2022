@@ -164,6 +164,7 @@ public class StudentController extends MainController{
         }
 
         String num = getNumByToken();
+//        String num = "210003";
         int courseId = map.get("courseId");
         CoursepartPO coursepartPO = coursepartServiceMP.getById(courseId);
 
