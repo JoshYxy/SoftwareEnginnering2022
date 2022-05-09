@@ -749,35 +749,35 @@ export default {
                 })
         },
         async handleEdit(index, data) {
-            // await axios.put('http://localhost:8081/affair/teacher/time',
-            //     {
-            //         name: data.teacherName,
-            //         number: data.teacherNum
-            //     })
-            // .then(res => {
-            //     this.unavalTeaTimes = res.data.data1
-            // })
-            // .catch(err => {
-            //     console.dir(err)
-            // })
-            // await axios.put('http://localhost:8081/affair/building/room/time',
-            //     {
-            //         building: data.building,
-            //         roomNum: data.roomNum
-            //     })
-            // .then(res => {
-            //     this.unavalRoomTimes = res.data.data1
-            // })
-            // //axios获取教室，教师不可用时间 data.teacher data.selectRoom
-            //
-            // this.setAvalTime()
-            // //当前课程时间设置为可以选中
-            // for(let i = 0; i < data.times.length; i++) {
-            //     for(let j = 1; j <= this.times.length; j++) {
-            //         if(data.times[i].indexOf(j) > -1)
-            //             this.timeData[i].times[j-1].disable = false
-            //     }
-            // }
+            await axios.put('http://localhost:8081/affair/teacher/time',
+                {
+                    name: data.teacherName,
+                    number: data.teacherNum
+                })
+            .then(res => {
+                this.unavalTeaTimes = res.data.data1
+            })
+            .catch(err => {
+                console.dir(err)
+            })
+            await axios.put('http://localhost:8081/affair/building/room/time',
+                {
+                    building: data.building,
+                    roomNum: data.roomNum
+                })
+            .then(res => {
+                this.unavalRoomTimes = res.data.data1
+            })
+            //axios获取教室，教师不可用时间 data.teacher data.selectRoom
+            
+            this.setAvalTime()
+            //当前课程时间设置为可以选中
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
             //数组深拷贝
             this.editCourse.selectTime = []
             for(let i = 0; i < data.times.length; i++)
