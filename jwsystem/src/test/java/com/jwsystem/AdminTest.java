@@ -18,7 +18,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @SpringBootTest
 //由于是Web项目，Junit需要模拟ServletContext，因此我们需要给我们的测试类加上@WebAppConfiguration。
 @WebAppConfiguration
-public class test {
+public class AdminTest {
 
     @Autowired
     AdminServiceImpMP adminServiceImpMP;
