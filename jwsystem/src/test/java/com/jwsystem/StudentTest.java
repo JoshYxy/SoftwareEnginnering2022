@@ -1,6 +1,7 @@
 
 package com.jwsystem;
 
+
 import com.jwsystem.controller.StudentController;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,6 +30,42 @@ public class StudentTest {
         Map<String,Integer> map = new HashMap<>();
         map.put("courseId",courseId);
         return studentController.firstRound(map).getMsg();
+    }
+
+    //学生在选课时间段获取本学期全部课程
+    @Test
+    public void getAllCourse(){
+        String result = "获取可选课程成功";
+        String studentNum = "210003";   //学生学号
+        Mockito.when(studentController.getNumByToken()).thenReturn(studentNum);
+        Assert.assertEquals("获取本学期全部课程测试失败",result,studentController.avaliableCourse().getMsg());
+    }
+
+    //学生获得自己的已选课程
+    @Test
+    public void getSelectedCourse(){
+        String result = "请求成功";
+        String studentNum = "210003";   //学生学号
+        Mockito.when(studentController.getNumByToken()).thenReturn(studentNum);
+        Assert.assertEquals("获取已选课程测试失败",result,studentController.selected().getMsg());
+    }
+
+    //学生获得自己的已修课程：请求成功
+    @Test
+    public void getCompletedCourse(){
+        String result = "请求成功";
+        String studentNum = "210004";   //学生学号
+        Mockito.when(studentController.getNumByToken()).thenReturn(studentNum);
+        Assert.assertEquals("获取已修课程测试失败",result,studentController.studied().getMsg());
+    }
+
+    //学生获得自己的已修课程：没有已修课程
+    @Test
+    public void noCompletedCourse(){
+        String result = "没有已修课程";
+        String studentNum = "210003";   //学生学号
+        Mockito.when(studentController.getNumByToken()).thenReturn(studentNum);
+        Assert.assertEquals("没有已修课程测试失败",result,studentController.studied().getMsg());
     }
 
     //选课成功
