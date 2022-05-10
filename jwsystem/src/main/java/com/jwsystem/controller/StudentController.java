@@ -164,7 +164,6 @@ public class StudentController extends MainController{
         }
 
         String num = getNumByToken();
-//        String num = "210003";
         int courseId = map.get("courseId");
         CoursepartPO coursepartPO = coursepartServiceMP.getById(courseId);
 
@@ -291,16 +290,11 @@ public class StudentController extends MainController{
         return requestCourses;
     }
 
-    //学生获取可以提交选课申请的课程：只给能选且选课人数已满的课
-    //根据token获取学生信息，然后获取可选课程里已满课程，返回
-    //不能返回自己选了的课
-    @GetMapping("/requestCourses")
-    public Result requestedCourses(){
-        //先找出人数已满的课
-        List<CoursepartPO> coursepartPOList = coursepartServiceMP.list();
+    //筛选出可以提交选课申请课程的函数
+    public List<Integer> reqCourses(List<CoursepartPO> coursepartPOList){
         List<Integer> fullCourse = new ArrayList<>();
         for (CoursepartPO course:
-             coursepartPOList) {
+                coursepartPOList) {
             int capacity = Integer.parseInt(course.getCapacity());
             //找出该门课程的选课人数
             int selected = relaCourseStudentServiceMP.selectStuNumberSelectCourse(course.getCourseId(),SELECTED);
@@ -313,6 +307,17 @@ public class StudentController extends MainController{
         StudentPO studentPO = studentServiceMP.getById(getNumByToken());
         int stuMajor = studentPO.getMajorId();
         List<Integer> requestCourses = verifyCourses(stuMajor,fullCourse,getNumByToken());
+        return requestCourses;
+    }
+
+    //学生获取可以提交选课申请的课程：只给能选且选课人数已满的课
+    //根据token获取学生信息，然后获取可选课程里已满课程，返回
+    //不能返回自己选了的课
+    @GetMapping("/requestCourses")
+    public Result requestedCourses(){
+        //先找出人数已满的课
+        List<CoursepartPO> coursepartPOList = coursepartServiceMP.list();
+        List<Integer> requestCourses = reqCourses(coursepartPOList);
 
         if(requestCourses.isEmpty()){
             response.setStatus(WRONG_RES);
@@ -323,6 +328,30 @@ public class StudentController extends MainController{
             List<CourseVO> requestCoursesVO = new ArrayList<>();
             for (Integer i:
                  requestCourses) {
+                requestCoursesVO.add(transUtil.getCourseById(i,true));
+            }
+            return Result.succ("获取成功",requestCoursesVO);
+        }
+    }
+
+    //学生模糊搜索可以提交选课申请的课程
+    @PutMapping("/requestCourses/search")
+    public Result searchReqCourses(@RequestBody Map<String,String>map){
+        //先模糊搜索
+        String word = map.get("search");
+        //根据word对课程代码、课程名称、教师字段模糊查询，返回coursepartPO的List
+        List<CoursepartPO> temp = coursepartServiceImpMP.conditionSearch(word);
+
+        List<Integer> requestCourses = reqCourses(temp);
+        if(requestCourses.isEmpty()){
+            response.setStatus(WRONG_RES);
+            return Result.fail("搜索结果为空");
+        }
+        else{
+            //根据选出的课程id转化为课程信息返回
+            List<CourseVO> requestCoursesVO = new ArrayList<>();
+            for (Integer i:
+                    requestCourses) {
                 requestCoursesVO.add(transUtil.getCourseById(i,true));
             }
             return Result.succ("获取成功",requestCoursesVO);
