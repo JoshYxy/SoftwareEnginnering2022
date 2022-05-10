@@ -381,7 +381,7 @@ export default {
 </script>
 
 <style >
-.status{
+/* .status{
   border: 2px outset lightslategrey;
   width: 800px;
   height: 120px;
@@ -392,16 +392,16 @@ export default {
   border: 2px outset lightslategrey;
   width: 800px;
   margin: 30px auto;
-}
+} */
 .el-card__body {
     padding-top: 10px;
 }
-
+/* 
 .classroom{
   border: 2px outset lightslategrey;
   width: 800px;
   margin: 30px auto;
-}
+} */
 
 .card-item-container .el-scrollbar__view {
     display: flex;

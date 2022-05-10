@@ -83,6 +83,7 @@ export default {
           console.log(res)
           newChild.id = res.data.data1
           data.majors.push(newChild)
+          console.log(data.majors)
           this.openAlter(node, newChild)
           this.collegeData = [...this.collegeData]//更新数据，刷新页面
         }).catch(error => {

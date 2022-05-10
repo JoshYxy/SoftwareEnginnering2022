@@ -37,14 +37,18 @@
         <el-form-item label="课程简介" prop="courseInfo" style="margin-left: 250px">
           <el-input v-model="courseData.courseInfo" type="textarea" style="width: 400px" />
         </el-form-item>
-        <el-form-item label="课程类型" prop="commonCourse" style="margin-left: 250px">
-          <el-select v-model="courseData.commonCourse" placeholder="类型" >
+        <el-form-item label="课程类型" prop="isGeneral" style="margin-left: 250px">
+          <el-select v-model="courseData.isGeneral" placeholder="类型" >
             <el-option label="通选课程" value="通选课程" />
             <el-option label="专业选修" value="专业课程" />
+            <el-option label="部分专业选修" value="面向部分专业课程" />
           </el-select>
         </el-form-item>
-        <el-form-item label="面向专业" prop="majors" v-if="courseData.commonCourse == '专业课程'" style="margin-left: 250px">
+        <el-form-item label="面向专业" prop="majors" v-if="courseData.isGeneral == '面向部分专业课程'" style="margin-left: 250px">
           <el-cascader :props="majorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
+        </el-form-item>
+        <el-form-item label="面向专业" prop="majors" v-if="courseData.isGeneral == '专业课程'" style="margin-left: 250px">
+          <el-cascader :props="singlemajorProps" :options="collegeData" v-model="courseData.majors" placeholder="面向专业" :show-all-levels='false' @change="updateMajors" clearable/>
         </el-form-item>
         <el-form-item label="开课学年" prop="year" style="float:left; margin-left:250px;margin-right: 10px">
           <el-select v-model="courseData.year" placeholder="学年">
@@ -151,6 +155,11 @@ export default {
                 label: 'name',
                 value: 'name',
                 multiple: true
+            },
+            singlemajorProps: {
+                children: 'majors',
+                label: 'name',
+                value: 'name',
             },
             classroom: [
                 {
@@ -273,7 +282,7 @@ export default {
                 capacity: 0,
                 building: '',
                 roomNum: '',
-                commonCourse:'通选课程',
+                isGeneral:'通选课程',
                 majors: [
                             ["计算机科学技术学院","大数据"],
                             ["计算机科学技术学院","信息安全"],
@@ -288,7 +297,7 @@ export default {
                 credits: [{required: true, message: '请输入学分', trigger: 'blur'},
                           {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'}],
                 courseInfo: [{required: true, message: '请输入课程介绍', trigger: 'blur'}],
-                commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
+                isGeneral: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
                 majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'},
@@ -308,7 +317,8 @@ export default {
             if(this.courseData.selectRoom == null) return 0
             for(let i = 0; i < this.classroom.length; i++){
                 for(let j = 0; j < this.classroom[i].room.length; j++) {
-                    if(this.courseData.selectRoom[1] == this.classroom[i].room[j].name) {
+                    if(this.courseData.selectRoom[1] == this.classroom[i].room[j].name 
+                    && this.courseData.selectRoom[0] == this.classroom[i].name) {
                         return this.classroom[i].room[j].capacity
                     }
                 }
@@ -396,6 +406,7 @@ export default {
         submit() {
             this.$refs['courseData'].validate(async valid => {
                 if(valid){
+                    if(this.courseData.majors != [] && typeof(this.courseData.majors[0]) == 'string') this.courseData.majors = [this.courseData.majors]
                     this.courseData.teacherName = this.courseData.teacher.name
                     this.courseData.teacherNum = this.courseData.teacher.number
                     this.courseData.building = this.buildingToAbbr[this.courseData.selectRoom[0]]
@@ -472,15 +483,28 @@ export default {
                 this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
             }
             this.times = res.data.data3
-            // this.collegeData = res.data.data4
-            // for(let i = 0; i < this.collegeData.length; i++) {
-            //     if(this.collegeData[i].majors == []) {
-            //         this.collegeData[i]['disabled'] = true
-            //     }
-            // }
         }).catch(error => {
             console.dir(error)
         })
+        axios.get("http://localhost:8081/admin/edu")
+        .then(res => {
+            this.collegeData = res.data.data1
+            for(let i in this.collegeData) {//替换变量名,对应后端数据
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+            }
+            for(let i = 0; i < this.collegeData.length; i++) {
+                if(this.collegeData[i].majors.length == 0) {
+                    this.collegeData[i]['disabled'] = true
+                }
+            }
+            console.log(this.collegeData)
+        }).catch(error => {
+            alert('获取服务器信息失败')
+            console.dir(error);
+        });
         this.timeData = []
         for(let i = 0; i < 7; i++) {//创建选课时间数组
             this.timeData.push({id:0, name:'', times:[]})

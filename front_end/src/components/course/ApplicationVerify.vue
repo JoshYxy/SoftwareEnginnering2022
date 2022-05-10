@@ -1,8 +1,8 @@
 <template>
     <h2>选课申请审核</h2>
     <el-table class="class-table" :data="applyCourses" :row-class-name="tableRowClassName">
-        <el-table-column fixed prop="teacherName" label="申请人" width="80" />
-        <el-table-column fixed prop="teacherName" label="申请学号" width="80" />
+        <el-table-column fixed prop="studentName" label="申请人" width="80" />
+        <el-table-column fixed prop="studentNum" label="申请学号" width="80" />
         <el-table-column prop="courseName" label="课程名" width="140" />
         <el-table-column prop="courseNum" label="课程编号" width="150" />
         <el-table-column prop="teacherName" label="课程教师" width="80" />
@@ -12,11 +12,11 @@
             </template>
         </el-table-column>
         <el-table-column prop="collegeName" label="开课院系" width="180" />
-        <el-table-column prop="commonCourse" label="课程类型" width="180">
+        <el-table-column prop="isGeneral" label="课程类型" width="220">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '专业课程'">
-                    <span style="padding-right:10px">专业课程</span>
+                <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                <div v-else>
+                    <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
                         <div v-for="major in applyCourses[scope.$index].majors" :key="major">
@@ -81,6 +81,8 @@ export default {
                     courseNum: 'SOFT220011',
                     teacherNum: '22000001',
                     teacherName: '朱一',
+                    studentName: '',
+                    studentNum: '',
                     classHours: '4',
                     credits: '4',
                     courseTime:'周二: 1-3,5-6,8,10-12; 周三: 3;',
@@ -100,7 +102,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'change',
-                    commonCourse: '专业课程',
+                    isGeneral: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -110,6 +112,7 @@ export default {
                     semester:'春',
                     examined: false,
                     passed: false,
+                    applyReason: '',
                 },
                 {
                     showStatus: '',
@@ -119,6 +122,8 @@ export default {
                     courseNum: 'SOFT2132333',
                     teacherNum: '22000000',
                     teacherName: '朱二',
+                    studentName: '',
+                    studentNum: '',
                     classHours: '4',
                     credits: '4',
                     courseTime:'周二: 1-3,5-6,8,10-12; 周三: 3;',
@@ -138,7 +143,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'delete',
-                    commonCourse: '通选课程',
+                    isGeneral: '通选课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -148,13 +153,14 @@ export default {
                     semester:'春',
                     examined: false,
                     passed: false,
+                    applyReason: '',
                 }   
             ]
         }
     },
     methods: {
         approve(pending_course) {
-            axios.post('http://localhost:8081/course/courseRequests', {requestId: pending_course.requestId, res: true})
+            axios.post('http://localhost:8081/course/student/requests', {requestId: pending_course.requestId, approved: true})
             .then( res => {
                 console.log(res)
                 pending_course.examined = true
@@ -167,13 +173,20 @@ export default {
         },
         
         reject(pending_course) {
-            axios.post('http://localhost:8081/course/courseRequests', {requestId: pending_course.requestId, res: false})
-            pending_course.examined = true
-            pending_course.passed = false
+            axios.post('http://localhost:8081/course/student/requests', {requestId: pending_course.requestId, approved: false})
+            .then( res => {
+                console.log(res)
+                pending_course.examined = true
+                pending_course.passed = false
+            })
+            .catch(error => {
+                console.dir(error)
+                alert(error.response.data.msg)
+            })
         },
     },
     created() {
-        axios.get('http://localhost:8081/course/courseRequests')
+        axios.get('http://localhost:8081/course/student/requests')
         .then(res => {
             let requestData = res.data.data1
             console.log(res)
@@ -181,11 +194,13 @@ export default {
             for(let i = 0; i < requestData.length; i++) {
                 this.applyCourses.push(requestData[i].courseVO)
                 setCourseTime( this.applyCourses[i],this.applyCourses[i].times)
-                this.applyCourses[i].type = requestData[i].type
+                this.applyCourses[i].studentName = requestData[i].student.name
+                this.applyCourses[i].studentNum = requestData[i].student.number
                 this.applyCourses[i].requestId = requestData[i].requestId
-                this.applyCourses[i].examined = false
+                this.applyCourses[i].applyReason = requestData[i].applyReason
                 this.applyCourses[i].passed = false
-                this.applyCourses[i].showStatus = this.statusToShow[this.applyCourses[i].type]
+                this.applyCourses[i].examined = false
+                // console.log(this.applyCourses[i].requestId)
             }
         })
         // this.applyCourses[0].showStatus = this.statusToShow[this.applyCourses[0].type]

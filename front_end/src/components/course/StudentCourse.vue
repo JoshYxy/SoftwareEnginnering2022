@@ -18,11 +18,11 @@
                     <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
                     <el-table-column prop="collegeName" label="开课院系" width="180" />
                     <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
-                    <el-table-column prop="commonCourse" label="课程类型" width="180">
+                    <el-table-column prop="isGeneral" label="课程类型" width="220">
                         <template #default="scope">
-                            <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                            <div v-if="scope.row.commonCourse == '专业课程'">
-                                <span style="padding-right:10px">专业课程</span>
+                            <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                            <div v-else>
+                                <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                                 <el-button type="text" @click="majorAvlVis[scope.$index] = true">查看专业</el-button>
                                 <el-dialog v-model="majorAvlVis[scope.$index]" title="课程可选专业" :append-to-body="true">
                                     <div v-for="major in scope.row.majors" :key="major">
@@ -67,11 +67,11 @@
                     <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
                     <el-table-column prop="collegeName" label="开课院系" width="180" />
                     <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
-                    <el-table-column prop="commonCourse" label="课程类型" width="180">
+                    <el-table-column prop="isGeneral" label="课程类型" width="220">
                         <template #default="scope">
-                            <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                            <div v-if="scope.row.commonCourse == '专业课程'">
-                                <span style="padding-right:10px">专业课程</span>
+                            <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                            <div v-else>
+                                <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                                 <el-button type="text" @click="majorSelVis[scope.$index] = true">查看专业</el-button>
                                 <el-dialog v-model="majorSelVis[scope.$index]" title="课程可选专业" :append-to-body="true">
                                     <div v-for="major in scope.row.majors" :key="major">
@@ -124,11 +124,11 @@
                         </el-table-column>
                         <el-table-column prop="collegeName" label="开课院系" width="180" />
                         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
-                        <el-table-column prop="commonCourse" label="课程类型" width="180">
+                        <el-table-column prop="isGeneral" label="课程类型" width="220">
                             <template #default="scope">
-                                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                                <div v-if="scope.row.commonCourse == '专业课程'">
-                                    <span style="padding-right:10px">专业课程</span>
+                                <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                                <div v-else>
+                                    <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                                     <el-button type="text" @click="majorStuVis[scope.$index] = true">查看专业</el-button>
                                     <el-dialog v-model="majorStuVis[scope.$index]" title="课程可选专业" :append-to-body="true">
                                         <div v-for="major in scope.row.majors" :key="major">
@@ -311,7 +311,7 @@ export default {
                     building: 'H3',
                     roomNum: '301',
                     courseInfo: '123',
-                    commonCourse: '专业课程',
+                    isGeneral: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -339,7 +339,7 @@ export default {
                     building: 'HGX',
                     roomNum: '502',
                     courseInfo: '321',
-                    commonCourse: '通选课程',
+                    isGeneral: '通选课程',
                     majors: [],
                     year:'2020-2021',
                     semester:'秋'
@@ -366,43 +366,108 @@ export default {
     methods: {
          submitSearch() {
             console.log(this.searchContent)
-            //axios searchContent
+            axios.post("http://localhost:8081/student/course/verified/search",{search: this.searchContent})
+            .then(res => {
+                console.log(res.data.msg)
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                }
+            })
           
         },
         resetSearch() {
-            //axios
+            axios.get('http://localhost:8081/student/course/verified')
+            .then(res => {
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                }
+            })
          
         },
         handleClick(tab, event) {
             console.log(tab,event)
             if(tab.props.name == 'available'){
-                //axios获取可选课程
+                axios.get('http://localhost:8081/student/course/verified')
+                .then(res => {
+                    this.courses = res.data.data1
+                    for(let course of this.courses) {
+                        // this.dialogTableVisible.push(false)
+                        course.courseTime = ''
+                        setCourseTime(course, course.times)
+                    }
+                })
+                .catch(err => {
+                    alert(err.response.data.msg)
+                    this.courses = []
+                })
                 console.log(1)
             }
             if(tab.props.name == 'selected') {
                 //axios获取已选课程
+                axios.get('http://localhost:8081/student/course/selected')
+                .then(res => {
+                    this.selectedCourses = res.data.data1
+                    for(let course of this.selectedCourses) {
+                        // this.dialogTableVisible.push(false)
+                        course.courseTime = ''
+                        setCourseTime(course, course.times)
+                    }
+                })
+                .catch(err => {
+                    alert(err.response.data.msg)
+                    this.selectedCourses = []
+                })
                 console.log(2)
             }
             if(tab.props.name == 'studied') {
-                //axios获取已修课程
+                axios.get('http://localhost:8081/student/course/studied')
+                .then(res => {
+                    this.studiedCourses = res.data.data1
+                    for(let course of this.studiedCourses) {
+                        // this.dialogTableVisible.push(false)
+                        course.courseTime = ''
+                        setCourseTime(course, course.times)
+                    }
+                })
+                .catch(err => {
+                    alert(err.response.data.msg)
+                    this.studiedCourses = []
+                })
                 console.log(3)
             }
         },
         selectCourse(index) {
             // this.selectedCourses.push(this.courses[index])
-            this.courses.splice(index,1)
-            ElMessage({
-                type: 'success',
-                message: '选课成功！',
+            axios.post("http://localhost:8081/student/selection", {courseId: this.courses[index].courseId})
+            .then(res => {
+                console.log(res)
+                this.courses.splice(index,1)
+                ElMessage({
+                    type: 'success',
+                    message: '选课成功！',
+                })
+            })
+            .catch(err => {
+                alert(err.response.data.msg)
             })
         },
         quitCourse(index) {
-            this.courses.push(this.selectedCourses[index])
+            // this.courses.push(this.selectedCourses[index])
             // this.selectedCourses.splice(index,1) 
-            ElMessage({
-                type: 'success',
-                message: '退课成功',
+            axios.delete("http://localhost:8081/student/selection",{data:{courseId: this.selectedCourses[index].courseId}})
+            .then(res => {
+                ElMessage({
+                    type: 'success',
+                    message: '退课成功',
+                })
+                this.selectedCourses.splice(index,1) 
+                console.log(res)
             })
+
         },
         filterYear(value, row) {
             return row['year'] + row['semester'] === value
@@ -416,15 +481,17 @@ export default {
         .catch(error => {
             console.dir(error)
         })
-        await axios.get('http://localhost:8081/student/course')
+        await axios.get('http://localhost:8081/student/course/verified')
         .then(res => {
             this.courses = res.data.data1
+            for(let course of this.courses) {
+                // this.dialogTableVisible.push(false)
+                course.courseTime = ''
+                setCourseTime(course, course.times)
+            }
         })
-        for(let course of this.courses) {
-            this.dialogTableVisible.push(false)
-            course.courseTime = ''
-            setCourseTime(course, course.times)
-        }
+
+
     }
 }
 </script>

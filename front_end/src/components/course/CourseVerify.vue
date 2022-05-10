@@ -11,11 +11,11 @@
             </template>
         </el-table-column>
         <el-table-column prop="collegeName" label="开课院系" width="180" />
-        <el-table-column prop="commonCourse" label="课程类型" width="180">
+        <el-table-column prop="isGeneral" label="课程类型" width="220">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '专业课程'">
-                    <span style="padding-right:10px">专业课程</span>
+                <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                <div v-else>
+                    <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
                         <div v-for="major in pendingCourses[scope.$index].majors" :key="major">
@@ -95,7 +95,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'change',
-                    commonCourse: '专业课程',
+                    isGeneral: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -133,7 +133,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'delete',
-                    commonCourse: '通选课程',
+                    isGeneral: '通选课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],

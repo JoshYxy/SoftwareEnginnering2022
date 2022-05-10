@@ -9,7 +9,7 @@
             <template #default="scope">
                 <div class="namelist">
                     <span>{{scope.row.selected}}</span>
-                    <el-button class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
+                    <el-button v-if="scope.row.selected != '0'" class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
                 </div>
             </template>
         </el-table-column>
@@ -18,11 +18,11 @@
                 {{scope.row.year}}{{scope.row.semester}}
             </template>
         </el-table-column>
-        <el-table-column prop="commonCourse" label="课程类型" width="180">
+        <el-table-column prop="isGeneral" label="课程类型" width="220">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '专业课程'">
-                    <span style="padding-right:10px">专业课程</span>
+                <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                 <div v-else>
+                    <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
                         <div v-for="major in courses[scope.$index].majors" :key="major">
@@ -126,13 +126,13 @@
             <el-form-item label="课程简介" prop="courseInfo">
                 <el-input v-model="newCourse.courseInfo" type="textarea" />
             </el-form-item> 
-            <el-form-item label="课程类型" prop="commonCourse">
-                <el-select v-model="newCourse.commonCourse" placeholder="类型">
+            <el-form-item label="课程类型" prop="isGeneral">
+                <el-select v-model="newCourse.isGeneral" placeholder="类型">
                     <el-option label="通选课程" value="通选课程" />
                     <el-option label="专业选修" value="专业课程" />
                 </el-select>
             </el-form-item> 
-            <el-form-item label="面向专业" prop="majors" v-if="newCourse.commonCourse == '专业课程'">
+            <el-form-item label="面向专业" prop="majors" v-if="newCourse.isGeneral == '专业课程'">
                 <el-cascader :props="majorProps" :options="collegeData" v-model="newCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
             </el-form-item>      
             <el-form-item label="上课教室" prop="selectRoom">
@@ -228,7 +228,7 @@ export default {
                 selectTime: [{validator: validTimetable, trigger: ['blur','change']}],
                 selectRoom: [{validator: validSelectRoom, trigger: ['blur','change']},
                              {validator: validRoom, trigger: ['blur','change']}],
-                commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
+                isGeneral: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
                 majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
             },
             rulesEdit: {
@@ -429,7 +429,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '通选课程',
+                    isGeneral: '通选课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -462,7 +462,7 @@ export default {
                     roomNum: '502',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '专业课程',
+                    isGeneral: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -496,7 +496,7 @@ export default {
                 classHours: '',
                 building: '',
                 roomNum: '',
-                commonCourse:'通选课程',
+                isGeneral:'通选课程',
                 majors: [
                             ["计算机科学技术学院","大数据"],
                             ["计算机科学技术学院","信息安全"],
@@ -554,22 +554,11 @@ export default {
         },
         openList(index) {
             //axios courses[index].courseId
-            console.log(index)
-            this.listTableVisible = true
-            this.namelist = [
-                {name:'与',number:'220000',major:'软工'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-            ]
+            axios.put('http://localhost:8081/course/selectedList',{courseId: this.courses[index].courseId})
+            .then(res => {
+                this.listTableVisible = true
+                this.namelist = res.data.data1
+            })
         },
         handleDelete(index, data){
             ElMessageBox.confirm(

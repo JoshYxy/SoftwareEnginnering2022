@@ -15,11 +15,11 @@
                     <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
                     <el-table-column prop="collegeName" label="开课院系" width="180" />
                     <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
-                    <el-table-column prop="commonCourse" label="课程类型" width="180">
+                    <el-table-column prop="isGeneral" label="课程类型" width="220">
                         <template #default="scope">
-                            <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                            <div v-if="scope.row.commonCourse == '专业课程'">
-                                <span style="padding-right:10px">专业课程</span>
+                            <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                            <div v-else>
+                                <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                                 <el-button type="text" @click="majorAvlVis[scope.$index] = true">查看专业</el-button>
                                 <el-dialog v-model="majorAvlVis[scope.$index]" title="课程可选专业" :append-to-body="true">
                                     <div v-for="major in scope.row.majors" :key="major">
@@ -107,7 +107,7 @@
 
 <script>
 import {setCourseTime} from '../jsComponents/CourseSet'
-// import { ElMessage} from 'element-plus'
+import { ElMessage} from 'element-plus'
 import axios from 'axios'
 import global_ from '../jsComponents/global'
 import { Search } from '@element-plus/icons-vue'
@@ -176,7 +176,7 @@ export default {
                     type: 'normal',
                 }
             ],
-            applyCourse: {applyReason: ''},
+            applyCourse: {applyReason: '', courseId: ''},
             // applyReason: '',
         }
     },
@@ -213,8 +213,15 @@ export default {
         submitApply() {
             this.$refs['applyCourse'].validate(valid => {
                 if(valid) {
-                    //axios
-                    this.applyTableVisible = false
+                    axios.post("http://localhost:8081/student/course/request", {courseId: this.applyCourse.courseId, reason: this.applyCourse.applyReason})
+                    .then(res => {
+                        ElMessage({
+                            type: 'success',
+                            message: res.data.msg,
+                        })
+                        this.applyTableVisible = false
+                    })
+                    
                 }
             })
         }
@@ -227,12 +234,11 @@ export default {
         .catch(error => {
             console.dir(error)
         })
-        await axios.get('http://localhost:8081/student/course')
+        await axios.get('http://localhost:8081/student/requestCourses')
         .then(res => {
             this.courses = res.data.data1
         })
         for(let course of this.courses) {
-            this.dialogTableVisible.push(false)
             course.courseTime = ''
             setCourseTime(course, course.times)
         }

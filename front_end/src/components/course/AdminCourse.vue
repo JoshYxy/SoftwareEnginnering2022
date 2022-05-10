@@ -16,7 +16,7 @@
             <template #default="scope">
                 <div class="namelist">
                     <span>{{scope.row.selected}}</span>
-                    <el-button class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
+                    <el-button v-if="scope.row.selected != '0'" class="namelist-button" type="text" @click="openList(scope.$index)" style="text-align:right">查看名单</el-button>
                 </div>
             </template>
         </el-table-column>
@@ -31,11 +31,11 @@
         <el-table-column prop="collegeName" label="开课院系" width="180" />
         <el-table-column prop="teacherName" label="课程教师姓名" width="120" />
         <el-table-column prop="teacherNum" label="课程教师工号" width="120" />
-        <el-table-column prop="commonCourse" label="课程类型" width="180">
+        <el-table-column prop="isGeneral" label="课程类型" width="220">
             <template #default="scope">
-                <div v-if="scope.row.commonCourse == '通选课程'">通选课程</div>
-                <div v-if="scope.row.commonCourse == '专业课程'">
-                    <span style="padding-right:10px">专业课程</span>
+                <div v-if="scope.row.isGeneral == '通选课程'">通选课程</div>
+                <div v-else>
+                    <span style="padding-right:10px">{{scope.row.isGeneral}}</span>
                     <el-button type="text" @click="majorTableVisible[scope.$index] = true">查看专业</el-button>
                     <el-dialog v-model="majorTableVisible[scope.$index]" title="课程可选专业" :append-to-body="true">
                         <div v-for="major in courses[scope.$index].majors" :key="major">
@@ -122,14 +122,18 @@
                     <el-form-item label="课程简介" prop="courseInfo">
                         <el-input v-model="editCourse.courseInfo" type="textarea" />
                     </el-form-item>     
-                    <el-form-item label="课程类型" prop="commonCourse">
-                        <el-select v-model="editCourse.commonCourse" placeholder="类型">
+                    <el-form-item label="课程类型" prop="isGeneral">
+                        <el-select v-model="editCourse.isGeneral" placeholder="类型">
                             <el-option label="通选课程" value="通选课成" />
                             <el-option label="专业选修" value="专业课程" />
+                            <el-option label="部分专业选修" value="面向部分专业课程" />
                         </el-select>
                     </el-form-item> 
-                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.commonCourse == '专业课程'">
+                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.isGeneral == '面向部分专业课程'">
                         <el-cascader :props="majorProps" :options="collegeData" v-model="editCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
+                    </el-form-item>
+                    <el-form-item label="面向专业" prop="majors" v-if="editCourse.isGeneral == '专业课程'">
+                        <el-cascader :props="singlemajorProps" :options="collegeData" v-model="editCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
                     </el-form-item>
                     <el-form-item label="开课学年" prop="year" style="float:left; margin-right:20px">
                         <el-select v-model="editCourse.year" placeholder="学年">
@@ -242,7 +246,7 @@ export default {
                 capacity: [{required: true, message: '请输入选课容量', trigger: 'blur'},
                            {pattern:/^[1-9]\d*$/, message: '请输入正整数', trigger: 'blur'},
                            {validator: validCapacity, trigger: 'blur'}],
-                commonCourse: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
+                isGeneral: [{required: true, message: '请选择课程类型',trigger: ['blur','change']}],
                 majors: [{required: true, message: '请选择面向专业',trigger: ['blur','change']}],
                 college: [{validator: validCollege, trigger: ['blur','change']}], 
                 teacher: [{validator: validTeacher, trigger: ['blur','change']}], 
@@ -258,12 +262,16 @@ export default {
                 value: 'name',
                 multiple: true
             },
+            singlemajorProps: {
+                children: 'majors',
+                label: 'name',
+                value: 'name',
+            },
             roomProps: {
                 children: 'room',
                 label: 'name',
                 value: 'name'
             },
-            
             periods: global_.periods,
             abbrToBuilding: global_.abbrToBuilding,
             buildingToAbbr: global_.buildingToAbbr,
@@ -456,7 +464,7 @@ export default {
                     roomNum: '301',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '专业课程',
+                    isGeneral: '专业课程',
                     majors: [
                                 ["计算机科学技术学院","大数据"],
                                 ["计算机科学技术学院","信息安全"],
@@ -488,7 +496,7 @@ export default {
                     roomNum: '502',
                     courseInfo: '123',
                     type: 'normal',
-                    commonCourse: '通选课程',
+                    isGeneral: '通选课程',
                     majors: [],
                     year:'2020-2021',
                     semester:'秋',
@@ -514,7 +522,7 @@ export default {
                 building: '',
                 roomNum: '',
                 majors:[],
-                commonCourse:'',
+                isGeneral:'',
                 semester: '',
                 year: ''
             },
@@ -569,11 +577,12 @@ export default {
             return obj
         },
         roomCap() {
+            console.log(this.editCourse)
             if(this.editCourse.selectRoom == null) return 0
             for(let i = 0; i < this.classroom.length; i++){
                 for(let j = 0; j < this.classroom[i].room.length; j++) {
                     if(this.editCourse.selectRoom[1] == this.classroom[i].room[j].name 
-                    && this.editCourse.selectRoom[0] == this.classroom[i].aka) {
+                    && this.editCourse.selectRoom[0] == this.classroom[i].name) {
                         return this.classroom[i].room[j].capacity
                     }
                 }
@@ -599,13 +608,31 @@ export default {
             console.log(this.courses)
         },
         submitSearch() {
-            console.log(this.searchContent)
-            //axios
-   
+            // console.log(this.searchContent)
+            axios.post("http://localhost:8081/course/search",{search: this.searchContent})
+            .then(res => {
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                    this.editTableVisible.push(false)
+                    this.dialogTableVisible.push(false)
+                }
+            })
+            
         },
         resetSearch() {
-            //axios
-    
+            axios.get('http://localhost:8081/course')
+            .then(res => {
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                    this.editTableVisible.push(false)
+                    this.dialogTableVisible.push(false)
+                }
+            })
+
         },
         deWeight(arr) {
             for (var i = 0; i < arr.length - 1; i++) {
@@ -672,7 +699,7 @@ export default {
                 inputErrorMessage: '请输入正整数',
             })
                 .then(({value}) => {
-                    //axios
+                    axios.put("http://localhost:8081/course/capacity",{courseId: this.courses[index].courseId, capacity: value})
                     this.courses[index].capacity = value
                     ElMessage({
                         type: 'success',
@@ -688,22 +715,11 @@ export default {
         },
         openList(index) {
             //axios courses[index].courseId
-            console.log(index)
-            this.listTableVisible = true
-            this.namelist = [
-                {name:'与',number:'220000',major:'软工'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-                {name:'我',number:'220001',major:'计算机'},
-            ]
+            axios.get('http://localhost:8081/course/selectedList',{courseId: this.courses[index].courseId})
+            .then(res => {
+                this.listTableVisible = true
+                this.namelist = res.data.data1
+            })
         },
         // eslint-disable-next-line
         tableRowClassName(row, rowIndex) {//根据该行课程的状态动态显示该行表格颜色
@@ -786,20 +802,28 @@ export default {
                 this.editCourse.selectTime.push(arr)
             }
             this.editCourse.majors = []
-            for(let i = 0; i < data.majors.length; i++)
-            {
-                let [...arr] = data.majors[i]
-                this.editCourse.majors.push(arr)
+            if(data.majors) {
+                for(let i = 0; i < data.majors.length; i++)
+                {
+                    let [...arr] = data.majors[i]
+                    this.editCourse.majors.push(arr)
+                    if(this.editCourse.majors.length == 1){
+                        this.editCourse.majors = this.editCourse.majors[0]
+                    }
+                }
             }
+            console.log(1)
+            console.log(this.editCourse.majors)
             this.editCourse.courseId = data.courseId
             this.editCourse.courseNum = data.courseNum
             this.editCourse.capacity = data.capacity
             this.editCourse.credits = data.credits
             this.editCourse.courseInfo = data.courseInfo
             this.editCourse.courseName = data.courseName
-            this.editCourse.commonCourse = data.commonCourse
+            this.editCourse.isGeneral = data.isGeneral
             this.editCourse.year = data.year
             this.editCourse.semester = data.semester
+            
             // this.editCourse.collegeName = data.collegeName
             for(let i = 0; i < this.teacherData.length; i++) {
                 if(data.collegeName == this.teacherData[i].collegeName) {
@@ -829,10 +853,10 @@ export default {
                     this.courses[index].teacherName = this.editCourse.teacher.name
                     this.courses[index].teacherNum = this.editCourse.teacher.number
                     this.courses[index].collegeName = this.editCourse.college.collegeName
-                    this.courses[index].commonCourse = this.editCourse.commonCourse
-                    this.courses[index].majors = this.editTableVisible.majors
-                    this.courses[index].semester = this.editTableVisible.semester
-                    this.courses[index].year = this.editTableVisible.year
+                    this.courses[index].isGeneral = this.editCourse.isGeneral
+                    this.courses[index].majors = this.editCourse.majors
+                    this.courses[index].semester = this.editCourse.semester
+                    this.courses[index].year = this.editCourse.year
                     setCourseTime(this.courses[index], this.editCourse.selectTime)
                     this.courses[index].type = 'changed'
                     axios.post('http://localhost:8081/course', this.courses[index])
@@ -941,58 +965,76 @@ export default {
         },
         
     },
-    // async created() {
-            // axios.get('http://localhost:8081/user/curriculaVariable')
-            // .then(res => {
-            //     this.courseStatus = res.data.data1
-            // })
-            // .catch(error => {
-            //     console.dir(error)
-            // })
-    //     await axios.get('http://localhost:8081/user/course/new')
-    //     .then(res => {
-    //         this.teacherData = res.data.data1
-    //         this.classroom = res.data.data2
-    //         for(let i = 0; i < this.classroom.length; i++) {
-    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
-    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
-    //             this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
-    //         }
-    //         this.times = res.data.data3
-    //         // this.collegeData = res.data.data4
-    //         // for(let i = 0; i < this.collegeData.length; i++) {
-    //         //     if(this.collegeData[i].majors == []) {
-    //         //         this.collegeData[i]['disabled'] = true
-    //         //     }
-    //         // }
-    //     })
-    //     await axios.get('http://localhost:8081/course')
-    //     .then(res => {
-    //         for(let i = 0; i < res.data.data1.length; i++){
-    //         this.editTableVisible.push(false)
-    //         this.dialogTableVisible.push(false)
-    //         }
-    //         this.courses = res.data.data1
-    //     })
+    async created() {
+        axios.get('http://localhost:8081/user/curriculaVariable')
+            .then(res => {
+                this.courseStatus = res.data.data1
+            })
+            .catch(error => {
+                console.dir(error)
+            })
+        await axios.get('http://localhost:8081/user/course/new')
+        .then(res => {
+            this.teacherData = res.data.data1
+            this.classroom = res.data.data2
+            for(let i = 0; i < this.classroom.length; i++) {
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
+                this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
+            }
+            this.times = res.data.data3
+            // this.collegeData = res.data.data4
+            // for(let i = 0; i < this.collegeData.length; i++) {
+            //     if(this.collegeData[i].majors == []) {
+            //         this.collegeData[i]['disabled'] = true
+            //     }
+            // }
+        })
+        await axios.get("http://localhost:8081/admin/edu")
+        .then(res => {
+            this.collegeData = res.data.data1
+            for(let i in this.collegeData) {//替换变量名,对应后端数据
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+            }
+            for(let i = 0; i < this.collegeData.length; i++) {
+                if(this.collegeData[i].majors.length == 0) {
+                    this.collegeData[i]['disabled'] = true
+                }
+            }
+        }).catch(error => {
+            alert('获取服务器信息失败')
+            console.dir(error);
+        });
+        await axios.get('http://localhost:8081/course')
+        .then(res => {
+            for(let i = 0; i < res.data.data1.length; i++){
+            this.editTableVisible.push(false)
+            this.dialogTableVisible.push(false)
+            }
+            this.courses = res.data.data1
+        })
 
-    //     for(let course of this.courses) {
-    //         course.courseTime = ''
-    //         setCourseTime(course, course.times)
+        for(let course of this.courses) {
+            course.courseTime = ''
+            setCourseTime(course, course.times)
 
-    //     }
-    //     this.timeData = []
-    //     for(let i = 0; i < 7; i++) {//创建选课时间数组
-    //         this.timeData.push({id:0, name:'', times:[]})
-    //         this.timeData[i].id = i;
-    //         this.timeData[i].name = '周'+ i
-    //         this.timeData[i].times = []
-    //         for(let j in this.times) {
-    //             this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
-    //         }
-    //     }
-    //     // console.log(this.editTableVisible)
-    //     // console.log(this.dialogTableVisible)
-    // }
+        }
+        this.timeData = []
+        for(let i = 0; i < 7; i++) {//创建选课时间数组
+            this.timeData.push({id:0, name:'', times:[]})
+            this.timeData[i].id = i;
+            this.timeData[i].name = '周'+ i
+            this.timeData[i].times = []
+            for(let j in this.times) {
+                this.timeData[i].times.push({num: parseInt(j)+1,name:this.times[j].name, disable:false})
+            }
+        }
+        // console.log(this.editTableVisible)
+        // console.log(this.dialogTableVisible)
+    }
 }
 </script>
 
