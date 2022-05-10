@@ -186,8 +186,15 @@ export default {
     methods: {
          submitSearch() {
             console.log(this.searchContent)
-            //axios searchContent
-          
+            axios.post("http://localhost:8081/student/requestCourses/search",{search: this.searchContent})
+            .then(res => {
+                console.log(res.data.msg)
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                }
+            })
         },
         handleClick(tab, event) {
             console.log(tab,event)

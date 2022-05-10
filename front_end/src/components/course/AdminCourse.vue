@@ -20,6 +20,7 @@
                 </div>
             </template>
         </el-table-column>
+        <el-table-column fixed v-if="courseStatus != CLOSE" prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="year,semester" label="开课学期" width="180"
             :filter-multiple="true"
             :filters="yearFilters"
@@ -80,7 +81,7 @@
                 </el-popover>
             </template>
         </el-table-column>
-        <el-table-column prop="capacity" label="选课容量" width="150" />
+        <el-table-column v-if="courseStatus == CLOSE" prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
             <template #default="scope">
                 <el-button type="text" @click="dialogTableVisible[scope.$index] = true">查看详情</el-button>
@@ -715,7 +716,7 @@ export default {
         },
         openList(index) {
             //axios courses[index].courseId
-            axios.get('http://localhost:8081/course/selectedList',{courseId: this.courses[index].courseId})
+            axios.put('http://localhost:8081/course/selectedList',{courseId: this.courses[index].courseId})
             .then(res => {
                 this.listTableVisible = true
                 this.namelist = res.data.data1
