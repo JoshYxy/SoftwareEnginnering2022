@@ -223,9 +223,9 @@ public class TransUtil {
                 coursepartDTO.getCredits(),
                 coursepartDTO.getCourseInfo(),
                 coursepartDTO.getCapacity(),
+                coursepartDTO.getIsGeneral(),
                 coursepartDTO.getYear(),
                 coursepartDTO.getSemester(),
-                coursepartDTO.getIsGeneral(),
                 null,
                 coursepartDTO.getTeacherNum()
         );
