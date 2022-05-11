@@ -1,9 +1,11 @@
 <template>
-    <div v-if="!courseOpen"> <h2>选课时间未到</h2></div>
-    <div v-if="courseOpen">
+    <div v-if="courseOpen=='当前不在选课时间段内'"> <h2>选课时间未到</h2></div>
+    <div v-else-if="courseOpen=='一轮选课开始' || courseOpen=='一轮选课结束'"> <h2>二轮选课才能选课申请</h2></div>
+    <div v-else>
         <el-tabs class="course-application" v-model="activeName" type="border-card" @tab-click="handleClick">
             <el-tab-pane label="选课申请" name="available">
                 <h2>选课申请</h2>
+                <el-button @click="resetSearch" type="primary" style="margin-bottom:20px">查看全部课程</el-button>
                 <el-input class="search" placeholder="搜索课程" v-model="searchContent" @keyup.enter="submitSearch"> 
                     <template #suffix>
                         <el-icon @click="submitSearch" class="el-input__icon"><search /></el-icon>
@@ -184,9 +186,9 @@ export default {
 
     },
     methods: {
-         submitSearch() {
+        submitSearch() {
             console.log(this.searchContent)
-            axios.post("http://localhost:8081/student/requestCourses/search",{search: this.searchContent})
+            axios.put("http://localhost:8081/student/requestCourses/search",{search: this.searchContent})
             .then(res => {
                 console.log(res.data.msg)
                 this.courses = res.data.data1
@@ -194,6 +196,24 @@ export default {
                     course.courseTime = ''
                     setCourseTime(course, course.times)
                 }
+            })
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })  
+        },
+        resetSearch() {
+            axios.get('http://localhost:8081/student/requestCourses')
+            .then(res => {
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                }
+            })
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
             })
         },
         handleClick(tab, event) {
@@ -234,21 +254,27 @@ export default {
         }
     },
     async created() {
-        axios.get('http://localhost:8081/user/curriculaVariable')
+        await axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
             this.courseOpen = res.data.data1
         })
         .catch(error => {
             console.dir(error)
         })
-        await axios.get('http://localhost:8081/student/requestCourses')
-        .then(res => {
-            this.courses = res.data.data1
-        })
-        for(let course of this.courses) {
-            course.courseTime = ''
-            setCourseTime(course, course.times)
-        }
+        if(this.courseOpen == '二轮选课开始' || this.courseOpen == '二轮选课结束'){
+            await axios.get('http://localhost:8081/student/requestCourses')
+            .then(res => {
+                this.courses = res.data.data1
+                for(let course of this.courses) {
+                    course.courseTime = ''
+                    setCourseTime(course, course.times)
+                }
+            })
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })    
+        }    
     }
 }
 </script>

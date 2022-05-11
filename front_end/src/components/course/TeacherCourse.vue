@@ -128,13 +128,17 @@
             </el-form-item> 
             <el-form-item label="课程类型" prop="isGeneral">
                 <el-select v-model="newCourse.isGeneral" placeholder="类型">
-                    <el-option label="通选课程" value="通选课程" />
+                    <el-option label="通选课程" value="通选课成" />
                     <el-option label="专业选修" value="专业课程" />
+                    <el-option label="部分专业选修" value="面向部分专业课程" />
                 </el-select>
             </el-form-item> 
-            <el-form-item label="面向专业" prop="majors" v-if="newCourse.isGeneral == '专业课程'">
+            <el-form-item label="面向专业" prop="majors" v-if="newCourse.isGeneral == '面向部分专业课程'">
                 <el-cascader :props="majorProps" :options="collegeData" v-model="newCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
-            </el-form-item>      
+            </el-form-item>
+            <el-form-item label="面向专业" prop="majors" v-if="newCourse.isGeneral == '专业课程'">
+                <el-cascader :props="singlemajorProps" :options="collegeData" v-model="newCourse.majors" placeholder="面向专业" :show-all-levels='false' clearable/>
+            </el-form-item>
             <el-form-item label="上课教室" prop="selectRoom">
                 <el-cascader :props="roomProps" :options="classroom" v-model="newCourse.selectRoom" placeholder="可输入教室号搜索" @change="updateRoom" filterable clearable/>
                 <span style="padding-left:20px">教室容量: {{roomCap}} </span>
@@ -243,6 +247,11 @@ export default {
                 value: 'name',
                 multiple: true
             },
+            singlemajorProps: {
+                children: 'majors',
+                label: 'name',
+                value: 'name',
+            },
             periods: global_.periods,
             CLOSE: global_.CLOSE,
             ONE_OFF: global_.ONE_OFF,
@@ -292,11 +301,11 @@ export default {
             },
             collegeData: [
                 { 
-                    id: 1,
+                    id: 5,
                     name: '计算机科学技术学院', 
                     majors: [
-                        {id: 1, name: '大数据'},
-                        {id: 2, name: '信息安全'}
+                        {id: 8, name: '计算机科学与技术'},
+                        {id: 7, name: '信息安全'}
                     ]
                 },
                 { 
@@ -309,10 +318,10 @@ export default {
                     ]
                 },
                 { 
-                    id: 1,
-                    name: '软件工程学院', 
+                    id: 6,
+                    name: '软件学院', 
                     majors: [
-                        {id: 1, name: '软件工程'},
+                        {id: 9, name: '软件工程'},
                     ]
                 },
             ],
@@ -554,7 +563,7 @@ export default {
         },
         openList(index) {
             //axios courses[index].courseId
-            axios.put('http://localhost:8081/course/selectedList',{courseId: this.courses[index].courseId})
+            axios.put('http://localhost:8081/teacher/selectedList',{courseId: this.courses[index].courseId})
             .then(res => {
                 this.listTableVisible = true
                 this.namelist = res.data.data1
@@ -640,6 +649,7 @@ export default {
                     courseToSubmit['times'] = this.editCourse.selectTime
                     courseToSubmit['building'] = this.buildingToAbbr[this.editCourse.selectRoom[0]]
                     courseToSubmit['roomNum'] = this.editCourse.selectRoom[1]
+
                     setCourseTime(courseToSubmit, this.editCourse.selectTime)
                     console.log(courseToSubmit)
                     axios.post('http://localhost:8081/teacher/courseRequest',{courseVO:courseToSubmit, type:'change',})
@@ -681,8 +691,14 @@ export default {
                     this.newCourse['teacherName'] = this.teacher.name
                     this.newCourse['teacherNum'] = this.teacher.number
                     this.newCourse['collegeName'] = this.teacher.college
-                    this.newCourse['year'] = ''
-                    this.newCourse['semester'] = '' 
+                    if(this.newCourse.majors != [] && typeof(this.newCourse.majors[0]) == 'string') {
+                        let arr = [this.newCourse.majors[0],this.newCourse.majors[1]]
+                        this.newCourse.majors[0] = arr
+                        this.newCourse.majors.splice(1,1)
+                    } 
+                    this.newCourse['year'] = '2021-2022'
+                    this.newCourse['semester'] = '春' 
+                    this.newCourse['selected'] = '0' 
                     axios.post('http://localhost:8081/teacher/courseRequest',{courseVO:this.newCourse, type:'add'})
                     .then(res => {
                         console.log(res)
@@ -804,6 +820,24 @@ export default {
         .catch(error => {
             console.dir(error)
         })
+        axios.get("http://localhost:8081/user/edu")
+        .then(res => {
+            this.collegeData = res.data.data1
+            for(let i in this.collegeData) {//替换变量名,对应后端数据
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorId/g,"id"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/collegeVOName/g,"name"))
+                this.collegeData[i] = JSON.parse(JSON.stringify(this.collegeData[i]).replace(/majorName/g,"name"))
+            }
+            for(let i = 0; i < this.collegeData.length; i++) {
+                if(this.collegeData[i].majors.length == 0) {
+                    this.collegeData[i]['disabled'] = true
+                }
+            }
+        }).catch(error => {
+            alert('获取服务器信息失败')
+            console.dir(error);
+        });
         axios.get('http://localhost:8081/user/course/new')
         .then(res => {
             this.classroom = res.data.data2

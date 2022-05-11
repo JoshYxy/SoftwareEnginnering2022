@@ -141,7 +141,7 @@ export default {
       });
       //获取学院信息
     // console.log(this.userData)
-    await axios.get("http://localhost:8081/admin/edu")
+    await axios.get("http://localhost:8081/user/edu")
       .then(res => {
 
         this.collegeData = res.data.data1

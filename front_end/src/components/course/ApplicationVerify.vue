@@ -34,7 +34,11 @@
             </template>
         </el-table-column>
         <el-table-column prop="courseTime" label="上课时间" width="180" />
-        <el-table-column prop="capacity" label="选课容量" width="150" />
+        <el-table-column prop="capacity, selected" label="选课人数/容量" width="150">
+            <template #default="scope">
+                {{scope.row.selected}}/{{scope.row.capacity}}
+            </template>
+        </el-table-column>
         <el-table-column prop="courseInfo" label="介绍" width="150" >
             <template #default="scope">
                 <el-button type="text" @click="dialogTableVisible[scope.$index] = true">查看详情</el-button>

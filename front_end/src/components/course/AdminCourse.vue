@@ -57,8 +57,12 @@
                 {{scope.row.building}}{{scope.row.roomNum}}
             </template>
         </el-table-column>
-        <el-table-column prop="courseTime" label="上课时间" width="180">
-            <template #header>
+        <el-table-column prop="courseTime" label="上课时间" width="180"
+            :filter-multiple="true"
+            :filters="timeFilters"
+            :filter-method="filterTime"
+            />
+          <!-- <template #header>
                 <el-popover class="time-pop" placement="bottom-start" v-model:visible="popVisible">
                     <template #reference>
                         <span class="course-time">上课时间<el-icon @click="popVisible = !popVisible"><arrow-down /></el-icon></span>
@@ -79,8 +83,7 @@
                         <el-button size="small" @click="resetTime">重置</el-button>
                     </div>
                 </el-popover>
-            </template>
-        </el-table-column>
+            </template> -->
         <el-table-column v-if="courseStatus == CLOSE" prop="capacity" label="选课容量" width="150" />
         <el-table-column prop="courseInfo" label="介绍" width="150" >
             <template #default="scope">
@@ -93,7 +96,7 @@
         <el-table-column fixed="right" label="操作" width="180">
         <template #default="scope">
             <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button v-if="courseStatus != CLOSE" @click="editCapacity(scope.$index)" type="primary">修改容量</el-button>
+            <el-button v-if="courseStatus != CLOSE" @click="editCapacity(scope.row.index)" type="primary">修改容量</el-button>
             <el-button v-if="scope.row.type != 'deleted' && courseStatus == CLOSE" size="small" type="danger" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
             <el-dialog 
                 width="70%"
@@ -190,7 +193,7 @@
                 
                 <span class="dialog-footer">
                     <el-button @click="cancelEdit(scope.$index)">取消</el-button>
-                    <el-button type="primary" @click="submitEdit(scope.$index)">确认</el-button>
+                    <el-button type="primary" @click="submitEdit(scope.row.index, scope.$index)">确认</el-button>
                 </span>
             </el-dialog>
         </template>
@@ -212,11 +215,10 @@ import {validTimetable, validSelectRoom, validTeacher, validCollege} from '../js
 import {setCourseTime} from '../jsComponents/CourseSet'
 import global_ from '../jsComponents/global'
 import axios from 'axios'
-import { Search,ArrowDown } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 export default {
     components: {
-        Search,
-        ArrowDown
+        Search
     },
     data() {
         var validCapacity = (rule, value, callback) => {
@@ -474,6 +476,7 @@ export default {
                     year:'2021-2022',
                     semester:'春',
                     selected: '100',
+                    index: '',
                 },
                 {
                     courseId: 2,
@@ -502,6 +505,7 @@ export default {
                     year:'2020-2021',
                     semester:'秋',
                     selected: '80',
+                    index: '',
                 }
             ],
             courses_back: [],
@@ -569,14 +573,26 @@ export default {
         timeFilters() {
             let obj = []
             for(let i = 0; i < this.periods.length; i++) {
-                const day = {id: i,label: this.periods[i], children:[]}
-                for(let j = 0; j < this.times.length; j++) {
-                    day.children.push({id: i*100+j+1, label: '第'+(parseInt(j)+1)+'节课'})
+                for(let j = 0; j < this.times.length; j++) {        
+                    obj.push({
+                        text:this.periods[i]+'第'+(parseInt(j)+1)+'节课',
+                        value:this.periods[i]+'第'+(parseInt(j)+1)+'节课',
+                    })
                 }
-                obj.push(day)
             }
             return obj
         },
+        // timeFilters() {
+        //     let obj = []
+        //     for(let i = 0; i < this.periods.length; i++) {
+        //         const day = {id: i,label: this.periods[i], children:[]}
+        //         for(let j = 0; j < this.times.length; j++) {
+        //             day.children.push({id: i*100+j+1, label: '第'+(parseInt(j)+1)+'节课'})
+        //         }
+        //         obj.push(day)
+        //     }
+        //     return obj
+        // },
         roomCap() {
             console.log(this.editCourse)
             if(this.editCourse.selectRoom == null) return 0
@@ -620,7 +636,10 @@ export default {
                     this.dialogTableVisible.push(false)
                 }
             })
-            
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })
         },
         resetSearch() {
             axios.get('http://localhost:8081/course')
@@ -633,7 +652,10 @@ export default {
                     this.dialogTableVisible.push(false)
                 }
             })
-
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })
         },
         deWeight(arr) {
             for (var i = 0; i < arr.length - 1; i++) {
@@ -646,31 +668,31 @@ export default {
             }
             return arr;
         },
-        filterTime() {
-            let res = this.$refs['time-tree'].getCheckedKeys(true)
-            let flag = []
-            this.courses_back = JSON.parse(JSON.stringify(this.courses))
-            for(let i = 0; i < this.courses_back.length; i++) {
-                flag.push(false)
-                let data = this.courses_back[i]
-                for(let j = 0; j < data.times.length; j++) {
-                    if(flag[i]) break
-                    for(let k = 0; k < data.times[j].length; k++) {
-                        let num = parseInt(data.times[j][k])+j*100
-                        // console.log(num)
-                        if(res.indexOf(num) > -1) flag[i] = true
-                    }
-                }
-            }
-            let del_num = 0
-            for(let i = 0; i < this.courses_back.length; i++) {
-                if(!flag[i]) {
-                    this.courses.splice(i-del_num,1)
-                    del_num++
-                }
-            }
-            // this.courses.splice(0,1)
-        },
+        // filterTime() {
+        //     let res = this.$refs['time-tree'].getCheckedKeys(true)
+        //     let flag = []
+        //     this.courses_back = JSON.parse(JSON.stringify(this.courses))
+        //     for(let i = 0; i < this.courses_back.length; i++) {
+        //         flag.push(false)
+        //         let data = this.courses_back[i]
+        //         for(let j = 0; j < data.times.length; j++) {
+        //             if(flag[i]) break
+        //             for(let k = 0; k < data.times[j].length; k++) {
+        //                 let num = parseInt(data.times[j][k])+j*100
+        //                 // console.log(num)
+        //                 if(res.indexOf(num) > -1) flag[i] = true
+        //             }
+        //         }
+        //     }
+        //     let del_num = 0
+        //     for(let i = 0; i < this.courses_back.length; i++) {
+        //         if(!flag[i]) {
+        //             this.courses.splice(i-del_num,1)
+        //             del_num++
+        //         }
+        //     }
+        //     // this.courses.splice(0,1)
+        // },
         resetTime() {
             this.courses = this.courses_back
         },
@@ -679,6 +701,16 @@ export default {
         },
         filterYear(value, row) {
             return row['year'] + row['semester'] === value
+        },
+        filterTime(value, row) {
+            for(let j = 0; j < row.times.length; j++) {
+                for(let k = 0; k < row.times[j].length; k++) {
+                    // let num = parseInt(data.times[j][k])+j*this.times.length
+                    // console.log(num)
+                    if(this.periods[j]+'第'+row.times[j][k]+'节课'==value) return true
+                }
+            }
+            return false
         },
         resetRoomFilter() {
             this.$refs['coursesData'].clearFilter(['room'])
@@ -814,7 +846,7 @@ export default {
                 }
             }
             console.log(1)
-            console.log(this.editCourse.majors)
+            console.log(data.times)
             this.editCourse.courseId = data.courseId
             this.editCourse.courseNum = data.courseNum
             this.editCourse.capacity = data.capacity
@@ -838,13 +870,19 @@ export default {
             this.editCourse.selectRoom[1] = data.roomNum
             this.editTableVisible[index] = true;
         },
-        submitEdit(index) {
+        submitEdit(index, tabIndex) {
             
             this.$refs['editCourse'].validate(valid => {
                 if(valid){
-
+                    
                     this.courses[index].courseName = this.editCourse.courseName
-                    this.courses[index].times = this.editCourse.selectTime
+                    this.courses[index].times = []
+                    for(let i = 0; i < this.editCourse.selectTime.length; i++)
+                    {
+                        let [...arr] = this.editCourse.selectTime[i]
+                        this.courses[index].times.push(arr)
+                    }
+                    // this.courses[index].times = this.editCourse.selectTime
                     this.courses[index].courseNum = this.editCourse.courseNum
                     this.courses[index].capacity = this.editCourse.capacity
                     this.courses[index].credits = this.editCourse.credits
@@ -855,6 +893,11 @@ export default {
                     this.courses[index].teacherNum = this.editCourse.teacher.number
                     this.courses[index].collegeName = this.editCourse.college.collegeName
                     this.courses[index].isGeneral = this.editCourse.isGeneral
+                    if(this.editCourse.majors != [] && typeof(this.editCourse.majors[0]) == 'string') {
+                        let arr = [this.editCourse.majors[0],this.editCourse.majors[1]]
+                        this.editCourse.majors[0] = arr
+                        this.editCourse.majors.splice(1,1)
+                    } 
                     this.courses[index].majors = this.editCourse.majors
                     this.courses[index].semester = this.editCourse.semester
                     this.courses[index].year = this.editCourse.year
@@ -868,18 +911,18 @@ export default {
                         })
                         console.log(res)
                     }).catch(error => {
-                        alert('修改失败')
+                        alert(error.response.data.msg)
                         console.dir(error)
                     })  
                     this.clearAvalTime()
-                    this.editTableVisible[index] = false;
+                    this.editTableVisible[tabIndex] = false;
                 }
             })
 
         },
-        cancelEdit(index) {
+        cancelEdit(tabIndex) {
             this.clearAvalTime()
-            this.editTableVisible[index] = false;
+            this.editTableVisible[tabIndex] = false;
         },
         test() {
             // this.courses[0].type = 'changed'
@@ -991,7 +1034,7 @@ export default {
             //     }
             // }
         })
-        await axios.get("http://localhost:8081/admin/edu")
+        await axios.get("http://localhost:8081/user/edu")
         .then(res => {
             this.collegeData = res.data.data1
             for(let i in this.collegeData) {//替换变量名,对应后端数据
@@ -1018,9 +1061,14 @@ export default {
             this.courses = res.data.data1
         })
 
-        for(let course of this.courses) {
-            course.courseTime = ''
-            setCourseTime(course, course.times)
+        for(let i = 0; i < this.courses.length; i++) {
+            this.courses[i].index = i
+            this.editTableVisible[i] = false
+            this.majorTableVisible[i] = false
+            
+            this.dialogTableVisible[i] = false
+            this.courses[i].courseTime = ''
+            setCourseTime(this.courses[i], this.courses[i].times)
 
         }
         this.timeData = []
@@ -1035,6 +1083,7 @@ export default {
         }
         // console.log(this.editTableVisible)
         // console.log(this.dialogTableVisible)
+        console.log(this.majorTableVisible)
     }
 }
 </script>

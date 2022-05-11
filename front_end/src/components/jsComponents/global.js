@@ -34,11 +34,11 @@ const years = [
     '2020-2021',
     '2021-2022'
 ]
-const CLOSE = '0'
-const ONE_ON = '1'
-const ONE_OFF = '2'
-const TWO_ON = '3'
-const TWO_OFF = '4'
+const CLOSE = '当前不在选课时间段内'
+const ONE_ON = '一轮选课开始'
+const ONE_OFF = '一轮选课结束'
+const TWO_ON = '二轮选课开始'
+const TWO_OFF = '二轮选课结束'
 export default
 {
     buildingToAbbr,

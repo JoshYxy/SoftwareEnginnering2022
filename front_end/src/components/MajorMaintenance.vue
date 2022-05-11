@@ -191,7 +191,7 @@ export default {
    
   },
   async created() {
-    await axios.get("http://localhost:8081/admin/edu")
+    await axios.get("http://localhost:8081/user/edu")
       .then(res => {
         this.collegeData = res.data.data1
         for(let i in this.collegeData) {//替换变量名,对应后端数据

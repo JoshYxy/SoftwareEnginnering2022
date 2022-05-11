@@ -423,7 +423,7 @@ export default {
                             message: '新增成功',
                         })
                     }).catch(error => {
-                        alert("新增失败")
+                        alert(error.response.data.msg)
                         console.dir(error);
                         });
                     console.log(this.courseData)
@@ -486,7 +486,7 @@ export default {
         }).catch(error => {
             console.dir(error)
         })
-        axios.get("http://localhost:8081/admin/edu")
+        axios.get("http://localhost:8081/user/edu")
         .then(res => {
             this.collegeData = res.data.data1
             for(let i in this.collegeData) {//替换变量名,对应后端数据

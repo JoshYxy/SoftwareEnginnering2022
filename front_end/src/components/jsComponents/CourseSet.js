@@ -8,7 +8,7 @@ export function setCourseTime(data, e) {
             })
         }
     }
-    data.times = e
+    // data.times = e
     data['classHours'] = 0
     var flag = false//是否多节连上
     var k, j

@@ -12,8 +12,9 @@
                     </template>
                 </el-input>
                 <el-button @click="resetSearch" type="primary" style="margin-left: 210px">查看全部可选课程</el-button>
+                <el-button @click="clearFilter" type="danger">重置筛选</el-button>
                 <!-- <el-button @click="test">test </el-button> -->
-                <el-table class="class-table" :data="courses" max-height="500px">
+                <el-table class="class-table" ref="courses" :data="courses" max-height="400px">
                     <el-table-column fixed prop="courseName" label="课程名" width="150" />
                     <el-table-column fixed prop="courseNum" label="课程编号" width="140" />
                     <el-table-column prop="collegeName" label="开课院系" width="180" />
@@ -34,17 +35,20 @@
                     </el-table-column>
                     <el-table-column prop="classHours" label="学时" width="60" />
                     <el-table-column prop="credits" label="学分" width="60" />
-                    <el-table-column prop="building,roomNum" label="上课地点" width="80" >
+                    <el-table-column prop="building,roomNum" label="上课地点" width="100" 
+                        column-key="room"
+                        :filter-multiple="true"
+                        :filters="roomFilters"
+                        :filter-method="filterRoom">
                         <template #default="scope">
                             {{scope.row.building}}{{scope.row.roomNum}}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="courseTime" label="上课时间" width="180" />
-                    <el-table-column prop="capacity,selected" label="选课人数" width="150">
-                        <template #default="scope">
-                            {{scope.row.selected}}/{{scope.row.capacity}}
-                        </template>
-                    </el-table-column>
+                    <el-table-column prop="courseTime" label="上课时间" width="180"
+                                            :filter-multiple="true"
+                        :filters="timeFilters"
+                        :filter-method="filterTime"
+                        />
                     <el-table-column prop="courseInfo" label="介绍" width="150" >
                         <template #default="scope">
                             <el-button type="text" @click="dialogAvlVis[scope.$index] = true">查看详情</el-button>
@@ -53,9 +57,14 @@
                             </el-dialog>
                         </template>
                     </el-table-column>
+                    <el-table-column fixed="right" prop="capacity,selected" label="选课人数" width="150">
+                        <template #default="scope">
+                            {{scope.row.selected}}/{{scope.row.capacity}}
+                        </template>
+                    </el-table-column>
                     <el-table-column fixed="right" label="操作" width="180">
                         <template #default="scope">
-                            <el-button @click="selectCourse(scope.$index)" type="primary" round>选课</el-button>
+                            <el-button @click="selectCourse(scope.row.index, scope.row.courseId)" type="primary" round>选课</el-button>
                         </template>
                     </el-table-column>
                 </el-table>  
@@ -83,23 +92,23 @@
                     </el-table-column>
                     <el-table-column prop="classHours" label="学时" width="60" />
                     <el-table-column prop="credits" label="学分" width="60" />
-                    <el-table-column prop="building,roomNum" label="上课地点" width="80" >
+                    <el-table-column prop="building,roomNum" label="上课地点" width="80">
                         <template #default="scope">
                             {{scope.row.building}}{{scope.row.roomNum}}
                         </template>
                     </el-table-column>
                     <el-table-column prop="courseTime" label="上课时间" width="180" />
-                    <el-table-column prop="capacity,selected" label="选课人数" width="150">
-                        <template #default="scope">
-                            {{scope.row.selected}}/{{scope.row.capacity}}
-                        </template>
-                    </el-table-column>
                     <el-table-column prop="courseInfo" label="介绍" width="150" >
                         <template #default="scope">
                             <el-button type="text" @click="dialogSelVis[scope.$index] = true">查看详情</el-button>
                             <el-dialog v-model="dialogSelVis[scope.$index]" title="课程介绍" :append-to-body="true">
                             {{scope.row.courseInfo}}
                             </el-dialog>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" prop="capacity,selected" label="选课人数" width="150">
+                        <template #default="scope">
+                            {{scope.row.selected}}/{{scope.row.capacity}}
                         </template>
                     </el-table-column>
                     <el-table-column fixed="right" label="操作" width="180">
@@ -186,9 +195,12 @@ export default {
             majorStuVis:[false,false,false,false,false,false,false,false,false,false,false,false,],
             semesters: global_.semesters,
             years: global_.years,
+            periods: global_.periods,
             activeName: 'available',
             searchContent: '',
             courseStatus: '1',
+            times: [],
+            classroom: [],
             courses: [
                 {
                     courseId: 1,
@@ -214,6 +226,7 @@ export default {
                     selected: '80',
                     capacity: '100',
                     type: 'normal',
+                    index: ''
                 },
                 {
                     courseId: 2,
@@ -237,6 +250,7 @@ export default {
                     selected: '100',
                     capacity: '100',
                     type: 'normal',
+                    index: '',
                 }
             ],
             selectedCourses: [
@@ -361,6 +375,39 @@ export default {
                 })
             }
             return obj
+        }, 
+        roomFilters(){
+            let obj = [];
+            //找到对应的数据 并添加到obj
+            for(let i = 0; i < this.classroom.length; i++) {
+                for(let j = 0; j < this.classroom[i].room.length; j++) {
+                    obj.push( {
+                        text: this.classroom[i].aka+this.classroom[i].room[j].name,
+                        value: this.classroom[i].aka+this.classroom[i].room[j].name,
+                    })
+                }
+            }
+            // this.courses.filter(item => {
+            //     obj.push({
+            //         text:item['building']+item['roomNum'],
+            //         value:item['building']+item['roomNum'],
+            //     })
+            // })
+            // //因为column有重复数据，所以要进行去重
+            // console.log(obj)
+            return obj
+        },
+        timeFilters() {
+            let obj = []
+            for(let i = 0; i < this.periods.length; i++) {
+                for(let j = 0; j < this.times.length; j++) {        
+                    obj.push({
+                        text:this.periods[i]+'第'+(parseInt(j)+1)+'节课',
+                        value:this.periods[i]+'第'+(parseInt(j)+1)+'节课',
+                    })
+                }
+            }
+            return obj
         },
     },
     methods: {
@@ -370,23 +417,32 @@ export default {
             .then(res => {
                 console.log(res.data.msg)
                 this.courses = res.data.data1
-                for(let course of this.courses) {
-                    course.courseTime = ''
-                    setCourseTime(course, course.times)
+                for(let i = 0; i < this.courses.length; i++) {
+                    this.courses[i].index = i
+                    this.courses[i].courseTime = ''
+                    setCourseTime(this.courses[i], this.courses[i].times)
                 }
             })
-          
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })
         },
         resetSearch() {
             axios.get('http://localhost:8081/student/course/verified')
             .then(res => {
                 this.courses = res.data.data1
-                for(let course of this.courses) {
-                    course.courseTime = ''
-                    setCourseTime(course, course.times)
+                for(let i = 0; i < this.courses.length; i++) {
+                    this.courses[i].index = i
+                    this.courses[i].courseTime = ''
+                    setCourseTime(this.courses[i], this.courses[i].times)
                 }
+
             })
-         
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })
         },
         handleClick(tab, event) {
             console.log(tab,event)
@@ -440,12 +496,25 @@ export default {
                 console.log(3)
             }
         },
-        selectCourse(index) {
+        selectCourse(index, courseId) {
             // this.selectedCourses.push(this.courses[index])
-            axios.post("http://localhost:8081/student/selection", {courseId: this.courses[index].courseId})
+            // console.log(this.courses[index])
+            axios.post("http://localhost:8081/student/selection", {courseId: courseId})
             .then(res => {
                 console.log(res)
-                this.courses.splice(index,1)
+                axios.get('http://localhost:8081/student/course/verified')
+                .then(res => {
+                    this.courses = res.data.data1
+                    for(let i = 0; i < this.courses.length; i++) {
+                        this.courses[i].index = i
+                        this.courses[i].courseTime = ''
+                        setCourseTime(this.courses[i], this.courses[i].times)
+                    }
+                })
+                .catch(err => {
+                    alert(err.response.data.msg)
+                    this.courses = []
+                })
                 ElMessage({
                     type: 'success',
                     message: '选课成功！',
@@ -467,31 +536,67 @@ export default {
                 this.selectedCourses.splice(index,1) 
                 console.log(res)
             })
-
         },
         filterYear(value, row) {
             return row['year'] + row['semester'] === value
         },
+        filterRoom(value, row) {
+            return row['building'] + row['roomNum'] === value
+        },
+        filterTime(value, row) {
+            for(let j = 0; j < row.times.length; j++) {
+                for(let k = 0; k < row.times[j].length; k++) {
+                    // let num = parseInt(data.times[j][k])+j*this.times.length
+                    // console.log(num)
+                    if(this.periods[j]+'第'+row.times[j][k]+'节课'==value) return true
+                }
+            }
+            return false
+        },
+        clearFilter() {
+            this.$refs['courses'].clearFilter()
+        },
     },
     async created() {
-        axios.get('http://localhost:8081/user/curriculaVariable')
+        await axios.get('http://localhost:8081/user/curriculaVariable')
         .then(res => {
             this.courseStatus = res.data.data1
+            console.log(res)
         })
         .catch(error => {
             console.dir(error)
         })
-        await axios.get('http://localhost:8081/student/course/verified')
-        .then(res => {
-            this.courses = res.data.data1
-            for(let course of this.courses) {
-                // this.dialogTableVisible.push(false)
-                course.courseTime = ''
-                setCourseTime(course, course.times)
-            }
-        })
-
-
+        if(this.courseStatus == '二轮选课开始' || this.courseStatus == '一轮选课开始') {
+            await axios.get('http://localhost:8081/student/course/verified')
+            .then(res => {
+                this.courses = res.data.data1
+                for(let i = 0; i < this.courses.length; i++) {
+                    this.courses[i].index = i
+                    this.courses[i].courseTime = ''
+                    setCourseTime(this.courses[i], this.courses[i].times)
+                }
+            })
+            .catch(err => {
+                alert(err.response.data.msg)
+                this.courses = []
+            })
+            await axios.get('http://localhost:8081/user/course/new')
+            .then(res => {
+                this.classroom = res.data.data2
+                for(let i = 0; i < this.classroom.length; i++) {
+                    this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/fullName/g,"name"))
+                    this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/roomNum/g,"name"))
+                    this.classroom[i] = JSON.parse(JSON.stringify(this.classroom[i]).replace(/abbrName/g,"aka"))
+                }
+                this.times = res.data.data3
+                // this.collegeData = res.data.data4
+                // for(let i = 0; i < this.collegeData.length; i++) {
+                //     if(this.collegeData[i].majors == []) {
+                //         this.collegeData[i]['disabled'] = true
+                //     }
+                // }
+            })
+        }
     }
 }
 </script>
