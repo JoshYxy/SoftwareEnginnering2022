@@ -282,15 +282,6 @@ public class AdminController extends MainController{
      */
 
 
-
-
-    //管理员查看全部的学院和专业信息
-    @GetMapping("/edu")
-    public Result showInfo(){
-        List<CollegeVO> collegeList = collegeServiceImpMP.selectAllCollegeAndMajorByList();
-        return Result.succ("查询成功",collegeList);
-    }
-
     //管理员增加新的学院
     @PostMapping("/edu/college/new")
     public Result addCollege(@RequestBody CollegePO college){

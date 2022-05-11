@@ -5,6 +5,8 @@ import com.jwsystem.common.Result;
 import com.jwsystem.entity.affair.TimesPO;
 import com.jwsystem.entity.user.StudentPO;
 import com.jwsystem.entity.user.TeacherPO;
+import com.jwsystem.service.CollegeServiceMP;
+import com.jwsystem.vo.CollegeVO;
 import com.jwsystem.vo.UserVO;
 import com.jwsystem.service.impl.*;
 import com.jwsystem.util.JwtUtils;
@@ -48,6 +50,9 @@ public class UserController extends MainController{
 
     @Autowired
     private MajorServiceImpMP majorServiceImpMP;
+
+    @Autowired
+    private CollegeServiceMP collegeServiceMP;
 
     public static int TEACHER_NUM_LENGTH = 8;
     public static int STUDENT_NUM_LENGTH = 6;
@@ -322,6 +327,13 @@ public class UserController extends MainController{
         List<TimesPO> times = timesServiceImpMP.list();
 
         return Result.succ3(teacherDataVOList,buildingVOList,times);
+    }
+
+    //管理员/教师查看全部的学院和专业信息
+    @GetMapping("/edu")
+    public Result showInfo(){
+        List<CollegeVO> collegeList = collegeServiceMP.selectAllCollegeAndMajorByList();
+        return Result.succ("查询成功",collegeList);
     }
 
 }
