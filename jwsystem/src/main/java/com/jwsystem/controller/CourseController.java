@@ -752,7 +752,9 @@ public class CourseController extends MainController{
                 }
                 //能选，修改对应课程容量+1，添加已选信息
                 int capacity = Integer.parseInt(coursepartServiceImpMP.getById(courseId).getCapacity());
-                capacity++;
+                if(selected==capacity){
+                    capacity++;
+                }
                 //更新对应课程的容量
                 coursepartServiceImpMP.updateCapacity(Integer.toString(capacity),courseId);
                 //增加该学生的选课信息
