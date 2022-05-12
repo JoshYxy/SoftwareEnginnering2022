@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -63,17 +65,17 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         //在插入的时候根据老师和教室判断有没有时间冲突
         //section '3 4 5' 得到数组 ['3'，'4'，'5']
         String[] sectionArray = timepartDTO.getSection().split("\\s+");
-        //老师时间冲突
-        //根据teachernum 和 weekday 找出一个section string 数组 比对有没有
+        //按老师工号和星期取出所有的section
         List<String> sectionListByTea = timepartDaoMP.selectSectionByTea(timepartDTO.getTeacherNum(), timepartDTO.getWeekday());
-        for(String sections : sectionListByTea) {
-            for (String s : sectionArray) {
-                int result = sections.indexOf(s);//在sections中c查找sectionArray中元素的位置，找不到则返回-1
-                if (result > -1) return false;
+        if(sectionListByTea!=null) {
+            //合并成一个字符串
+            String join = String.join(" ", sectionListByTea);
+            //按空格切割
+            String[] strings = join.split("\\s+");
+            for (String ss : strings) {
+                for (String s : sectionArray) if (Objects.equals(ss, s)) return false;
             }
         }
-        //教室时间冲突
-        //根据roomnum 和 weekday 找出一个section string 数组 比对有没有
         int buildingId = buildingDaoMP.selectOne(Wrappers.lambdaQuery(BuildingPO.class)
                 .eq(BuildingPO::getAbbrName,timepartDTO.getBuilding())).getId();
         int roomId = classroomDaoMP.selectOne(Wrappers.lambdaQuery(ClassroomPO.class)
@@ -86,12 +88,10 @@ public class TimepartServiceImpMP extends ServiceImpl<TimepartDaoMP, TimepartPO>
         for (TimepartPO t:timepartPOList) {
             sectionListByRoom.add(t.getSection());
         }
-
-        for(String sections : sectionListByRoom) {
-            for (String s : sectionArray) {
-                int result = sections.indexOf(s);//在sections中c查找sectionArray中元素的位置，找不到则返回-1
-                if (result > -1) return false;
-            }
+        String join = String.join(" ", sectionListByRoom);
+        String[] strings = join.split("\\s+");
+        for (String ss : strings) {
+            for (String s : sectionArray) if (Objects.equals(ss, s)) return false;
         }
         TimepartPO timepartPO = transUtil.TpDTOtoTpPO(timepartDTO);
         return timepartDaoMP.insert(timepartPO) != 0;
