@@ -606,22 +606,22 @@ export default {
             
             //axios获取教室不可用时间 (data.building data.roomNum)
             //设定不能选择的时间
-            // await axios.put('http://localhost:8081/affair/building/room/time',
-            //     {   
-            //         building: data.building, 
-            //         roomNum: data.roomNum
-            //     })
-            // .then(res => {
-            //     this.unavalRoomTimes = res.data.data1
-            // })
-            // this.setAvalTime()
-            // //课程目前时间设置为可以选中
-            // for(let i = 0; i < data.times.length; i++) {
-            //     for(let j = 1; j <= this.times.length; j++) {
-            //         if(data.times[i].indexOf(j) > -1)
-            //             this.timeData[i].times[j-1].disable = false
-            //     }
-            // }
+            await axios.put('http://localhost:8081/affair/building/room/time',
+                {   
+                    building: data.building, 
+                    roomNum: data.roomNum
+                })
+            .then(res => {
+                this.unavalRoomTimes = res.data.data1
+            })
+            this.setAvalTime()
+            //课程目前时间设置为可以选中
+            for(let i = 0; i < data.times.length; i++) {
+                for(let j = 1; j <= this.times.length; j++) {
+                    if(data.times[i].indexOf(j) > -1)
+                        this.timeData[i].times[j-1].disable = false
+                }
+            }
             //数组深拷贝
             // console.log(data.times)
             this.editCourse.selectTime = []
